@@ -26,9 +26,11 @@ func_decl                   = {
 
 
 statement                   = _{
-                                expr_stmt
+                                block
+                                | expr_stmt
                                 | var_stmt
                                 | return_stmt
+                                | if_stmt
                             }
 
 expr_stmt                   = { expression ~EOS }
@@ -39,9 +41,18 @@ var_decl_list               = { var_decl ~(__s ~"," ~__s ~var_decl)* }
 
 var_decl                    = { IDENTIFIER ~(__s ~initializer)? }
 
-initializer                 = { "=" ~!"=" ~__s ~assignment_expr }
+initializer                 = _{ "=" ~!"=" ~__s ~assignment_expr }
 
 return_stmt                 = { RETURN_TOKEN ~_s ~expression ~EOS  }
+
+if_stmt                     = {
+                                IF_TOKEN ~__s ~expression ~__s 
+                                    ~block ~(__s ~else_stmt)?
+                            }
+
+else_stmt                   = {
+                                ELSE_TOKEN ~__s  ~statement
+                            }
 
 // Expressions
 
@@ -101,15 +112,19 @@ ASSIGNMENT_OPERATOR         = { "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>="
 
 
 // Literals
-literal                     = { float | integer }
+literal                     = {
+                                numeric_literal
+                                | boolean_literal
+                            }
 
-// NUMBERS
-NUMBER                      = _{  float | integer }
+numeric_literal              = _{  float | integer }
 integer                     = @{ int }
 float                       = @{ int ~ "." ~ digits ~ exp? | exp }
 int                         = @{ "0" | (ASCII_NONZERO_DIGIT ~ digits?) }
 digits                      = @{ (ASCII_DIGIT | ("_" ~ ASCII_DIGIT))+ }
 exp                         = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
+
+boolean_literal             = { TRUE_TOKEN | FALSE_TOKEN }
 
 
 
@@ -137,7 +152,7 @@ _s = _{ (whitespace | multi_line_comment_no_line_terminator)* }
 
 // Automatic Semicolon Insertion
 
-EOS = { _s ~";" | _s ~single_line_comment? ~line_terminator_sequence | _s ~"}" | _s ~EOI }
+EOS = { _s ~";" | _s ~single_line_comment? ~line_terminator_sequence | _s ~&"}" | _s ~EOI }
 
 
 IDENTIFIER              = @{  !RESERVED_WORDS ~IDENTIFIER_NAME }
@@ -150,10 +165,17 @@ FUNCTION_TOKEN              = { "fn" }
 VAR_TOKEN                   = { "let" }
 RETURN_TOKEN                = { "return" }
 CLASS_TOKEN                 = { "class" }
+TRUE_TOKEN                  = { "true" }
+FALSE_TOKEN                 = { "false" }
+IF_TOKEN                    = { "if" }
+ELSE_TOKEN                  = { "else" }
+
 RESERVED_WORDS              = {
                                 THIS_TOKEN
                                 | FUNCTION_TOKEN
                                 | VAR_TOKEN
                                 | RETURN_TOKEN
                                 | CLASS_TOKEN
+                                | IF_TOKEN
+                                | ELSE_TOKEN
                             }
