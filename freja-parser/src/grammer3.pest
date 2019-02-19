@@ -1,0 +1,33 @@
+program 		        = { SOI ~wscm* ~declaration* ~ EOI }
+
+declaration 	        = {   
+                            class_decl
+                        }
+            
+class_decl 		        = { "class"  }
+
+
+
+
+
+// OPERATORS
+POSTFIX_OPERATOR         = { "++" | "--" }
+UNARY_OPERATOR           = { "++" | "--" | "+" !"=" | "-" !"="}
+ADDITIVE_OPERATOR        = { "+" !("+" | "=") }
+
+
+
+// NUMBERS
+NUMBER = _{  float | integer }
+integer = @{ ("+" | "-")? ~ int }
+float   = @{ ("+" | "-")? ~ int ~ "." ~ digits ~ exp? | exp }
+int     = @{ "0" | (ASCII_NONZERO_DIGIT ~ digits?) }
+digits  = @{ (ASCII_DIGIT | ("_" ~ ASCII_DIGIT))+ }
+exp     = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
+
+
+
+
+wscm			= _{ ws | cm }
+ws 				= _{ " " | "\t" | "\r" | "\n" }
+cm				= _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }

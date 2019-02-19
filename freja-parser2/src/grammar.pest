@@ -1,0 +1,159 @@
+program 		            = { SOI ~__s ~declarations? ~__s  ~ EOI }
+
+declarations                = _{
+                                declaration ~(__s ~declaration)*
+                            }
+
+
+declaration 	            = _{   
+                                class_decl
+                                | func_decl
+                                | statement
+                            }
+
+
+class_decl 		            = { CLASS_TOKEN ~__s ~IDENTIFIER_NAME ~__s ~"{" ~(__s ~class_body)* ~__s ~"}"  }
+
+class_body                  = _{ 
+                                func_decl
+                            }
+
+func_decl                   = { 
+                                FUNCTION_TOKEN ~__s ~IDENTIFIER ~__s
+                                ~"(" ~__s ~formal_parameter_list? ~__s  ~")" 
+                                ~__s ~block ~__s 
+                            }
+
+
+statement                   = _{
+                                expr_stmt
+                                | var_stmt
+                                | return_stmt
+                            }
+
+expr_stmt                   = { expression ~EOS }
+
+var_stmt                    = { VAR_TOKEN ~_s ~var_decl_list ~EOS }
+
+var_decl_list               = { var_decl ~(__s ~"," ~__s ~var_decl)* }
+
+var_decl                    = { IDENTIFIER ~(__s ~initializer)? }
+
+initializer                 = { "=" ~!"=" ~__s ~assignment_expr }
+
+return_stmt                 = { RETURN_TOKEN ~_s ~expression ~EOS  }
+
+// Expressions
+
+primary_expr                = { 
+                                THIS_TOKEN 
+                                | IDENTIFIER 
+                                | literal
+                                | "(" ~expression ~")"
+                            }
+
+member_expr                 = { ( primary_expr | function_expr ) ~( "[" ~expression ~"]" | "." ~IDENTIFIER_NAME )* }
+call_expr                   = { 
+                                 member_expr ~arguments 
+                                ~( arguments | "[" ~expression ~"]" | "." ~IDENTIFIER_NAME)* 
+                            }
+
+arguments                   = { "("  ~(argument_list )? ~")" }
+argument_list               = { assignment_expr ~("," ~assignment_expr)* }
+
+function_expr               = { FUNCTION_TOKEN ~_s ~IDENTIFIER ~_s ~"(" ~__s ~formal_parameter_list? ~__s ~")" ~block} 
+
+formal_parameter_list       = { IDENTIFIER ~(__s ~"," ~__s ~IDENTIFIER)* }
+ 
+
+block                       = { "{" ~__s ~declarations? ~__s ~"}" }
+
+
+left_hand_side_expr         = { call_expr | member_expr }
+postfix_expr                = { left_hand_side_expr ~_s ~POSTFIX_OPERATOR | left_hand_side_expr }
+unary_expr                  = { postfix_expr | UNARY_OPERATOR ~__s ~unary_expr }
+multiplicative_expr         = { unary_expr ~(__s ~MULTIPLICATIVE_OPERATOR ~__s ~unary_expr)* }
+additive_expr               = { multiplicative_expr ~(__s ~ADDITIVE_OPERATOR ~__s ~multiplicative_expr)* }
+shift_expr                  = { additive_expr ~(__s ~SHIFT_OPERATOR ~__s ~additive_expr)* }
+relational_expr             = { shift_expr ~(__s ~RELATIONAL_OPERATOR ~__s ~shift_expr)* }
+equality_expr               = { relational_expr ~(__s ~EQUALITY_OPERATOR ~__s ~relational_expr )*}
+logical_and_expr            = { equality_expr ~(__s ~LOGICAL_AND_OPERATOR ~__s ~equality_expr)* }
+logical_or_expr             = { logical_and_expr ~(__s ~LOGICAL_OR_OPERATOR ~__s ~logical_and_expr)* }
+
+assignment_expr             = { 
+                                left_hand_side_expr ~__s ~("=" ~!"=") ~__s ~assignment_expr 
+                                | left_hand_side_expr ~__s ~ASSIGNMENT_OPERATOR ~__s ~assignment_expr 
+                                | logical_or_expr 
+                            }
+expression                  = _{ assignment_expr ~(__s ~"," ~__s ~assignment_expr)* }
+
+// OPERATORS
+POSTFIX_OPERATOR            = { "++" | "--" }
+UNARY_OPERATOR              = { "++" | "--" | "+" ~!"=" | "-" ~!"="}
+ADDITIVE_OPERATOR           = { "+" ~!("+" | "=") }
+MULTIPLICATIVE_OPERATOR     = { "*" ~!"=" | "/" ~!"=" | "%" ~!"=" }
+SHIFT_OPERATOR              = { "<<"  ~!"=" | ">>>" ~!"=" | ">>"  ~!"=" }
+RELATIONAL_OPERATOR         = { "<=" | ">=" | "<" ~!"<" | ">" ~!">" }
+EQUALITY_OPERATOR           = { "==" | "==" }
+LOGICAL_AND_OPERATOR        = { "&&" }
+LOGICAL_OR_OPERATOR         = { "||" }
+ASSIGNMENT_OPERATOR         = { "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="}
+
+
+// Literals
+literal                     = { float | integer }
+
+// NUMBERS
+NUMBER                      = _{  float | integer }
+integer                     = @{ int }
+float                       = @{ int ~ "." ~ digits ~ exp? | exp }
+int                         = @{ "0" | (ASCII_NONZERO_DIGIT ~ digits?) }
+digits                      = @{ (ASCII_DIGIT | ("_" ~ ASCII_DIGIT))+ }
+exp                         = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
+
+
+
+
+source_character = _{ ANY }
+
+whitespace = _{ "\t" | "\\v" | "\\f" | " " | "\u{00A0}" | "\u{FEFF}" }
+
+line_terminator = _{ "\n" | "\r" | "\u{2028}" | "\u{2029}" }
+
+line_terminator_sequence = _{ "\n" | "\r\n" | "\r" | "\u{2028}" | "\u{2029}" }
+
+comment = _{ multi_line_comment | single_line_comment }
+
+multi_line_comment = _{ "/*" ~(!"*/" ~source_character)* ~"*/" }
+
+multi_line_comment_no_line_terminator = _{ "/*" ~(!("*/" | line_terminator) ~source_character)* ~"*/" }
+
+single_line_comment = _{ "//" ~(!line_terminator ~source_character)* }
+
+
+__s = _{ (whitespace | line_terminator_sequence | comment)* }
+
+_s = _{ (whitespace | multi_line_comment_no_line_terminator)* }
+
+// Automatic Semicolon Insertion
+
+EOS = { _s ~";" | _s ~single_line_comment? ~line_terminator_sequence | _s ~"}" | _s ~EOI }
+
+
+IDENTIFIER              = @{  !RESERVED_WORDS ~IDENTIFIER_NAME }
+IDENTIFIER_NAME         = @{ ASCII_ALPHA ~( ASCII_ALPHA | ASCII_DIGIT )* }
+
+
+// TOKENS
+THIS_TOKEN                  = { "this" }
+FUNCTION_TOKEN              = { "fn" }
+VAR_TOKEN                   = { "let" }
+RETURN_TOKEN                = { "return" }
+CLASS_TOKEN                 = { "class" }
+RESERVED_WORDS              = {
+                                THIS_TOKEN
+                                | FUNCTION_TOKEN
+                                | VAR_TOKEN
+                                | RETURN_TOKEN
+                                | CLASS_TOKEN
+                            }

@@ -1,0 +1,12 @@
+
+class Console {
+
+    log(args) {
+        this.stdout.write(args)
+    }
+
+}
+
+let console = Console();
+
+console.log(2 + 3 + 10 / 2.5)

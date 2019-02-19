@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "freja-parser",
+    "freja-parser2",
+    "freja-interpreter"
+]
