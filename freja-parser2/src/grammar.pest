@@ -31,6 +31,7 @@ statement                   = _{
                                 | var_stmt
                                 | return_stmt
                                 | if_stmt
+                                | for_stmt
                             }
 
 expr_stmt                   = { expression ~EOS }
@@ -54,6 +55,15 @@ else_stmt                   = {
                                 ELSE_TOKEN ~__s  ~statement
                             }
 
+for_stmt                    = {
+                                FOR_TOKEN ~_s ~IDENTIFIER ~(_s ~"," ~_s ~IDENTIFIER)? ~_s ~IN_TOKEN ~_s  ~expression ~__s ~"{" ~__s
+                                ~(statement | continue_stmt)* ~__s
+                                ~"}"
+                            }
+
+continue_stmt               = {
+                                CONTINUE_TOKEN ~EOS
+                            }
 // Expressions
 
 primary_expr                = { 
@@ -161,14 +171,18 @@ IDENTIFIER_NAME         = @{ ASCII_ALPHA ~( ASCII_ALPHA | ASCII_DIGIT )* }
 
 // TOKENS
 THIS_TOKEN                  = { "this" }
-FUNCTION_TOKEN              = { "fn" }
-VAR_TOKEN                   = { "let" }
-RETURN_TOKEN                = { "return" }
-CLASS_TOKEN                 = { "class" }
-TRUE_TOKEN                  = { "true" }
-FALSE_TOKEN                 = { "false" }
-IF_TOKEN                    = { "if" }
-ELSE_TOKEN                  = { "else" }
+FUNCTION_TOKEN              = _{ "fn" }
+VAR_TOKEN                   = _{ "let" }
+RETURN_TOKEN                = _{ "return" }
+CLASS_TOKEN                 = _{ "class" }
+TRUE_TOKEN                  = _{ "true" }
+FALSE_TOKEN                 = _{ "false" }
+IF_TOKEN                    = _{ "if" }
+ELSE_TOKEN                  = _{ "else" }
+FOR_TOKEN                   = _{ "for" }
+CONTINUE_TOKEN              = _{ "continue" }
+BREAK_TOKEN                 = { "break" }
+IN_TOKEN                    = _{ "in" }
 
 RESERVED_WORDS              = {
                                 THIS_TOKEN
@@ -178,4 +192,8 @@ RESERVED_WORDS              = {
                                 | CLASS_TOKEN
                                 | IF_TOKEN
                                 | ELSE_TOKEN
+                                | FOR_TOKEN
+                                | CONTINUE_TOKEN
+                                | BREAK_TOKEN
+                                | IN_TOKEN
                             }
