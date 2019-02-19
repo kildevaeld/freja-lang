@@ -84,8 +84,9 @@ argument_list               = { assignment_expr ~("," ~assignment_expr)* }
 
 function_expr               = { FUNCTION_TOKEN ~_s ~IDENTIFIER ~_s ~"(" ~__s ~formal_parameter_list? ~__s ~")" ~block} 
 
-formal_parameter_list       = { IDENTIFIER ~(__s ~"," ~__s ~IDENTIFIER)* }
+formal_parameter_list       = { formal_parameter_item_vaargs | IDENTIFIER ~("," ~_s ~formal_parameter_item_vaargs | (__s ~"," ~__s ~IDENTIFIER)*)? }
  
+formal_parameter_item_vaargs = { "..." ~_s ~IDENTIFIER }
 
 block                       = { "{" ~__s ~declarations? ~__s ~"}" }
 
