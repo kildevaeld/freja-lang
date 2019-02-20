@@ -32,6 +32,7 @@ statement                   = _{
                                 | return_stmt
                                 | if_stmt
                                 | for_stmt
+                                | continue_stmt
                             }
 
 expr_stmt                   = { expression ~EOS }
@@ -57,7 +58,7 @@ else_stmt                   = {
 
 for_stmt                    = {
                                 FOR_TOKEN ~_s ~IDENTIFIER ~(_s ~"," ~_s ~IDENTIFIER)? ~_s ~IN_TOKEN ~_s  ~expression ~__s ~"{" ~__s
-                                ~(statement | continue_stmt)* ~__s
+                                ~statement* ~__s
                                 ~"}"
                             }
 
@@ -86,7 +87,7 @@ function_expr               = { FUNCTION_TOKEN ~_s ~IDENTIFIER ~_s ~"(" ~__s ~fo
 
 formal_parameter_list       = { formal_parameter_item_vaargs | IDENTIFIER ~("," ~_s ~formal_parameter_item_vaargs | (__s ~"," ~__s ~IDENTIFIER)*)? }
  
-formal_parameter_item_vaargs = { "..." ~_s ~IDENTIFIER }
+formal_parameter_item_vaargs = { SPREAD_OPERATOR ~_s ~IDENTIFIER }
 
 block                       = { "{" ~__s ~declarations? ~__s ~"}" }
 
@@ -121,6 +122,8 @@ LOGICAL_AND_OPERATOR        = { "&&" }
 LOGICAL_OR_OPERATOR         = { "||" }
 ASSIGNMENT_OPERATOR         = { "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="}
 
+
+SPREAD_OPERATOR             = { "..." }
 
 // Literals
 literal                     = {

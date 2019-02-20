@@ -2,7 +2,8 @@ const expressions = [
     ["Assign", ["token: Token", "value: Expr"]],
     ["Call", ["callee: Expr", "parent: ?Expr", "arguments: *Expr"]],
     ["Literal", ["value: Literal"]],
-    ["Binary", ["left: Expr", "right: Expr", "operator: Token"]]
+    ["Binary", ["left: Expr", "right: Expr", "operator: Token"]],
+
 ];
 
 const statements = [
@@ -10,7 +11,9 @@ const statements = [
     ["Expr", ["expression: Expr"]],
     ["Func", ["name: Token", "body: Stmt", "parameters: *Expr"]],
     ["Block", ["statements: *Stmt"]],
-    ["Return", ["expressions: ?Expr"]]
+    ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Expr"]],
+    ["Return", ["expressions: ?Expr"]],
+    ["Continue", []]
 ];
 
 const literals = [
