@@ -33,6 +33,7 @@ statement                   = _{
                                 | if_stmt
                                 | for_stmt
                                 | continue_stmt
+                                | break_stmt
                             }
 
 expr_stmt                   = { expression ~EOS }
@@ -64,6 +65,11 @@ for_stmt                    = {
 
 continue_stmt               = {
                                 CONTINUE_TOKEN ~EOS
+                            }
+
+
+break_stmt               = {
+                                BREAK_TOKEN ~EOS
                             }
 // Expressions
 
@@ -114,6 +120,7 @@ assignment_expr             = {
                                 | left_hand_side_expr ~__s ~ASSIGNMENT_OPERATOR ~__s ~assignment_expr 
                                 | logical_or_expr 
                             }
+
 expression                  = _{ assignment_expr ~(__s ~"," ~__s ~assignment_expr)* }
 
 // OPERATORS
