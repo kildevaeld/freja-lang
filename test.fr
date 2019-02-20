@@ -8,9 +8,29 @@ class Console {
 }
 
 let console = Console()
-console.log(2 + 3 + 10 / 2.5)
+console.log(2 + 3 + 10 / 2.5 - 1)
 
 for e, i in elements {
     continue
 }
 
+
+let var = 303 | 303 << 210 & 2
+
+if var == 2 {
+
+} else if var == 1 {
+    console.log(2)
+} else {
+    
+}
+
+
+fn fib(n) {
+  if n < 2 {
+      return n
+  }
+  return fib(n - 1) + fib(n - 2)
+}
+
+let fib = fib(2)

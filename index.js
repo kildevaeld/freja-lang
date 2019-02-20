@@ -13,7 +13,8 @@ const statements = [
     ["Block", ["statements: *Stmt"]],
     ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Expr"]],
     ["Return", ["expressions: ?Expr"]],
-    ["Continue", []]
+    ["Continue", []],
+    ["Break", []]
 ];
 
 const literals = [
