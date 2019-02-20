@@ -119,7 +119,7 @@ expression                  = _{ assignment_expr ~(__s ~"," ~__s ~assignment_exp
 // OPERATORS
 POSTFIX_OPERATOR            = { "++" | "--" }
 UNARY_OPERATOR              = { "++" | "--" | "+" ~!"=" | "-" ~!"="}
-ADDITIVE_OPERATOR           = { "+" ~!("+" | "=") }
+ADDITIVE_OPERATOR           = { "+" ~!("+" | "=") | "-" ~!("-" | "=") }
 MULTIPLICATIVE_OPERATOR     = { "*" ~!"=" | "/" ~!"=" | "%" ~!"=" }
 SHIFT_OPERATOR              = { "<<"  ~!"=" | ">>>" ~!"=" | ">>"  ~!"=" }
 RELATIONAL_OPERATOR         = { "<=" | ">=" | "<" ~!"<" | ">" ~!">" }
