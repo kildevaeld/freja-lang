@@ -122,6 +122,9 @@ LOGICAL_AND_OPERATOR        = { "&&" }
 LOGICAL_OR_OPERATOR         = { "||" }
 ASSIGNMENT_OPERATOR         = { "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="}
 
+BITWISE_AND_OPERATOR        = { "&" ~!("&" | "=") }
+BITWISE_XOR_OPERATOR        = { "^" ~!"=" }
+BITWISE_OR_OPERATOR        = { "|" ~!("|" | "=") }
 
 SPREAD_OPERATOR             = { "..." }
 
