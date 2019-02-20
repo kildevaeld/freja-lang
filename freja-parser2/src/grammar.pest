@@ -100,7 +100,13 @@ additive_expr               = { multiplicative_expr ~(__s ~ADDITIVE_OPERATOR ~__
 shift_expr                  = { additive_expr ~(__s ~SHIFT_OPERATOR ~__s ~additive_expr)* }
 relational_expr             = { shift_expr ~(__s ~RELATIONAL_OPERATOR ~__s ~shift_expr)* }
 equality_expr               = { relational_expr ~(__s ~EQUALITY_OPERATOR ~__s ~relational_expr )*}
-logical_and_expr            = { equality_expr ~(__s ~LOGICAL_AND_OPERATOR ~__s ~equality_expr)* }
+
+bitwise_and_expr            = { equality_expr ~(__s ~BITWISE_AND_OPERATOR ~__s ~equality_expr )*}
+bitwise_xor_expr            = { bitwise_and_expr ~(__s ~BITWISE_XOR_OPERATOR ~__s ~bitwise_and_expr )*}
+bitwise_or_expr             = { bitwise_xor_expr ~(__s ~BITWISE_OR_OPERATOR ~__s ~bitwise_xor_expr )*}
+
+
+logical_and_expr            = { bitwise_or_expr ~(__s ~LOGICAL_AND_OPERATOR ~__s ~bitwise_or_expr)* }
 logical_or_expr             = { logical_and_expr ~(__s ~LOGICAL_OR_OPERATOR ~__s ~logical_and_expr)* }
 
 assignment_expr             = { 
