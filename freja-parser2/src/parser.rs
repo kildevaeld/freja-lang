@@ -45,8 +45,15 @@ macro_rules! token_from_rule {
             Rule::THIS_TOKEN => TokenType::This,
             Rule::IDENTIFIER => TokenType::Identifier,
             Rule::IDENTIFIER_NAME => TokenType::Identifier,
+            Rule::RELATIONAL_OPERATOR => TokenType::RelationalOperator,
+            Rule::EQUALITY_OPERATOR => TokenType::EqualityOperator,
             Rule::ADDITIVE_OPERATOR => TokenType::OpAdditive,
             Rule::MULTIPLICATIVE_OPERATOR => TokenType::OpMultiplicative,
+            Rule::SHIFT_OPERATOR => TokenType::ShiftOperator,
+            Rule::BITWISE_OR_OPERATOR => TokenType::BitwiseOrOperator,
+            Rule::BITWISE_AND_OPERATOR => TokenType::BitwiseAndOperator,
+            Rule::LOGICAL_AND_OPERATOR => TokenType::LogicalAndOperator,
+            Rule::LOGICAL_OR_OPERATOR => TokenType::LogicalOrOperator,
             _ => unreachable!("should not reach {:?}", $rule),
         }
     };
@@ -57,7 +64,7 @@ fn parse_literal<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
     let inner = pair.into_inner().next().unwrap();
 
     let lit = match inner.as_rule() {
-        Rule::string_literal => Literal::String(inner.as_str()),
+        Rule::string_literal => Literal::String(&inner.as_str()[1..inner.as_str().len() - 1]),
         Rule::numeric_literal => {
             let p = inner.into_inner().next().unwrap();
             let n = match p.as_rule() {
@@ -94,16 +101,17 @@ fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
     match pair.as_rule() {
         Rule::assignment_expr => parse_assign_expr(pair),
-        Rule::logical_or_expr => parse_logic_or_expr(pair),
-        Rule::logical_and_expr => parse_logic_and_expr(pair),
-        Rule::bitwise_or_expr => parse_bitwise_or_expr(pair),
-        Rule::bitwise_xor_expr => parse_bitwise_xor_expr(pair),
-        Rule::bitwise_and_expr => parse_bitwise_and_expr(pair),
-        // Rule::equality_expr => parse_equality_expr(pair),
-        // Rule::relational_expr => parse_relational_expr(pair),
-        // Rule::shift_expr => parse_shift_expr(pair),
-        // Rule::additive_expr => parse_additive_expr(pair),
-        // Rule::multiplicative_expr => parse_multiplicative_expr(pair),
+        // Rule::logical_or_expr => parse_logic_or_expr(pair),
+        // Rule::logical_and_expr => parse_logic_and_expr(pair),
+        // Rule::bitwise_or_expr => parse_bitwise_or_expr(pair),
+        // Rule::bitwise_xor_expr => parse_bitwise_xor_expr(pair),
+        // Rule::bitwise_and_expr => parse_bitwise_and_expr(pair),
+        Rule::logical_or_expr
+        | Rule::logical_and_expr
+        | Rule::bitwise_or_expr
+        | Rule::bitwise_xor_expr
+        | Rule::bitwise_and_expr => parse_logical_expr(pair),
+
         Rule::equality_expr
         | Rule::relational_expr
         | Rule::shift_expr
@@ -132,8 +140,8 @@ fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 
 #[inline(always)]
 fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+    let location = location!(pair);
     let mut children = pair
-        .clone()
         .into_inner()
         .map(|m| parse_expression(m))
         .collect::<Vec<_>>();
@@ -142,85 +150,15 @@ fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
         return children.pop().take().expect("assign child");
     }
 
-    unimplemented!("parse {:?}", pair.as_rule());
-}
-
-#[inline(always)]
-fn parse_logic_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-    let mut children = pair
-        .clone()
-        .into_inner()
-        .map(|m| parse_expression(m))
-        .collect::<Vec<_>>();
-
-    if children.len() == 1 {
-        return children.pop().take().expect("logic or child");
-    }
-
-    unimplemented!("parse {:?}", pair.as_rule());
-}
-
-#[inline(always)]
-fn parse_logic_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-    let mut children = pair
-        .clone()
-        .into_inner()
-        .map(|m| parse_expression(m))
-        .collect::<Vec<_>>();
-
-    if children.len() == 1 {
-        return children.pop().take().expect("logic and child");
-    }
-
-    unimplemented!("parse {:?}", pair.as_rule());
-}
-
-#[inline(always)]
-fn parse_bitwise_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-    let mut children = pair
-        .clone()
-        .into_inner()
-        .map(|m| parse_expression(m))
-        .collect::<Vec<_>>();
-
-    if children.len() == 1 {
-        return children.pop().take().expect("butise and or child");
-    }
-
-    unimplemented!("parse {:?}", pair.as_rule());
-}
-
-#[inline(always)]
-fn parse_bitwise_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-    let mut children = pair
-        .clone()
-        .into_inner()
-        .map(|m| parse_expression(m))
-        .collect::<Vec<_>>();
-
-    if children.len() == 1 {
-        return children.pop().take().expect("bitwise or or child");
-    }
-    unimplemented!("parse {:?}", pair.as_rule());
-}
-
-#[inline(always)]
-fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-    let mut children = pair
-        .clone()
-        .into_inner()
-        .map(|m| parse_expression(m))
-        .collect::<Vec<_>>();
-
-    if children.len() == 1 {
-        return children.pop().take().expect("bitwise xor child");
-    }
-
-    unimplemented!("parse {:?}", pair.as_rule());
+    Expr::Assign(AssignExpr {
+        location,
+        destination: Box::new(children.pop().unwrap()),
+        value: Box::new(children.pop().unwrap()),
+    })
 }
 
 // #[inline(always)]
-// fn parse_equality_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+// fn parse_logic_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //     let mut children = pair
 //         .clone()
 //         .into_inner()
@@ -228,13 +166,14 @@ fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //         .collect::<Vec<_>>();
 
 //     if children.len() == 1 {
-//         return children.pop().take().expect("equality child");
+//         return children.pop().take().expect("logic or child");
 //     }
+
 //     unimplemented!("parse {:?}", pair.as_rule());
 // }
 
 // #[inline(always)]
-// fn parse_relational_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+// fn parse_logic_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //     let mut children = pair
 //         .clone()
 //         .into_inner()
@@ -242,14 +181,14 @@ fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //         .collect::<Vec<_>>();
 
 //     if children.len() == 1 {
-//         return children.pop().take().expect("relational or child");
+//         return children.pop().take().expect("logic and child");
 //     }
 
 //     unimplemented!("parse {:?}", pair.as_rule());
 // }
 
 // #[inline(always)]
-// fn parse_shift_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+// fn parse_bitwise_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //     let mut children = pair
 //         .clone()
 //         .into_inner()
@@ -257,93 +196,39 @@ fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 //         .collect::<Vec<_>>();
 
 //     if children.len() == 1 {
-//         return children.pop().take().expect("shift or child");
+//         return children.pop().take().expect("butise and or child");
+//     }
+
+//     unimplemented!("parse {:?}", pair.as_rule());
+// }
+
+// #[inline(always)]
+// fn parse_bitwise_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+//     let mut children = pair
+//         .clone()
+//         .into_inner()
+//         .map(|m| parse_expression(m))
+//         .collect::<Vec<_>>();
+
+//     if children.len() == 1 {
+//         return children.pop().take().expect("bitwise or or child");
 //     }
 //     unimplemented!("parse {:?}", pair.as_rule());
 // }
 
 // #[inline(always)]
-// fn parse_additive_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let location = location!(pair);
-//     let mut children = pair.into_inner().collect::<Vec<_>>();
+// fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+//     let mut children = pair
+//         .clone()
+//         .into_inner()
+//         .map(|m| parse_expression(m))
+//         .collect::<Vec<_>>();
 
 //     if children.len() == 1 {
-//         return children
-//             .pop()
-//             .take()
-//             .map(|m| parse_expression(m))
-//             .expect("multiplicative child");
+//         return children.pop().take().expect("bitwise xor child");
 //     }
 
-//     let right = children
-//         .pop()
-//         .map(|m| Box::new(parse_expression(m)))
-//         .take()
-//         .expect("right");
-//     let operator = children
-//         .pop()
-//         .map(|m| match m.as_rule() {
-//             Rule::ADDITIVE_OPERATOR | Rule::MULTIPLICATIVE_OPERATOR => {
-//                 Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str())
-//             }
-//             _ => unreachable!("not a operator {:?}", m.as_rule()),
-//         })
-//         .take()
-//         .expect("operator");
-//     let left = children
-//         .pop()
-//         .map(|m| Box::new(parse_expression(m)))
-//         .take()
-//         .expect("left");
-
-//     Expr::Binary(BinaryExpr {
-//         location,
-//         left,
-//         right,
-//         operator,
-//     })
-// }
-
-// #[inline(always)]
-// fn parse_multiplicative_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let location = location!(pair);
-//     let mut children = pair.into_inner().collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children
-//             .pop()
-//             .take()
-//             .map(|m| parse_expression(m))
-//             .expect("multiplicative child");
-//     }
-
-//     let right = children
-//         .pop()
-//         .map(|m| Box::new(parse_expression(m)))
-//         .take()
-//         .expect("right");
-//     let operator = children
-//         .pop()
-//         .map(|m| match m.as_rule() {
-//             Rule::ADDITIVE_OPERATOR | Rule::MULTIPLICATIVE_OPERATOR => {
-//                 Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str())
-//             }
-//             _ => unreachable!("not a operator {:?}", m.as_rule()),
-//         })
-//         .take()
-//         .expect("operator");
-//     let left = children
-//         .pop()
-//         .map(|m| Box::new(parse_expression(m)))
-//         .take()
-//         .expect("left");
-
-//     Expr::Binary(BinaryExpr {
-//         location,
-//         left,
-//         right,
-//         operator,
-//     })
+//     unimplemented!("parse {:?}", pair.as_rule());
 // }
 
 #[inline(always)]
@@ -367,7 +252,11 @@ fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
     let operator = children
         .pop()
         .map(|m| match m.as_rule() {
-            Rule::ADDITIVE_OPERATOR | Rule::MULTIPLICATIVE_OPERATOR => {
+            Rule::ADDITIVE_OPERATOR
+            | Rule::MULTIPLICATIVE_OPERATOR
+            | Rule::SHIFT_OPERATOR
+            | Rule::EQUALITY_OPERATOR
+            | Rule::RELATIONAL_OPERATOR => {
                 Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str())
             }
             _ => unreachable!("not a operator {:?}", m.as_rule()),
@@ -381,6 +270,51 @@ fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
         .expect("left");
 
     Expr::Binary(BinaryExpr {
+        location,
+        left,
+        right,
+        operator,
+    })
+}
+
+#[inline(always)]
+fn parse_logical_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+    let location = location!(pair);
+    let mut children = pair.into_inner().collect::<Vec<_>>();
+
+    if children.len() == 1 {
+        return children
+            .pop()
+            .take()
+            .map(|m| parse_expression(m))
+            .expect("multiplicative child");
+    }
+
+    let right = children
+        .pop()
+        .map(|m| Box::new(parse_expression(m)))
+        .take()
+        .expect("right");
+    let operator = children
+        .pop()
+        .map(|m| match m.as_rule() {
+            Rule::BITWISE_OR_OPERATOR
+            | Rule::BITWISE_AND_OPERATOR
+            | Rule::LOGICAL_AND_OPERATOR
+            | Rule::LOGICAL_OR_OPERATOR => {
+                Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str())
+            }
+            _ => unreachable!("not a operator {:?}", m.as_rule()),
+        })
+        .take()
+        .expect("operator");
+    let left = children
+        .pop()
+        .map(|m| Box::new(parse_expression(m)))
+        .take()
+        .expect("left");
+
+    Expr::Logical(LogicalExpr {
         location,
         left,
         right,
@@ -610,20 +544,6 @@ fn parse_var_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
     })
 }
 
-// #[inline(always)]
-// fn parse_decl_list<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
-//     let location = location!(pair);
-//     let variables = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_decl(m))
-//         .collect::<Vec<_>>();
-//     Stmt::VarList(VarListStmt {
-//         location,
-//         variables,
-//     })
-// }
-
 fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt<'a> {
     let location = location!(pair);
     let mut inner = pair.into_inner();
@@ -642,11 +562,84 @@ fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt<'a> {
 }
 
 #[inline(always)]
+fn parse_for_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+    let location = location!(pair);
+    let mut children = pair.into_inner().collect::<Vec<_>>();
+    let body = children
+        .pop()
+        .map(|m| Box::new(parse_statement(m)))
+        .unwrap();
+
+    let iterator = children.pop().map(|m| parse_expression(m)).unwrap();
+
+    let index = if children.len() == 2 {
+        children
+            .pop()
+            .map(|m| Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str()))
+    } else {
+        None
+    };
+    let element = children
+        .pop()
+        .map(|m| Token::new(location!(m), token_from_rule!(m.as_rule()), m.as_str()))
+        .expect("for element");
+    Stmt::For(ForStmt {
+        location,
+        element,
+        index,
+        iterator,
+        body,
+    })
+}
+
+#[inline(always)]
+fn parse_if_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+    let location = location!(pair);
+    let mut children = pair.into_inner().collect::<Vec<_>>();
+
+    let alternative = if children.len() == 3 {
+        children
+            .pop()
+            .map(|m| Box::new(parse_statement(m.into_inner().next().unwrap())))
+    } else {
+        None
+    };
+
+    let consequent = children
+        .pop()
+        .map(|m| Box::new(parse_statement(m)))
+        .unwrap();
+    let test = children.pop().map(|m| parse_expression(m)).unwrap();
+
+    Stmt::If(IfStmt {
+        location,
+        test,
+        consequent,
+        alternative,
+    })
+}
+
+fn parse_return_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+    let location = location!(pair);
+    let expression = pair.into_inner().next().map(|m| parse_expression(m));
+    Stmt::Return(ReturnStmt {
+        location,
+        expression,
+    })
+}
+
+#[inline(always)]
 fn parse_statement<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
     match pair.as_rule() {
         Rule::block => parse_block_stmt(pair),
         Rule::expr_stmt => parse_expr_stmt(pair),
         Rule::var_stmt => parse_var_stmt(pair),
+        Rule::for_stmt => parse_for_stmt(pair),
+        Rule::if_stmt => parse_if_stmt(pair),
+        Rule::return_stmt => parse_return_stmt(pair),
+        Rule::continue_stmt => Stmt::Continue(ContinueStmt {
+            location: location!(pair),
+        }),
         _ => unreachable!("could not: {:?}", pair.as_rule()),
     }
 }

@@ -6,7 +6,10 @@ pub struct Location(pub usize, pub usize);
 #[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub enum TokenType {
     This, Identifier,
-    OpAdditive, OpMultiplicative
+    OpAdditive, OpMultiplicative,
+    ShiftOperator, EqualityOperator, RelationalOperator,
+    BitwiseOrOperator, BitwiseAndOperator,
+    LogicalOrOperator, LogicalAndOperator
 }
 
 #[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone)]

@@ -6,7 +6,10 @@ pub struct Location(pub usize, pub usize);
 #[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub enum TokenType {
     This, Identifier,
-    OpAdditive, OpMultiplicative
+    OpAdditive, OpMultiplicative,
+    ShiftOperator, EqualityOperator, RelationalOperator,
+    BitwiseOrOperator, BitwiseAndOperator,
+    LogicalOrOperator, LogicalAndOperator
 }
 
 #[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone)]
@@ -52,6 +55,7 @@ pub trait ExprVisitor<R> {
     fn visit_member_expr(&mut self, e:&MemberExpr) -> R;
     fn visit_lookup_expr(&mut self, e:&LookupExpr) -> R;
     fn visit_arguments_expr(&mut self, e:&ArgumentsExpr) -> R;
+    fn visit_logical_expr(&mut self, e:&LogicalExpr) -> R;
 }
 
 
@@ -123,6 +127,7 @@ pub enum Expr<'a> {
     Member(MemberExpr<'a>),
     Lookup(LookupExpr<'a>),
     Arguments(ArgumentsExpr<'a>),
+    Logical(LogicalExpr<'a>),
 }
 
 impl<'a> Expr<'a> {
@@ -135,6 +140,7 @@ impl<'a> Expr<'a> {
             Expr::Member(s) => visitor.visit_member_expr(&s),
             Expr::Lookup(s) => visitor.visit_lookup_expr(&s),
             Expr::Arguments(s) => visitor.visit_arguments_expr(&s),
+            Expr::Logical(s) => visitor.visit_logical_expr(&s),
         }
     }
 }
@@ -191,21 +197,22 @@ pub struct IfStmt<'a> {
     pub location: Location,
     pub test: Expr<'a>,
     pub consequent: Box<Stmt<'a>>,
-    pub alternative: Option<Expr<'a>>,
+    pub alternative: Option<Box<Stmt<'a>>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ForStmt<'a> {
     pub location: Location,
     pub element: Token<'a>,
-    pub index: Option<Expr<'a>>,
+    pub index: Option<Token<'a>>,
+    pub iterator: Expr<'a>,
     pub body: Box<Stmt<'a>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ReturnStmt<'a> {
     pub location: Location,
-    pub expressions: Option<Expr<'a>>,
+    pub expression: Option<Expr<'a>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -221,7 +228,7 @@ pub struct BreakStmt {
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct AssignExpr<'a> {
     pub location: Location,
-    pub token: Token<'a>,
+    pub destination: Box<Expr<'a>>,
     pub value: Box<Expr<'a>>,
 }
 
@@ -264,5 +271,13 @@ pub struct LookupExpr<'a> {
 pub struct ArgumentsExpr<'a> {
     pub location: Location,
     pub expressions: Vec<Box<Expr<'a>>>,
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct LogicalExpr<'a> {
+    pub location: Location,
+    pub left: Box<Expr<'a>>,
+    pub right: Box<Expr<'a>>,
+    pub operator: Token<'a>,
 }
 
