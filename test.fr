@@ -2,6 +2,7 @@
 class Console {
 
     fn log(msg, ...args) {
+        //this.rapper();
         this.stdout.write(args)
     }
 
@@ -10,7 +11,9 @@ class Console {
 let console = Console()
 console.log(2 + 3 + 10 / 2.5 - 1)
 
-for e, i in elements {
+
+
+/*for e, i in elements {
     continue
 }
 
@@ -34,3 +37,6 @@ fn fib(n) {
 }
 
 let fib = fib(2)
+
+let heelo = "Test \nmig i øret 😀" */
+//, test = 2

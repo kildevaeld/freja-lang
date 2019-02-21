@@ -1,0 +1,357 @@
+{
+  "type": "Program",
+  "location": [
+    0,
+    471
+  ],
+  "statements": [
+    {
+      "type": "Class",
+      "location": [
+        1,
+        110
+      ],
+      "name": {
+        "type": "Token",
+        "kind": "Identifier",
+        "location": [
+          7,
+          14
+        ],
+        "value": "Console"
+      },
+      "members": [
+        {
+          "type": "Func",
+          "location": [
+            22,
+            109
+          ],
+          "name": {
+            "type": "Token",
+            "kind": "Identifier",
+            "location": [
+              25,
+              28
+            ],
+            "value": "log"
+          },
+          "body": {
+            "type": "Block",
+            "location": [
+              43,
+              107
+            ],
+            "statements": [
+              {
+                "type": "Expr",
+                "location": [
+                  78,
+                  102
+                ],
+                "expression": {
+                  "type": "Call",
+                  "location": [
+                    78,
+                    101
+                  ],
+                  "member": {
+                    "type": "Member",
+                    "location": [
+                      78,
+                      95
+                    ],
+                    "object": {
+                      "type": "Member",
+                      "location": [
+                        78,
+                        95
+                      ],
+                      "object": {
+                        "type": "Lookup",
+                        "location": [
+                          78,
+                          82
+                        ],
+                        "token": {
+                          "type": "Token",
+                          "kind": "This",
+                          "location": [
+                            78,
+                            82
+                          ],
+                          "value": "this"
+                        }
+                      },
+                      "property": {
+                        "type": "Lookup",
+                        "location": [
+                          83,
+                          89
+                        ],
+                        "token": {
+                          "type": "Token",
+                          "kind": "Identifier",
+                          "location": [
+                            83,
+                            89
+                          ],
+                          "value": "stdout"
+                        }
+                      },
+                      "computed": false
+                    },
+                    "property": {
+                      "type": "Lookup",
+                      "location": [
+                        90,
+                        95
+                      ],
+                      "token": {
+                        "type": "Token",
+                        "kind": "Identifier",
+                        "location": [
+                          90,
+                          95
+                        ],
+                        "value": "write"
+                      }
+                    },
+                    "computed": false
+                  },
+                  "arguments": {
+                    "type": "Arguments",
+                    "location": [
+                      95,
+                      101
+                    ],
+                    "expressions": [
+                      {
+                        "type": "Lookup",
+                        "location": [
+                          96,
+                          100
+                        ],
+                        "token": {
+                          "type": "Token",
+                          "kind": "Identifier",
+                          "location": [
+                            96,
+                            100
+                          ],
+                          "value": "args"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "type": "Regular",
+              "value": "msg"
+            },
+            {
+              "type": "Rest",
+              "value": "args"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "VarList",
+      "location": [
+        112,
+        136
+      ],
+      "variables": [
+        {
+          "location": [
+            116,
+            135
+          ],
+          "name": {
+            "type": "Token",
+            "kind": "Identifier",
+            "location": [
+              116,
+              123
+            ],
+            "value": "console"
+          },
+          "initializer": {
+            "type": "Call",
+            "location": [
+              126,
+              135
+            ],
+            "member": {
+              "type": "Lookup",
+              "location": [
+                126,
+                133
+              ],
+              "token": {
+                "type": "Token",
+                "kind": "Identifier",
+                "location": [
+                  126,
+                  133
+                ],
+                "value": "Console"
+              }
+            },
+            "arguments": {
+              "type": "Arguments",
+              "location": [
+                133,
+                135
+              ],
+              "expressions": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Expr",
+      "location": [
+        136,
+        170
+      ],
+      "expression": {
+        "type": "Call",
+        "location": [
+          136,
+          169
+        ],
+        "member": {
+          "type": "Member",
+          "location": [
+            136,
+            147
+          ],
+          "object": {
+            "type": "Lookup",
+            "location": [
+              136,
+              143
+            ],
+            "token": {
+              "type": "Token",
+              "kind": "Identifier",
+              "location": [
+                136,
+                143
+              ],
+              "value": "console"
+            }
+          },
+          "property": {
+            "type": "Lookup",
+            "location": [
+              144,
+              147
+            ],
+            "token": {
+              "type": "Token",
+              "kind": "Identifier",
+              "location": [
+                144,
+                147
+              ],
+              "value": "log"
+            }
+          },
+          "computed": false
+        },
+        "arguments": {
+          "type": "Arguments",
+          "location": [
+            147,
+            169
+          ],
+          "expressions": [
+            {
+              "type": "Binary",
+              "location": [
+                148,
+                168
+              ],
+              "left": {
+                "type": "Binary",
+                "location": [
+                  156,
+                  164
+                ],
+                "left": {
+                  "type": "Literal",
+                  "location": [
+                    156,
+                    158
+                  ],
+                  "value": {
+                    "type": "Number",
+                    "value": {
+                      "type": "Integer",
+                      "value": "10"
+                    }
+                  }
+                },
+                "right": {
+                  "type": "Literal",
+                  "location": [
+                    161,
+                    164
+                  ],
+                  "value": {
+                    "type": "Number",
+                    "value": {
+                      "type": "Double",
+                      "value": "2.5"
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "Token",
+                  "kind": "OpMultiplicative",
+                  "location": [
+                    159,
+                    160
+                  ],
+                  "value": "/"
+                }
+              },
+              "right": {
+                "type": "Literal",
+                "location": [
+                  167,
+                  168
+                ],
+                "value": {
+                  "type": "Number",
+                  "value": {
+                    "type": "Integer",
+                    "value": "1"
+                  }
+                }
+              },
+              "operator": {
+                "type": "Token",
+                "kind": "OpAdditive",
+                "location": [
+                  165,
+                  166
+                ],
+                "value": "-"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

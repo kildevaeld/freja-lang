@@ -4,7 +4,6 @@ declarations                = _{
                                 declaration ~(__s ~declaration)*
                             }
 
-
 declaration 	            = _{   
                                 class_decl
                                 | func_decl
@@ -12,7 +11,7 @@ declaration 	            = _{
                             }
 
 
-class_decl 		            = { CLASS_TOKEN ~__s ~IDENTIFIER_NAME ~__s ~"{" ~(__s ~class_body)* ~__s ~"}"  }
+class_decl 		            = { CLASS_TOKEN ~__s ~IDENTIFIER ~__s ~"{" ~(__s ~class_body)* ~__s ~"}"  }
 
 class_body                  = _{ 
                                 func_decl
@@ -40,7 +39,7 @@ expr_stmt                   = { expression ~EOS }
 
 var_stmt                    = { VAR_TOKEN ~_s ~var_decl_list ~EOS }
 
-var_decl_list               = { var_decl ~(__s ~"," ~__s ~var_decl)* }
+var_decl_list               = _{ var_decl ~(__s ~"," ~__s ~var_decl)* }
 
 var_decl                    = { IDENTIFIER ~(__s ~initializer)? }
 
@@ -87,7 +86,7 @@ call_expr                   = {
                             }
 
 arguments                   = { "("  ~(argument_list )? ~")" }
-argument_list               = { assignment_expr ~("," ~assignment_expr)* }
+argument_list               = _{ assignment_expr ~("," ~assignment_expr)* }
 
 function_expr               = { FUNCTION_TOKEN ~_s ~IDENTIFIER ~_s ~"(" ~__s ~formal_parameter_list? ~__s ~")" ~block} 
 
@@ -149,7 +148,7 @@ literal                     = {
                                 | char_literal
                             }
 
-numeric_literal              = _{  float | integer }
+numeric_literal              = {  float | integer }
 integer                     = @{ int }
 float                       = @{ int ~ "." ~ digits ~ exp? | exp }
 int                         = @{ "0" | (ASCII_NONZERO_DIGIT ~ digits?) }
