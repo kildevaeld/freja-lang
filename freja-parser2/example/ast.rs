@@ -6,7 +6,7 @@ use std::fs;
 
 fn main() {
     let mut args = env::args().skip(1).collect::<Vec<_>>();
-    if (args.is_empty()) {
+    if args.is_empty() {
         println!("uage: dump (-f) <path>");
         return;
     }

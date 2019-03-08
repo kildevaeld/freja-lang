@@ -16,29 +16,6 @@ macro_rules! location {
     };
 }
 
-macro_rules! make_token {
-    ($pair: expr) => {{
-        let loc = location!($pair);
-        Token::new(loc, $pair.as_span().as_str())
-    }};
-}
-
-macro_rules! dump_pair {
-    ($pair:expr) => {
-        println!("Rule:    {:?}", $pair.as_rule());
-        println!("Text:    {}", $pair.as_str());
-    };
-}
-
-macro_rules! dump_inner_pair {
-    ($pair:expr) => {
-        for p in $pair.clone().into_inner() {
-            println!("Rule:    {:?}", p.as_rule());
-            println!("Text:    {}", p.as_str());
-        }
-    };
-}
-
 macro_rules! token_from_rule {
     ($rule: expr) => {
         match $rule {
@@ -93,7 +70,6 @@ fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
             .map(|m| Box::new(parse_expression(m)))
             .collect(),
     })
-    //unimplemented!("{:?}", pair);
 }
 
 // Expressions
@@ -101,11 +77,6 @@ fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
     match pair.as_rule() {
         Rule::assignment_expr => parse_assign_expr(pair),
-        // Rule::logical_or_expr => parse_logic_or_expr(pair),
-        // Rule::logical_and_expr => parse_logic_and_expr(pair),
-        // Rule::bitwise_or_expr => parse_bitwise_or_expr(pair),
-        // Rule::bitwise_xor_expr => parse_bitwise_xor_expr(pair),
-        // Rule::bitwise_and_expr => parse_bitwise_and_expr(pair),
         Rule::logical_or_expr
         | Rule::logical_and_expr
         | Rule::bitwise_or_expr
@@ -156,80 +127,6 @@ fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
         value: Box::new(children.pop().unwrap()),
     })
 }
-
-// #[inline(always)]
-// fn parse_logic_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let mut children = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_expression(m))
-//         .collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children.pop().take().expect("logic or child");
-//     }
-
-//     unimplemented!("parse {:?}", pair.as_rule());
-// }
-
-// #[inline(always)]
-// fn parse_logic_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let mut children = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_expression(m))
-//         .collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children.pop().take().expect("logic and child");
-//     }
-
-//     unimplemented!("parse {:?}", pair.as_rule());
-// }
-
-// #[inline(always)]
-// fn parse_bitwise_and_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let mut children = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_expression(m))
-//         .collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children.pop().take().expect("butise and or child");
-//     }
-
-//     unimplemented!("parse {:?}", pair.as_rule());
-// }
-
-// #[inline(always)]
-// fn parse_bitwise_or_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let mut children = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_expression(m))
-//         .collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children.pop().take().expect("bitwise or or child");
-//     }
-//     unimplemented!("parse {:?}", pair.as_rule());
-// }
-
-// #[inline(always)]
-// fn parse_bitwise_xor_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
-//     let mut children = pair
-//         .clone()
-//         .into_inner()
-//         .map(|m| parse_expression(m))
-//         .collect::<Vec<_>>();
-
-//     if children.len() == 1 {
-//         return children.pop().take().expect("bitwise xor child");
-//     }
-
-//     unimplemented!("parse {:?}", pair.as_rule());
-// }
 
 #[inline(always)]
 fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
@@ -417,8 +314,6 @@ fn parse_member_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
         },
     );
     Expr::Member(e)
-
-    // unimplemented!("parse {:?}", pair.as_rule());
 }
 
 #[inline(always)]
@@ -544,6 +439,7 @@ fn parse_var_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
     })
 }
 
+#[inline(always)]
 fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt<'a> {
     let location = location!(pair);
     let mut inner = pair.into_inner();
@@ -649,12 +545,7 @@ fn parse_program<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
     ensure_rule!(pair, Rule::program);
 
     let location = location!(pair);
-    // // A pair is a combination of the rule which matched and a span of input
-    // println!("Rule:    {:?}", pair.as_rule());
-    // println!("Span:    {:?}", span);
-    // println!("Text:    {}", span.as_str());
 
-    // A pair can be converted to an iterator of the tokens which make it up:
     let inner = pair.into_inner();
     let mut statements = Vec::new();
     for inner_pair in inner {

@@ -1,5 +1,4 @@
-use freja_parser::ast::ProgramRef;
-use freja_parser::owned::*;
+use freja_parser2::ast::*;
 
 pub mod env;
 pub mod error;
@@ -8,18 +7,7 @@ pub mod vm;
 pub use vm::VM;
 
 pub trait Interpreter {
-    fn interpret(&mut self, ast: Program) -> error::InterpretResult<()>;
-    fn interpret_ref<'a>(&mut self, ast: ProgramRef<'a>) -> error::InterpretResult<()> {
-        let mut visitor = OwnedVisitor;
-        let program = Program {
-            statements: ast
-                .statements
-                .iter()
-                .map(|m| m.accept(&mut visitor))
-                .collect(),
-        };
-        self.interpret(program)
-    }
+    fn interpret(&mut self, ast: &Stmt) -> error::InterpretResult<()>;
 }
 
 #[cfg(test)]

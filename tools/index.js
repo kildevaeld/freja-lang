@@ -1,5 +1,10 @@
 const hbs = require('hbs'),
-    fs = require('mz/fs');
+    fs = require('mz/fs'),
+    {
+        expressions,
+        statements,
+        literals
+    } = require('./common');
 
 function flatten(arr) {
     return arr.reduce(function (flat, toFlatten) {
@@ -7,47 +12,47 @@ function flatten(arr) {
     }, []);
 }
 
-const expressions = [
-    ["Assign", ["destination: Expr", "value: Expr"]],
-    ["Call", ["member: Expr", "arguments: Expr"]],
-    ["Literal", ["value: Literal"]],
-    ["Binary", ["left: Expr", "right: Expr", "operator: Token"]],
-    ["Member", ["object: Expr", "property: Expr", "computed: bool"]],
-    ["Lookup", ["token: Token"]],
-    ["Arguments", ["expressions: *Expr"]],
-    ["Logical", ["left: Expr", "right: Expr", "operator: Token"]]
-];
+// const expressions = [
+//     ["Assign", ["destination: Expr", "value: Expr"]],
+//     ["Call", ["member: Expr", "arguments: Expr"]],
+//     ["Literal", ["value: Literal"]],
+//     ["Binary", ["left: Expr", "right: Expr", "operator: Token"]],
+//     ["Member", ["object: Expr", "property: Expr", "computed: bool"]],
+//     ["Lookup", ["token: Token"]],
+//     ["Arguments", ["expressions: *Expr"]],
+//     ["Logical", ["left: Expr", "right: Expr", "operator: Token"]]
+// ];
 
-const statements = [
-    ["Program", ["statements: *Stmt"]],
-    ["Var", ["name: Token", "initializer: ?Expr"]],
-    ["VarList", ["variables: Vec<VarStmt<'a>>"]],
-    ["Expr", ["expression: Expr"]],
-    ["Func", ["name: Token", "body: Stmt", "parameters: *Argument"]],
-    ["Class", ["name: Token", "members: *Stmt"]],
-    ["Block", ["statements: *Stmt"]],
-    ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Stmt"]],
-    ["For", ["element: Token", "index: ?Token", "iterator: Expr", "body: Stmt"]],
-    ["Return", ["expression: ?Expr"]],
-    ["Continue", []],
-    ["Break", []]
-];
+// const statements = [
+//     ["Program", ["statements: *Stmt"]],
+//     ["Var", ["name: Token", "initializer: ?Expr"]],
+//     ["VarList", ["variables: Vec<VarStmt<'a>>"]],
+//     ["Expr", ["expression: Expr"]],
+//     ["Func", ["name: Token", "body: Stmt", "parameters: *Argument"]],
+//     ["Class", ["name: Token", "members: *Stmt"]],
+//     ["Block", ["statements: *Stmt"]],
+//     ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Stmt"]],
+//     ["For", ["element: Token", "index: ?Token", "iterator: Expr", "body: Stmt"]],
+//     ["Return", ["expression: ?Expr"]],
+//     ["Continue", []],
+//     ["Break", []]
+// ];
 
-const literals = [
-    ["Literal", [
-        ["String", "&'a str"],
-        ["Number", "Number<'a>"],
-        ["Boolean", "bool"],
-    ]],
-    ["Number", [
-        ["Double", "&'a str"],
-        ["Integer", "&'a str"]
-    ]],
-    ["Argument", [
-        ["Regular", "&'a str"],
-        ["Rest", "&'a str"]
-    ]],
-];
+// const literals = [
+//     ["Literal", [
+//         ["String", "&'a str"],
+//         ["Number", "Number<'a>"],
+//         ["Boolean", "bool"],
+//     ]],
+//     ["Number", [
+//         ["Double", "&'a str"],
+//         ["Integer", "&'a str"]
+//     ]],
+//     ["Argument", [
+//         ["Regular", "&'a str"],
+//         ["Rest", "&'a str"]
+//     ]],
+// ];
 
 
 function generateStucture(list, base, ref = false) {
@@ -89,8 +94,7 @@ function generateStucture(list, base, ref = false) {
 }
 
 
-const data = (enums) => {
-
+const data = () => {
     return {
         enums: literals.map(m => {
             return {

@@ -5,11 +5,17 @@ pub struct Location(pub usize, pub usize);
 
 #[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub enum TokenType {
-    This, Identifier,
-    OpAdditive, OpMultiplicative,
-    ShiftOperator, EqualityOperator, RelationalOperator,
-    BitwiseOrOperator, BitwiseAndOperator,
-    LogicalOrOperator, LogicalAndOperator
+    This,
+    Identifier,
+    OpAdditive,
+    OpMultiplicative,
+    ShiftOperator,
+    EqualityOperator,
+    RelationalOperator,
+    BitwiseOrOperator,
+    BitwiseAndOperator,
+    LogicalOrOperator,
+    LogicalAndOperator,
 }
 
 #[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone)]
@@ -22,7 +28,11 @@ pub struct Token<'a> {
 
 impl<'a> Token<'a> {
     pub fn new(location: Location, kind: TokenType, value: &'a str) -> Token<'a> {
-        Token { location, value, kind }
+        Token {
+            location,
+            value,
+            kind,
+        }
     }
 }
 
@@ -33,31 +43,30 @@ impl<'a> fmt::Display for Token<'a> {
 }
 
 pub trait StmtVisitor<R> {
-    fn visit_program_stmt(&mut self, e:&ProgramStmt) -> R;
-    fn visit_var_stmt(&mut self, e:&VarStmt) -> R;
-    fn visit_varlist_stmt(&mut self, e:&VarListStmt) -> R;
-    fn visit_expr_stmt(&mut self, e:&ExprStmt) -> R;
-    fn visit_func_stmt(&mut self, e:&FuncStmt) -> R;
-    fn visit_class_stmt(&mut self, e:&ClassStmt) -> R;
-    fn visit_block_stmt(&mut self, e:&BlockStmt) -> R;
-    fn visit_if_stmt(&mut self, e:&IfStmt) -> R;
-    fn visit_for_stmt(&mut self, e:&ForStmt) -> R;
-    fn visit_return_stmt(&mut self, e:&ReturnStmt) -> R;
-    fn visit_continue_stmt(&mut self, e:&ContinueStmt) -> R;
-    fn visit_break_stmt(&mut self, e:&BreakStmt) -> R;
+    fn visit_program_stmt(&mut self, e: &ProgramStmt) -> R;
+    fn visit_var_stmt(&mut self, e: &VarStmt) -> R;
+    fn visit_varlist_stmt(&mut self, e: &VarListStmt) -> R;
+    fn visit_expr_stmt(&mut self, e: &ExprStmt) -> R;
+    fn visit_func_stmt(&mut self, e: &FuncStmt) -> R;
+    fn visit_class_stmt(&mut self, e: &ClassStmt) -> R;
+    fn visit_block_stmt(&mut self, e: &BlockStmt) -> R;
+    fn visit_if_stmt(&mut self, e: &IfStmt) -> R;
+    fn visit_for_stmt(&mut self, e: &ForStmt) -> R;
+    fn visit_return_stmt(&mut self, e: &ReturnStmt) -> R;
+    fn visit_continue_stmt(&mut self, e: &ContinueStmt) -> R;
+    fn visit_break_stmt(&mut self, e: &BreakStmt) -> R;
 }
 
 pub trait ExprVisitor<R> {
-    fn visit_assign_expr(&mut self, e:&AssignExpr) -> R;
-    fn visit_call_expr(&mut self, e:&CallExpr) -> R;
-    fn visit_literal_expr(&mut self, e:&LiteralExpr) -> R;
-    fn visit_binary_expr(&mut self, e:&BinaryExpr) -> R;
-    fn visit_member_expr(&mut self, e:&MemberExpr) -> R;
-    fn visit_lookup_expr(&mut self, e:&LookupExpr) -> R;
-    fn visit_arguments_expr(&mut self, e:&ArgumentsExpr) -> R;
-    fn visit_logical_expr(&mut self, e:&LogicalExpr) -> R;
+    fn visit_assign_expr(&mut self, e: &AssignExpr) -> R;
+    fn visit_call_expr(&mut self, e: &CallExpr) -> R;
+    fn visit_literal_expr(&mut self, e: &LiteralExpr) -> R;
+    fn visit_binary_expr(&mut self, e: &BinaryExpr) -> R;
+    fn visit_member_expr(&mut self, e: &MemberExpr) -> R;
+    fn visit_lookup_expr(&mut self, e: &LookupExpr) -> R;
+    fn visit_arguments_expr(&mut self, e: &ArgumentsExpr) -> R;
+    fn visit_logical_expr(&mut self, e: &LogicalExpr) -> R;
 }
-
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type", content = "value")]
@@ -144,7 +153,6 @@ impl<'a> Expr<'a> {
         }
     }
 }
-
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ProgramStmt<'a> {
@@ -280,4 +288,3 @@ pub struct LogicalExpr<'a> {
     pub right: Box<Expr<'a>>,
     pub operator: Token<'a>,
 }
-

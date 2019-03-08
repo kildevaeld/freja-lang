@@ -6,6 +6,7 @@ class Console {
         this.stdout.write(args)
     }
 
+
 }
 
 let console = Console()
