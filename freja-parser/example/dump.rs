@@ -1,4 +1,4 @@
-use freja_parser2::*;
+use freja_parser::*;
 use std::fs;
 use pest::iterators::Pair;
 use std::env;

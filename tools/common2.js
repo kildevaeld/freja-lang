@@ -12,7 +12,7 @@ exports.expressions = [
 exports.statements = [
     ["Program", ["statements: *Stmt"]],
     ["Var", ["name: Token", "initializer: ?Expr"]],
-    ["VarList", ["variables: Vec<VarStmt<'a>>"]],
+    ["VarList", ["variables: Vec<VarStmt>"]],
     ["Expr", ["expression: Expr"]],
     ["Func", ["name: Token", "body: Stmt", "parameters: *Argument"]],
     ["Class", ["name: Token", "members: *Stmt"]],
@@ -26,16 +26,16 @@ exports.statements = [
 
 exports.literals = [
     ["Literal", [
-        ["String", "&'a str"],
+        ["String", "String"],
         ["Number", "Number"],
         ["Boolean", "bool"],
-    ], true],
+    ], false],
     ["Number", [
         ["Double", "f64"],
         ["Integer", "i64"]
     ], false],
     ["Argument", [
-        ["Regular", "&'a str"],
-        ["Rest", "&'a str"]
+        ["Regular", "String"],
+        ["Rest", "String"]
     ], true],
 ];

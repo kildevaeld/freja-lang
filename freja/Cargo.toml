@@ -1,0 +1,12 @@
+[package]
+name = "freja"
+version = "0.1.0"
+authors = ["Rasmus Kildevaeld <rasmuskildevaeld@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+freja-parser = { path = "../freja-parser" }
+freja-ast = { path = "../freja-ast" }
+clap = "~2.33"
+serde = "~1.0"
+serde_json = "~1.0"

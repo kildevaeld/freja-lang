@@ -1,4 +1,4 @@
-use freja_parser2::*;
+use freja_parser::*;
 use pest::iterators::Pair;
 use serde_json;
 use std::env;

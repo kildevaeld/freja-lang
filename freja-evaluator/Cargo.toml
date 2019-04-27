@@ -1,11 +1,14 @@
 [package]
-name = "freja-interpreter"
+name = "freja-evaluator"
 version = "0.1.0"
 authors = ["Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-freja-parser2 = { path = "../freja-parser2" }
+freja-parser = { path = "../freja-parser" }
+freja-ast = { path = "../freja-ast" }
+freja-runtime = { path = "../freja-runtime" }
+
 
 [[example]]
 name = "interpreter"

@@ -18,25 +18,25 @@ pub enum TokenType {
     LogicalAndOperator,
 }
 
-#[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone, Deserialize)]
 #[serde(tag = "type")]
-pub struct Token<'a> {
+pub struct Token {
     pub kind: TokenType,
     pub location: Location,
-    pub value: &'a str,
+    pub value: String,
 }
 
-impl<'a> Token<'a> {
-    pub fn new(location: Location, kind: TokenType, value: &'a str) -> Token<'a> {
+impl Token {
+    pub fn new(location: Location, kind: TokenType, value: &str) -> Token {
         Token {
             location,
-            value,
+            value: value.to_owned(),
             kind,
         }
     }
 }
 
-impl<'a> fmt::Display for Token<'a> {
+impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value)
     }
@@ -70,44 +70,44 @@ pub trait ExprVisitor<R> {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type", content = "value")]
-pub enum Literal<'a> {
-    String(&'a str),
-    Number(Number<'a>),
+pub enum Literal {
+    String(String),
+    Number(Number),
     Boolean(bool),
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type", content = "value")]
-pub enum Number<'a> {
-    Double(&'a str),
-    Integer(&'a str),
+pub enum Number {
+    Double(f64),
+    Integer(i64),
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type", content = "value")]
-pub enum Argument<'a> {
-    Regular(&'a str),
-    Rest(&'a str),
+pub enum Argument {
+    Regular(String),
+    Rest(String),
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type")]
-pub enum Stmt<'a> {
-    Program(ProgramStmt<'a>),
-    Var(VarStmt<'a>),
-    VarList(VarListStmt<'a>),
-    Expr(ExprStmt<'a>),
-    Func(FuncStmt<'a>),
-    Class(ClassStmt<'a>),
-    Block(BlockStmt<'a>),
-    If(IfStmt<'a>),
-    For(ForStmt<'a>),
-    Return(ReturnStmt<'a>),
+pub enum Stmt {
+    Program(ProgramStmt),
+    Var(VarStmt),
+    VarList(VarListStmt),
+    Expr(ExprStmt),
+    Func(FuncStmt),
+    Class(ClassStmt),
+    Block(BlockStmt),
+    If(IfStmt),
+    For(ForStmt),
+    Return(ReturnStmt),
     Continue(ContinueStmt),
     Break(BreakStmt),
 }
 
-impl<'a> Stmt<'a> {
+impl Stmt {
     pub fn accept<R>(&self, visitor: &mut StmtVisitor<R>) -> R {
         match self {
             Stmt::Program(s) => visitor.visit_program_stmt(&s),
@@ -128,18 +128,18 @@ impl<'a> Stmt<'a> {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type")]
-pub enum Expr<'a> {
-    Assign(AssignExpr<'a>),
-    Call(CallExpr<'a>),
-    Literal(LiteralExpr<'a>),
-    Binary(BinaryExpr<'a>),
-    Member(MemberExpr<'a>),
-    Lookup(LookupExpr<'a>),
-    Arguments(ArgumentsExpr<'a>),
-    Logical(LogicalExpr<'a>),
+pub enum Expr {
+    Assign(AssignExpr),
+    Call(CallExpr),
+    Literal(LiteralExpr),
+    Binary(BinaryExpr),
+    Member(MemberExpr),
+    Lookup(LookupExpr),
+    Arguments(ArgumentsExpr),
+    Logical(LogicalExpr),
 }
 
-impl<'a> Expr<'a> {
+impl Expr {
     pub fn accept<R>(&self, visitor: &mut ExprVisitor<R>) -> R {
         match self {
             Expr::Assign(s) => visitor.visit_assign_expr(&s),
@@ -155,72 +155,72 @@ impl<'a> Expr<'a> {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ProgramStmt<'a> {
+pub struct ProgramStmt {
     pub location: Location,
-    pub statements: Vec<Box<Stmt<'a>>>,
+    pub statements: Vec<Box<Stmt>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct VarStmt<'a> {
+pub struct VarStmt {
     pub location: Location,
-    pub name: Token<'a>,
-    pub initializer: Option<Expr<'a>>,
+    pub name: Token,
+    pub initializer: Option<Expr>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct VarListStmt<'a> {
+pub struct VarListStmt {
     pub location: Location,
-    pub variables: Vec<VarStmt<'a>>,
+    pub variables: Vec<VarStmt>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ExprStmt<'a> {
+pub struct ExprStmt {
     pub location: Location,
-    pub expression: Expr<'a>,
+    pub expression: Expr,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct FuncStmt<'a> {
+pub struct FuncStmt {
     pub location: Location,
-    pub name: Token<'a>,
-    pub body: Box<Stmt<'a>>,
-    pub parameters: Vec<Argument<'a>>,
+    pub name: Token,
+    pub body: Box<Stmt>,
+    pub parameters: Vec<Argument>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ClassStmt<'a> {
+pub struct ClassStmt {
     pub location: Location,
-    pub name: Token<'a>,
-    pub members: Vec<Box<Stmt<'a>>>,
+    pub name: Token,
+    pub members: Vec<Box<Stmt>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct BlockStmt<'a> {
+pub struct BlockStmt {
     pub location: Location,
-    pub statements: Vec<Box<Stmt<'a>>>,
+    pub statements: Vec<Box<Stmt>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct IfStmt<'a> {
+pub struct IfStmt {
     pub location: Location,
-    pub test: Expr<'a>,
-    pub consequent: Box<Stmt<'a>>,
-    pub alternative: Option<Box<Stmt<'a>>>,
+    pub test: Expr,
+    pub consequent: Box<Stmt>,
+    pub alternative: Option<Box<Stmt>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ForStmt<'a> {
+pub struct ForStmt {
     pub location: Location,
-    pub element: Token<'a>,
-    pub index: Option<Token<'a>>,
-    pub iterator: Expr<'a>,
-    pub body: Box<Stmt<'a>>,
+    pub element: Token,
+    pub index: Option<Token>,
+    pub iterator: Expr,
+    pub body: Box<Stmt>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ReturnStmt<'a> {
+pub struct ReturnStmt {
     pub location: Location,
-    pub expression: Option<Expr<'a>>,
+    pub expression: Option<Expr>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -234,57 +234,57 @@ pub struct BreakStmt {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct AssignExpr<'a> {
+pub struct AssignExpr {
     pub location: Location,
-    pub destination: Box<Expr<'a>>,
-    pub value: Box<Expr<'a>>,
+    pub destination: Box<Expr>,
+    pub value: Box<Expr>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct CallExpr<'a> {
+pub struct CallExpr {
     pub location: Location,
-    pub member: Box<Expr<'a>>,
-    pub arguments: Box<Expr<'a>>,
+    pub member: Box<Expr>,
+    pub arguments: Box<Expr>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct LiteralExpr<'a> {
+pub struct LiteralExpr {
     pub location: Location,
-    pub value: Literal<'a>,
+    pub value: Literal,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct BinaryExpr<'a> {
+pub struct BinaryExpr {
     pub location: Location,
-    pub left: Box<Expr<'a>>,
-    pub right: Box<Expr<'a>>,
-    pub operator: Token<'a>,
+    pub left: Box<Expr>,
+    pub right: Box<Expr>,
+    pub operator: Token,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct MemberExpr<'a> {
+pub struct MemberExpr {
     pub location: Location,
-    pub object: Box<Expr<'a>>,
-    pub property: Box<Expr<'a>>,
+    pub object: Box<Expr>,
+    pub property: Box<Expr>,
     pub computed: bool,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct LookupExpr<'a> {
+pub struct LookupExpr {
     pub location: Location,
-    pub token: Token<'a>,
+    pub token: Token,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ArgumentsExpr<'a> {
+pub struct ArgumentsExpr {
     pub location: Location,
-    pub expressions: Vec<Box<Expr<'a>>>,
+    pub expressions: Vec<Box<Expr>>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct LogicalExpr<'a> {
+pub struct LogicalExpr {
     pub location: Location,
-    pub left: Box<Expr<'a>>,
-    pub right: Box<Expr<'a>>,
-    pub operator: Token<'a>,
+    pub left: Box<Expr>,
+    pub right: Box<Expr>,
+    pub operator: Token,
 }

@@ -14,19 +14,19 @@ pub enum TokenType {
 
 #[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone, Deserialize)]
 #[serde(tag = "type")]
-pub struct Token<'a> {
+pub struct Token {
     pub kind: TokenType,
     pub location: Location,
-    pub value: &'a str,
+    pub value: String,
 }
 
-impl<'a> Token<'a> {
-    pub fn new(location: Location, kind: TokenType, value: &'a str) -> Token<'a> {
-        Token { location, value, kind }
+impl Token {
+    pub fn new(location: Location, kind: TokenType, value: &str) -> Token {
+        Token { location, value: value.to_owned(), kind }
     }
 }
 
-impl<'a> fmt::Display for Token<'a> {
+impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value)
     }
@@ -50,14 +50,14 @@ pub trait {{name}}Visitor<R> {
 {{else}}
 #[serde(tag = "type", content = "value")]
 {{/if}}
-pub enum {{{name}}}{{#if lifetime}}<'a>{{/if}} {
+pub enum {{{name}}}{{#if lifetime}}{{/if}} {
     {{#each variants}}
     {{{name}}}{{#if value}}({{{value}}}){{/if}},
     {{/each}}
 }
 {{#if visitor}}
 
-impl<'a> {{{name}}}<'a> {
+impl {{{name}}} {
     pub fn accept<R>(&self, visitor: &mut {{name}}Visitor<R>) -> R {
         match self {
             {{#each visitor}}
@@ -72,7 +72,7 @@ impl<'a> {{{name}}}<'a> {
 
 {{#each structures}}
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct {{{name}}}{{#if fields.length}}<'a>{{/if}} {
+pub struct {{{name}}}{{#if fields.length}}{{/if}} {
     pub location: Location,
     {{#each fields}}
     pub {{{name}}}: {{{value}}},

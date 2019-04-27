@@ -1,0 +1,132 @@
+program = { SOI ~ declaration* ~ EOI }
+
+declaration                 = _{
+                                class_decl
+                                | fun_decl
+                                | variable_declaration
+                                | statement
+                            }
+
+class_decl                  = {
+                                "class" ~IDENTIFIER ~( ":" ~(ws|cm) ~IDENTIFIER)? ~"{"
+                                    ~function*
+                                ~"}"  
+                            }
+
+fun_decl                    = @{ "fn" ~(ws|cm)+ ~function }
+
+
+// variable_declaration    = @{
+//                             "let" ~(ws|cm)+ ~IDENTIFIER ~( (ws|cm)+ ~"=" ~(ws|cm)+ ~expression )? ~(stmtterm+ | EOI)
+//                         }
+
+variable_declaration        = @{
+                                "let" ~(ws|cm)+ ~(assignment|IDENTIFIER) ~(stmtterm+ | EOI)
+                            }
+
+statement                   =  { 
+                                expr_stmt
+                                | return_stmt
+                                | block 
+                            }
+
+
+expr_stmt               = {  expression ~(stmtterm+ | EOI)   }
+
+// return_stmt             = @{ "return" ~(ws|cm)+ ~expression? ~(stmtterm+ | EOI) }
+
+return_stmt             = { "return" ~expression?  }
+
+
+block                   = { "{" ~declaration* ~"}" }
+
+
+// Expresions
+expression              = _{  
+                            logical
+                            | assignment 
+                            | equality 
+                            | comparison 
+                            | addition 
+                            | multiplication  
+                            | call 
+                            | primary
+                        }
+
+assignment              = !{ ( call ~ "." )? ~IDENTIFIER ~"=" ~ expression}
+
+logical                 = _{ logic_or | logic_and }
+
+logic_or                = { logic_and ~ ( "||" ~logic_and)+ | logic_and }
+logic_and               = { equality ~ ( "&&" ~ equality )+ | equality }
+equality                = { comparison ~( ( "!=" | "==" ) ~comparison )+ | comparison }
+comparison              = { addition ~( ( ">" | ">=" | "<" | "<=" ) ~addition )+ | addition }
+addition                = { multiplication ~( ( "-" | "+" ) ~multiplication )+ | multiplication }
+multiplication          = { unary ~ ( ( "/" | "*" ) ~unary )+ | unary }
+
+unary                   = @{ ( "!" | "-" ) ~ unary | call }
+call                    = !{ primary ~( "(" ~arguments? ~ ")" | "." ~IDENTIFIER )+  }
+primary                 = _{ 
+                            BOOLEAN | "nil" | "this"
+                            | LITERAL | IDENTIFIER | "(" ~expression~ ")"
+                            | "super" ~ "."  ~IDENTIFIER  }
+
+BOOLEAN                 = { "true" | "false" }
+
+LITERAL                 = { float | integer | STRING | multi_line_string_literal | string_literal }
+// expression              = _{  assignment }
+
+// assignment              = !{ ( call ~ "." )? ~IDENTIFIER ~"=" ~ assignment | logic_or}
+
+// logic_or                = { logic_and ~ ( "||" ~ logic_and )* }
+// logic_and               = { equality ~ ( "&&" ~ equality )* }
+// equality                = { comparison ~( ( "!=" | "==" ) ~comparison )* }
+// comparison              = { addition ~( ( ">" | ">=" | "<" | "<=" ) ~addition )* }
+// addition                = { multiplication ~( ( "-" | "+" ) ~multiplication )* }
+// multiplication          = { unary ~ ( ( "/" | "*" ) ~unary )* }
+
+// unary                   = @{ ( "!" | "-" ) ~ unary | call }
+// call                    = !{ primary ~( "(" ~arguments? ~ ")" | "." ~IDENTIFIER )* }
+// primary                 = { 
+//                             "true" | "false" | "nil" | "this"
+//                             | NUMBER | STRING | IDENTIFIER | "(" ~expression~ ")"
+//                             | "super" ~ "."  ~IDENTIFIER  
+                        
+
+// Utils
+function                = !{ IDENTIFIER~ "(" ~ parameters? ~ ")" ~ block }
+parameters              = { IDENTIFIER ~( "," ~IDENTIFIER )* }
+arguments               = { expression ~( "," ~expression )* }
+
+ws                      = _{ " " | "\t" | "\r" | "\n" }
+cm                      = _{ COMMENT }
+
+
+// STRINGS
+
+STRING                      = _{  multi_line_string_literal | string_literal  }        
+multi_line_string_literal   = @{ "\"\"\"" ~ string_literal_inner ~ "\"\"\"" }
+string_literal              = @{ "\"" ~ string_literal_inner ~ "\"" }
+string_literal_inner        = @{ (!("\"" | "\\" | "\u{0000}" | "\u{001F}") ~ ANY)* ~ (escape ~ string_literal_inner)? }
+//multi_line_literal      = @{ "'''" ~ (!"'''" ~ ANY)* ~ "'''" }
+// literal                 = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
+// literal                 = @{ "'" ~literal_inner ~ "'" }
+// literal_inner           = @{  (!"'" ~ ANY)* }
+
+
+escape  = @{ "\\" ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? }
+unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
+
+// NUMBERS
+NUMBER = _{  float | integer }
+integer = @{ ("+" | "-")? ~ int }
+float   = @{ ("+" | "-")? ~ int ~ "." ~ digits ~ exp? | exp }
+int     = @{ "0" | (ASCII_NONZERO_DIGIT ~ digits?) }
+digits  = @{ (ASCII_DIGIT | ("_" ~ ASCII_DIGIT))+ }
+exp     = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
+
+// Settings
+WHITESPACE              = _{ " " | "\t" | "\r" | "\n" }
+COMMENT                 = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+IDENTIFIER              = @{ ASCII_ALPHA ~( ASCII_ALPHA | ASCII_DIGIT )* }
+stmtterm                = _{ "\n" | "\r\n" | "\r" | ";" }

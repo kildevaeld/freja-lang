@@ -4,7 +4,7 @@ const hbs = require('hbs'),
         expressions,
         statements,
         literals
-    } = require('./common');
+    } = require('./common2');
 
 function flatten(arr) {
     return arr.reduce(function (flat, toFlatten) {
@@ -75,7 +75,8 @@ function generateStucture(list, base, ref = false) {
                         case "Literal":
                         case "Argument":
                         case "Token":
-                            let token = value + "<'a>";
+                            // let token = value + "<'a>";
+                            let token = value;
                             if (isBox) token = `Box<${token}>`;
                             if (isMulti) token = `Vec<${token}>`;
                             if (isOptional) token = `Option<${token}>`;
@@ -102,9 +103,11 @@ const data = () => {
                 variants: m[1].map(field => {
                     return {
                         name: Array.isArray(field) ? field[0] : field,
-                        value: Array.isArray(field) ? field[1] : void 0
+                        value: Array.isArray(field) ? field[1] : void 0,
+
                     }
-                })
+                }),
+                lifetime: m[2]
             }
         }).concat([{
             name: "Stmt",
@@ -117,9 +120,11 @@ const data = () => {
 
                 return {
                     name: m[0],
-                    value: m[0] + "Stmt" + (m[1].length ? "<'a>" : '')
+                    // value: m[0] + "Stmt" + (m[1].length ? "<'a>" : '')
+                    value: m[0] + "Stmt"
                 }
-            })
+            }),
+            lifetime: true
         }, {
             name: "Expr",
             flatten: true,
@@ -127,9 +132,11 @@ const data = () => {
             variants: expressions.map(m => {
                 return {
                     name: m[0],
-                    value: m[0] + "Expr" + (m[1].length ? "<'a>" : '')
+                    // value: m[0] + "Expr" + (m[1].length ? "<'a>" : '')
+                    value: m[0] + "Expr"
                 }
-            })
+            }),
+            lifetime: true
         }]),
 
         structures: [
@@ -145,7 +152,7 @@ async function generate() {
     hbs.registerHelper('lower', (term) => {
         return term.toLowerCase()
     })
-    let input = await fs.readFile(__dirname + '/template.hbs', 'utf8');
+    let input = await fs.readFile(__dirname + '/template2.hbs', 'utf8');
     let t = hbs.handlebars.compile(input);
     return t(data())
 }

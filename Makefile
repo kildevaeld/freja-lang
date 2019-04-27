@@ -2,10 +2,10 @@
 .PHONY: ast clean
 
 
-ast: freja-parser2/src/ast.rs
+ast: freja-ast/src/ast.rs
 
-freja-parser2/src/ast.rs: tools/index.js tools/template.hbs
-	node $< > $@
+freja-ast/src/ast.rs: tools/index.js tools/template.hbs
+	node $< | rustfmt > $@
 
 clean:
-	rm freja-parser2/src/ast.rs
+	rm freja-ast/src/ast.rs
