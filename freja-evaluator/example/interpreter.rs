@@ -7,7 +7,7 @@ fn main() {
         let test = "main", mig = 200.0;
         let test2 = 10 + 2 - 11 * 2 + 8;
 
-        print(test2)
+        //print(test2)
 
         fn fib(num) {
             if num <= 1 {
@@ -15,11 +15,11 @@ fn main() {
             }
             return fib(num - 1) + fib(num - 2);
         }
+
+        print(fib(40))
     "#,
     );
 
     let mut vm = VM::new();
     vm.interpret(&ast).unwrap();
-
-    println!("{:?}", vm);
 }

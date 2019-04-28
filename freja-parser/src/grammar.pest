@@ -148,6 +148,7 @@ literal                     = {
                                 | char_literal
                             }
 
+// Numbers
 numeric_literal              = {  float | integer }
 integer                     = @{ int }
 float                       = @{ int ~ "." ~ digits ~ exp? | exp }
@@ -157,6 +158,8 @@ exp                         = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
 
 boolean_literal             = { TRUE_TOKEN | FALSE_TOKEN }
 
+
+// String
 string_literal              = { "\"" ~ (raw_string | escape)* ~ "\"" }
 raw_string                  = { (!("\\" | "\"") ~ ANY)+ }
 hex                         = _{ '0'..'9' | 'a'..'f' | 'A'..'F' }
@@ -165,11 +168,11 @@ predefined                  = { "n" | "r" | "t" | "\\" | "0" | "\"" | "'" }
 byte                        = { "x" ~ hex{2} }
 unicode                     = { "u" ~ "{" ~ unicode_hex ~ "}" }
 escape                      = { "\\" ~ (predefined | byte | unicode) }
-
 char_literal                = { "'" ~ (escape | ANY) ~ "'" }
 
 
 
+// Comments and whitespace
 
 source_character = _{ ANY }
 

@@ -30,10 +30,10 @@ exports.literals = [
         ["Number", "Number"],
         ["Boolean", "bool"],
     ], false],
-    ["Number", [
-        ["Double", "f64"],
-        ["Integer", "i64"]
-    ], false],
+    // ["Number", [
+    //     ["Double", "f64"],
+    //     ["Integer", "i64"]
+    // ], false],
     ["Argument", [
         ["Regular", "String"],
         ["Rest", "String"]

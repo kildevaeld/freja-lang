@@ -32,6 +32,14 @@ impl fmt::Display for Token {
     }
 }
 
+
+#[derive(Serialize, Debug, Clone, PartialEq, PartialOrd)]
+#[serde(tag = "type", content = "value")]
+pub enum Number {
+    Double(f64),
+    Integer(i64),
+}
+
 {{#each enums}}
 {{#if visitor}}
 pub trait {{name}}Visitor<R> {

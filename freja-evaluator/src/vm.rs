@@ -3,8 +3,12 @@
 // use super::Interpreter;
 // use freja_parser2::owned::*;
 // use freja_parser::traits::{ExprVisitor, StmtVisitor};
+use super::function::Function;
 use freja_parser::ast::*;
-use freja_runtime::{value_binary, Env, FrejaCallable, RuntimeResult, Value, VM as VMBase};
+use freja_runtime::{
+    value_binary, Env, EnvPtr, FrejaCallable, RuntimeError, RuntimeResult, Value, VM as VMBase,
+};
+use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
@@ -14,10 +18,10 @@ pub struct NativeFunction<F: 'static> {
 
 impl<F: 'static> FrejaCallable for NativeFunction<F>
 where
-    F: Fn(&mut VMBase, Vec<&Value>) -> RuntimeResult<Value>,
+    F: Fn(&mut VMBase, Vec<Rc<Value>>) -> RuntimeResult<Value>,
 {
-    fn call(&self, vm: &mut VMBase, args: Vec<&Value>) -> RuntimeResult<Value> {
-        (self.inner)(vm, args)
+    fn call(&self, vm: &mut VMBase, args: Vec<Rc<Value>>) -> RuntimeResult<Rc<Value>> {
+        (self.inner)(vm, args).map(|m| Rc::new(m))
     }
 
     fn arity(&self) -> u8 {
@@ -39,20 +43,26 @@ macro_rules! native_fn {
 
 #[derive(Debug)]
 pub struct VM {
-    env: Env<Rc<Value>>,
+    globals: Rc<RefCell<Env<Rc<Value>>>>,
+    env: Rc<RefCell<Env<Rc<Value>>>>,
 }
 
 impl VM {
     pub fn new() -> VM {
-        let mut vm = VM { env: Env::new() };
-        let f = |vm: &mut VMBase, args: Vec<&Value>| {
+        let globals = Rc::new(RefCell::new(Env::new()));
+        let env = globals.clone(); // Rc::new(RefCell::new(Env::with_parent(globals.clone())));
+        let mut vm = VM { env, globals };
+        let f = |vm: &mut VMBase, args: Vec<Rc<Value>>| {
             println!("{}", args[0]);
             Ok(Value::Null)
         };
-        vm.env.define(
-            "print",
-            Rc::new(Value::Function(Box::new(NativeFunction { inner: f }))),
-        );
+        vm.globals
+            .borrow_mut()
+            .define(
+                "print",
+                Rc::new(Value::Function(Box::new(NativeFunction { inner: f }))),
+            )
+            .unwrap();
         vm
     }
 
@@ -70,13 +80,23 @@ impl VM {
 }
 
 impl VMBase for VM {
-    // fn interpret(&mut self, ast: &Stmt) -> RuntimeResult<()> {
-    //     // for stmt in ast.statements {
-    //     //     self.execute(stmt)?;
-    //     // }
-    //     // Ok(())
-    //     self.execute(ast)
-    // }
+    fn execute_block(&mut self, stmts: &Vec<&Stmt>, env: EnvPtr<Rc<Value>>) -> RuntimeResult<()> {
+        let prev = std::mem::replace(&mut self.env, env);
+
+        for stmt in stmts {
+            match self.execute(stmt) {
+                Ok(_) => {}
+                Err(e) => {
+                    self.env = prev;
+                    return Err(e);
+                }
+            }
+        }
+
+        self.env = prev;
+
+        Ok(())
+    }
 }
 
 impl StmtVisitor<RuntimeResult<()>> for VM {
@@ -89,7 +109,7 @@ impl StmtVisitor<RuntimeResult<()>> for VM {
     fn visit_var_stmt(&mut self, stmt: &VarStmt) -> RuntimeResult<()> {
         let v = stmt.initializer.as_ref().expect("initializer");
         let val = self.evaluate(&v)?;
-        self.env.define(stmt.name.to_string(), val)?;
+        self.env.borrow_mut().define(stmt.name.to_string(), val)?;
         Ok(())
     }
     fn visit_varlist_stmt(&mut self, e: &VarListStmt) -> RuntimeResult<()> {
@@ -103,22 +123,41 @@ impl StmtVisitor<RuntimeResult<()>> for VM {
         Ok(())
     }
     fn visit_func_stmt(&mut self, e: &FuncStmt) -> RuntimeResult<()> {
-        Err("func".into())
+        let f = Function::new(e.clone(), self.env.clone());
+        self.env
+            .borrow_mut()
+            .define(&e.name.value, Rc::new(Value::Function(Box::new(f))))?;
+        Ok(())
     }
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> RuntimeResult<()> {
         Err("class".into())
     }
     fn visit_block_stmt(&mut self, e: &BlockStmt) -> RuntimeResult<()> {
-        Err("block".into())
+        let env = Rc::new(RefCell::new(Env::with_parent(self.env.clone())));
+        let stmt = e.statements.iter().map(|m| m.as_ref()).collect::<Vec<_>>();
+
+        self.execute_block(&stmt, env)?;
+        Ok(())
     }
     fn visit_if_stmt(&mut self, e: &IfStmt) -> RuntimeResult<()> {
-        Err("if".into())
+        let test = self.evaluate(&e.test)?;
+
+        if test.is_truthy() {
+            self.execute(&e.consequent)
+        } else if let Some(alternative) = &e.alternative {
+            self.execute(alternative)
+        } else {
+            Ok(())
+        }
     }
     fn visit_for_stmt(&mut self, e: &ForStmt) -> RuntimeResult<()> {
         Err("for".into())
     }
     fn visit_return_stmt(&mut self, e: &ReturnStmt) -> RuntimeResult<()> {
-        Err("return".into())
+        match &e.expression {
+            Some(s) => Err(RuntimeError::Return(self.evaluate(s)?)),
+            None => Err(RuntimeError::Return(Rc::new(Value::Null))),
+        }
     }
     fn visit_continue_stmt(&mut self, e: &ContinueStmt) -> RuntimeResult<()> {
         Err("err".into())
@@ -129,21 +168,6 @@ impl StmtVisitor<RuntimeResult<()>> for VM {
 }
 
 impl ExprVisitor<RuntimeResult<Rc<Value>>> for VM {
-    // fn visitAssignExpr(&mut self, expr: AssignExpr) -> RuntimeResult<Rc<Value>> {
-    //     Err("visit assign expr".into())
-    // }
-    // fn visitIdentifierExpr(&mut self, expr: IdentifierExpr) -> RuntimeResult<Rc<Value>> {
-    //     Err("visit identifier expr".into())
-    // }
-    // fn visitCallExpr(&mut self, expr: CallExpr) -> RuntimeResult<Rc<Value>> {
-    //     Err("visit call expr".into())
-    // }
-    // fn visitLiteralExpr(&mut self, expr: LiteralExpr) -> RuntimeResult<Rc<Value>> {
-    //     match expr.value {
-    //         Literal::String(s) => Ok(Value::Builtin(Builtin::String(s))),
-    //         _ => Err("visit literal expr".into()),
-    //     }
-    // }
     fn visit_assign_expr(&mut self, e: &AssignExpr) -> RuntimeResult<Rc<Value>> {
         Err("assign".into())
     }
@@ -161,13 +185,10 @@ impl ExprVisitor<RuntimeResult<Rc<Value>>> for VM {
             .map(|m| self.evaluate(m).unwrap())
             .collect::<Vec<_>>();
 
-        let refed = args.iter().map(|m| m.as_ref()).collect::<Vec<_>>();
-
         match callee.as_ref() {
-            Value::Function(f) => f.call(self, refed).map(|m| Rc::new(m)),
+            Value::Function(f) => f.call(self, args),
             _ => Err("not a function".into()),
         }
-        //Err("call".into())
     }
 
     fn visit_literal_expr(&mut self, expr: &LiteralExpr) -> RuntimeResult<Rc<Value>> {
@@ -188,11 +209,16 @@ impl ExprVisitor<RuntimeResult<Rc<Value>>> for VM {
     }
     fn visit_lookup_expr(&mut self, e: &LookupExpr) -> RuntimeResult<Rc<Value>> {
         let lookup = match &e.token.kind {
-            TokenType::Identifier => e.token.value,
+            TokenType::Identifier => e.token.value.as_str(),
             _ => return Err("invalid lookup token".into()),
         };
 
-        let val = self.env.get(lookup).unwrap();
+        let val = self
+            .env
+            .borrow_mut()
+            .get(lookup)
+            .expect(&format!("lookup: {}", lookup))
+            .clone();
 
         Ok(val.clone())
     }

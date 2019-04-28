@@ -1,4 +1,5 @@
 use super::ast::{Literal, Number};
+use std::cmp::Ordering;
 use std::fmt;
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -51,22 +52,6 @@ impl_op!(Add, add, +);
 impl_op!(Sub, sub, -);
 impl_op!(Mul, mul, *);
 impl_op!(Div, div, /);
-
-// impl Add for Number {
-//     type Output = Number;
-//     fn add(self, rhs: Number) -> Self::Output {
-//         match self {
-//             Number::Double(f) => match rhs {
-//                 Number::Double(ff) => Number::Double(f + ff),
-//                 Number::Integer(i) => Number::Double(f + (i as f64)),
-//             },
-//             Number::Integer(i) => match rhs {
-//                 Number::Double(f) => Number::Double((i as f64) + f),
-//                 Number::Integer(ii) => Number::Integer(i + ii),
-//             },
-//         }
-//     }
-// }
 
 impl fmt::Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

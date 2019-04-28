@@ -42,6 +42,13 @@ impl fmt::Display for Token {
     }
 }
 
+#[derive(Serialize, Debug, Clone, PartialEq, PartialOrd)]
+#[serde(tag = "type", content = "value")]
+pub enum Number {
+    Double(f64),
+    Integer(i64),
+}
+
 pub trait StmtVisitor<R> {
     fn visit_program_stmt(&mut self, e: &ProgramStmt) -> R;
     fn visit_var_stmt(&mut self, e: &VarStmt) -> R;
@@ -74,13 +81,6 @@ pub enum Literal {
     String(String),
     Number(Number),
     Boolean(bool),
-}
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
-#[serde(tag = "type", content = "value")]
-pub enum Number {
-    Double(f64),
-    Integer(i64),
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

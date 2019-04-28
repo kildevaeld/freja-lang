@@ -38,12 +38,14 @@ macro_rules! token_from_rule {
 }
 
 #[inline(always)]
-fn parse_literal<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_literal<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
     let inner = pair.into_inner().next().unwrap();
 
     let lit = match inner.as_rule() {
-        Rule::string_literal => Literal::String(&inner.as_str()[1..inner.as_str().len() - 1]),
+        Rule::string_literal => {
+            Literal::String((&inner.as_str()[1..inner.as_str().len() - 1]).to_string())
+        }
         Rule::numeric_literal => {
             let p = inner.into_inner().next().unwrap();
             let n = match p.as_rule() {
@@ -63,7 +65,7 @@ fn parse_literal<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 
 // Arguments
 #[inline(always)]
-fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
     Expr::Arguments(ArgumentsExpr {
         location,
@@ -76,7 +78,7 @@ fn parse_arguments_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 
 // Expressions
 #[inline(always)]
-fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr {
     match pair.as_rule() {
         Rule::assignment_expr => parse_assign_expr(pair),
         Rule::logical_or_expr
@@ -112,7 +114,7 @@ fn parse_expression<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
     let mut children = pair
         .into_inner()
@@ -130,7 +132,7 @@ fn parse_assign_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
     })
 }
 
-fn parse_bin2<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr<'a> {
+fn parse_bin2<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr {
     if pairs.len() == 1 {
         return parse_expression(pairs.pop().unwrap());
     }
@@ -161,7 +163,7 @@ fn parse_bin2<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr<'a
     })
 }
 
-fn parse_bin<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr<'a> {
+fn parse_bin<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr {
     if pairs.len() == 1 {
         return parse_expression(pairs.pop().unwrap());
     }
@@ -192,7 +194,7 @@ fn parse_bin<'a>(mut pairs: Vec<Pair<'a, Rule>>, location: Location) -> Expr<'a>
 }
 
 #[inline(always)]
-fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
 
     let mut children = pair.into_inner().collect::<Vec<_>>();
@@ -241,7 +243,7 @@ fn parse_binray_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_logical_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_logical_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
     let mut children = pair.into_inner().collect::<Vec<_>>();
 
@@ -286,7 +288,7 @@ fn parse_logical_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_unary_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_unary_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let mut children = pair
         .clone()
         .into_inner()
@@ -301,7 +303,7 @@ fn parse_unary_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_postfix_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_postfix_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let mut children = pair
         .clone()
         .into_inner()
@@ -316,7 +318,7 @@ fn parse_postfix_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_left_hand_side_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_left_hand_side_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let mut children = pair
         .clone()
         .into_inner()
@@ -331,7 +333,7 @@ fn parse_left_hand_side_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_call_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_call_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let location = location!(pair);
     let mut children = pair
         .clone()
@@ -351,7 +353,7 @@ fn parse_call_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_member_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_member_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let mut children = pair
         .clone()
         .into_inner()
@@ -383,7 +385,7 @@ fn parse_member_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 }
 
 #[inline(always)]
-fn parse_primary_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
+fn parse_primary_expr<'a>(pair: Pair<'a, Rule>) -> Expr {
     let next = pair.into_inner().next().expect("primary");
 
     let p = match next.as_rule() {
@@ -405,7 +407,7 @@ fn parse_primary_expr<'a>(pair: Pair<'a, Rule>) -> Expr<'a> {
 // Statements
 
 #[inline(always)]
-fn parse_class_decl<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_class_decl<'a>(pair: Pair<'a, Rule>) -> Stmt {
     ensure_rule!(pair, Rule::class_decl);
     let location = location!(pair);
     let inner = pair.into_inner();
@@ -441,7 +443,7 @@ fn parse_class_decl<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_func_decl<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_func_decl<'a>(pair: Pair<'a, Rule>) -> Stmt {
     ensure_rule!(pair, Rule::func_decl);
     let location = location!(pair);
     let mut inner = pair.clone().into_inner();
@@ -453,8 +455,8 @@ fn parse_func_decl<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
         .expect("function params")
         .into_inner()
         .map(|pair| match pair.as_rule() {
-            Rule::IDENTIFIER => Argument::Regular(pair.as_str()),
-            Rule::formal_parameter_item_vaargs => Argument::Rest(&pair.as_str()[3..]),
+            Rule::IDENTIFIER => Argument::Regular(pair.as_str().to_owned()),
+            Rule::formal_parameter_item_vaargs => Argument::Rest((&pair.as_str()[3..]).to_string()),
             _ => unreachable!("invalid argument"),
         })
         .collect::<Vec<_>>();
@@ -468,7 +470,7 @@ fn parse_func_decl<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_block_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_block_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     ensure_rule!(pair, Rule::block);
     let location = location!(pair);
     let statements = pair
@@ -482,7 +484,7 @@ fn parse_block_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_expr_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_expr_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     let location = location!(pair);
     let next = pair.into_inner().next().expect("parse_expr");
     Stmt::Expr(ExprStmt {
@@ -492,7 +494,7 @@ fn parse_expr_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_var_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_var_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     let location = location!(pair);
     let variables = pair
         .clone()
@@ -506,7 +508,7 @@ fn parse_var_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt<'a> {
+fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt {
     let location = location!(pair);
     let mut inner = pair.into_inner();
     let name = inner.next().unwrap();
@@ -524,7 +526,7 @@ fn parse_decl<'a>(pair: Pair<'a, Rule>) -> VarStmt<'a> {
 }
 
 #[inline(always)]
-fn parse_for_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_for_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     let location = location!(pair);
     let mut children = pair.into_inner().collect::<Vec<_>>();
     let body = children
@@ -555,7 +557,7 @@ fn parse_for_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_if_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_if_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     let location = location!(pair);
     let mut children = pair.into_inner().collect::<Vec<_>>();
 
@@ -582,7 +584,7 @@ fn parse_if_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_return_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_return_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt {
     let location = location!(pair);
     let expression = pair.into_inner().next().map(|m| parse_expression(m));
     Stmt::Return(ReturnStmt {
@@ -592,7 +594,7 @@ fn parse_return_stmt<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_statement<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_statement<'a>(pair: Pair<'a, Rule>) -> Stmt {
     match pair.as_rule() {
         Rule::block => parse_block_stmt(pair),
         Rule::expr_stmt => parse_expr_stmt(pair),
@@ -608,7 +610,7 @@ fn parse_statement<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
 }
 
 #[inline(always)]
-fn parse_program<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
+fn parse_program<'a>(pair: Pair<'a, Rule>) -> Stmt {
     ensure_rule!(pair, Rule::program);
 
     let location = location!(pair);
@@ -632,6 +634,6 @@ fn parse_program<'a>(pair: Pair<'a, Rule>) -> Stmt<'a> {
     })
 }
 
-pub fn parse<'a>(mut pairs: Pairs<'a, Rule>) -> Stmt<'a> {
+pub fn parse<'a>(mut pairs: Pairs<'a, Rule>) -> Stmt {
     parse_program(pairs.next().unwrap())
 }

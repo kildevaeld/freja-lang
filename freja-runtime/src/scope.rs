@@ -1,26 +1,32 @@
 use super::error::{RuntimeError, RuntimeResult};
 use super::value::Value;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+pub type EnvPtr<V> = Rc<RefCell<Env<V>>>;
+
 #[derive(Debug)]
 pub struct Env<V> {
-    parent: Option<Rc<Env<V>>>,
+    parent: Option<Rc<RefCell<Env<V>>>>,
     inner: HashMap<String, V>,
+    globals: HashMap<String, V>,
 }
 
-impl<V> Env<V> {
+impl<V: Clone> Env<V> {
     pub fn new() -> Env<V> {
         Env {
             parent: None,
             inner: HashMap::new(),
+            globals: HashMap::new(),
         }
     }
 
-    pub fn with_parent(parent: Rc<Env<V>>) -> Env<V> {
+    pub fn with_parent(parent: Rc<RefCell<Env<V>>>) -> Env<V> {
         Env {
             parent: Some(parent),
             inner: HashMap::new(),
+            globals: HashMap::new(),
         }
     }
 
@@ -32,7 +38,19 @@ impl<V> Env<V> {
         Ok(())
     }
 
-    pub fn get<S: AsRef<str>>(&self, name: S) -> Option<&V> {
-        self.inner.get(name.as_ref())
+    pub fn get<S: AsRef<str>>(&mut self, name: S) -> Option<&V> {
+        match self.inner.get(name.as_ref()) {
+            Some(s) => Some(s),
+            None => match &self.parent {
+                Some(inner) => match inner.borrow_mut().get(name.as_ref()) {
+                    Some(v) => {
+                        self.globals.insert(name.as_ref().to_string(), v.clone());
+                        self.globals.get(name.as_ref())
+                    }
+                    None => None,
+                },
+                None => None,
+            },
+        }
     }
 }

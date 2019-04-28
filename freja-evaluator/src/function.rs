@@ -4,18 +4,18 @@ use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
-pub struct FrejaClass {
+pub struct Function {
     inner: FuncStmt,
     closure: EnvPtr<Rc<Value>>,
 }
 
-impl fmt::Debug for FrejaClass {
+impl fmt::Debug for Function {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "FrejaClass")
+        write!(f, "Function")
     }
 }
 
-impl FrejaClass {
+impl Function {
     pub fn new(func: FuncStmt, closure: EnvPtr<Rc<Value>>) -> Function {
         Function {
             inner: func,
@@ -24,7 +24,7 @@ impl FrejaClass {
     }
 }
 
-impl FrejaCallable for FrejaClass {
+impl FrejaCallable for Function {
     fn call(&self, vm: &mut VM, args: Vec<Rc<Value>>) -> RuntimeResult<Rc<Value>> {
         let mut env = Env::with_parent(self.closure.clone());
         for (i, v) in args.iter().enumerate() {
