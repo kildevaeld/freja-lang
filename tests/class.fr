@@ -1,0 +1,15 @@
+
+class Greeter {
+    fn greet(msg) {
+        return this.fmt("Hello", msg)
+    }
+
+    fn fmt(msg, greet){
+        return greet + " " + msg + "!";
+    }
+ 
+}
+
+let greeter = Greeter();
+let gretting = greeter.greet("Rasmus");
+print(gretting);

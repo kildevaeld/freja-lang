@@ -3,20 +3,22 @@
 // use super::Interpreter;
 // use freja_parser2::owned::*;
 // use freja_parser::traits::{ExprVisitor, StmtVisitor};
+use super::class::*;
 use super::function::Function;
 use freja_parser::ast::*;
 use freja_runtime::{
-    value_binary, Env, EnvPtr, FrejaCallable, RuntimeError, RuntimeResult, Value, VM as VMBase,
+    value_binary, Env, EnvPtr, FrejaCallable, RuntimeError, RuntimeResult, Value, ValuePtr,
+    VM as VMBase,
 };
 use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
-pub struct NativeFunction<F: 'static> {
+pub struct NativeFunction<F: 'static + Clone> {
     inner: F,
 }
 
-impl<F: 'static> FrejaCallable for NativeFunction<F>
+impl<F: 'static + Clone> FrejaCallable for NativeFunction<F>
 where
     F: Fn(&mut VMBase, Vec<Rc<Value>>) -> RuntimeResult<Value>,
 {
@@ -27,9 +29,15 @@ where
     fn arity(&self) -> u8 {
         1
     }
+
+    fn bind(&self, _instance: ValuePtr) -> Box<dyn FrejaCallable> {
+        Box::new(NativeFunction {
+            inner: self.inner.clone(),
+        })
+    }
 }
 
-impl<F: 'static> fmt::Debug for NativeFunction<F> {
+impl<F: 'static + Clone> fmt::Debug for NativeFunction<F> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Callable")
     }
@@ -62,7 +70,7 @@ impl VM {
                 "print",
                 Rc::new(Value::Function(Box::new(NativeFunction { inner: f }))),
             )
-            .unwrap();
+            .expect("print");
         vm
     }
 
@@ -130,7 +138,20 @@ impl StmtVisitor<RuntimeResult<()>> for VM {
         Ok(())
     }
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> RuntimeResult<()> {
-        Err("class".into())
+        let mut methods: Vec<(String, Box<dyn FrejaCallable>)> = Vec::new();
+        for stmt in e.members.iter() {
+            let s = match stmt.as_ref() {
+                Stmt::Func(func) => Function::new(func.clone(), self.globals.clone()),
+                _ => unreachable!("function"),
+            };
+            let name = s.name().to_string();
+            methods.push((name, Box::new(s)));
+        }
+        let class = FrejaClass::new(e.name.value.clone(), methods, self.env.clone());
+        self.env
+            .borrow_mut()
+            .define(&e.name.value, Rc::new(Value::Function(Box::new(class))))?;
+        Ok(())
     }
     fn visit_block_stmt(&mut self, e: &BlockStmt) -> RuntimeResult<()> {
         let env = Rc::new(RefCell::new(Env::with_parent(self.env.clone())));
@@ -205,12 +226,28 @@ impl ExprVisitor<RuntimeResult<Rc<Value>>> for VM {
         Ok(Rc::new(value_binary(&left, &right, &e.operator)?))
     }
     fn visit_member_expr(&mut self, e: &MemberExpr) -> RuntimeResult<Rc<Value>> {
+        let object = self.evaluate(&e.object)?;
+        //let prop = self.evaluate(&e.property)?;
+        let prop = match e.property.as_ref() {
+            Expr::Lookup(l) => &l.token.value,
+            _ => panic!("should not memember"),
+        };
+
+        if let Value::Instance(instance) = object.as_ref() {
+            return instance.get(&prop);
+        }
+
         Err("member".into())
     }
     fn visit_lookup_expr(&mut self, e: &LookupExpr) -> RuntimeResult<Rc<Value>> {
         let lookup = match &e.token.kind {
             TokenType::Identifier => e.token.value.as_str(),
-            _ => return Err("invalid lookup token".into()),
+            TokenType::This => "this",
+            _ => {
+                return Err(format!("invalid lookup token: {:?}", e.token.kind)
+                    .as_str()
+                    .into())
+            }
         };
 
         let val = self

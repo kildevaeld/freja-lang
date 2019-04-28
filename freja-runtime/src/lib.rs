@@ -1,5 +1,4 @@
 mod callable;
-mod class;
 mod error;
 //mod function;
 mod scope;
@@ -7,7 +6,6 @@ mod value;
 mod vm;
 
 pub use self::callable::*;
-pub use self::class::*;
 pub use self::error::*;
 pub use self::scope::*;
 pub use self::value::*;

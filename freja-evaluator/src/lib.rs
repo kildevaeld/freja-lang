@@ -2,6 +2,7 @@ use freja_parser::ast::*;
 
 // pub mod env;
 // pub mod error;
+mod class;
 mod function;
 pub mod vm;
 

@@ -11,6 +11,8 @@ pub enum RuntimeError {
     Error,
     Unknown(String),
     Return(Rc<Value>),
+    Continue,
+    Break,
 }
 
 impl fmt::Display for RuntimeError {

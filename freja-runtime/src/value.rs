@@ -1,8 +1,10 @@
-use super::callable::FrejaCallable;
+use super::callable::{FrejaCallable, Instance};
 use super::error::*;
 use freja_ast::{Number, Token, TokenType};
 use std::fmt;
 use std::rc::Rc;
+
+pub type ValuePtr = Rc<Value>;
 
 #[derive(Debug)]
 pub enum Value {
@@ -11,6 +13,7 @@ pub enum Value {
     Boolean(bool),
     Function(Box<FrejaCallable + 'static>),
     Array(Vec<Rc<Value>>),
+    Instance(Box<Instance + 'static>),
     Null,
 }
 
@@ -24,6 +27,7 @@ impl Value {
             Value::Function(_) => true,
             Value::Array(_) => true,
             Value::Null => false,
+            Value::Instance(_) => true,
         }
     }
 }
@@ -37,6 +41,7 @@ impl fmt::Display for Value {
             Value::Null => write!(f, "null"),
             Value::Function(_) => write!(f, "<native fn>"),
             Value::Array(_) => write!(f, "array"),
+            Value::Instance(_) => write!(f, "instance"),
         }
     }
 }
@@ -46,6 +51,10 @@ fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
             Value::Number(nn) => Ok(Value::Number(n + nn)),
+            _ => Err("nan".into()),
+        },
+        Value::String(s) => match rhs {
+            Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
             _ => Err("nan".into()),
         },
         _ => Err("nan 2".into()),

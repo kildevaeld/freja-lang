@@ -86,7 +86,7 @@ call_expr                   = {
                             }
 
 arguments                   = { "("  ~(argument_list )? ~")" }
-argument_list               = _{ assignment_expr ~("," ~assignment_expr)* }
+argument_list               = _{ assignment_expr ~__s ~("," ~__s ~assignment_expr)* }
 
 function_expr               = { FUNCTION_TOKEN ~_s ~IDENTIFIER ~_s ~"(" ~__s ~formal_parameter_list? ~__s ~")" ~block} 
 
@@ -142,7 +142,8 @@ SPREAD_OPERATOR             = { "..." }
 
 // Literals
 literal                     = {
-                                numeric_literal
+                                array_literal
+                                | numeric_literal
                                 | boolean_literal
                                 | string_literal
                                 | char_literal
@@ -170,6 +171,10 @@ unicode                     = { "u" ~ "{" ~ unicode_hex ~ "}" }
 escape                      = { "\\" ~ (predefined | byte | unicode) }
 char_literal                = { "'" ~ (escape | ANY) ~ "'" }
 
+
+array_literal               = { "[" ~ __s ~ array_literal_items?  ~__s ~ "]"  }
+
+array_literal_items         = _{ expression ~ __s ~("," ~ __s ~expression)* }
 
 
 // Comments and whitespace

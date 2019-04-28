@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate clap;
 
+use freja_evaluator::VM;
 use freja_parser::*;
 use serde_json;
 
@@ -81,8 +82,18 @@ fn print_dump(input: &str, full: bool) {
     println!("{}", lines);
 }
 
+fn print_eval(input: &str) {
+    let data = fs::read_to_string(input).unwrap();
+    let tokens = lexer::tokenize(data.as_str()).unwrap();
+    let ast = parser::parse(tokens);
+    let mut vm = VM::new();
+    vm.interpret(&ast).unwrap(); //.unwrap();
+                                 //println!("VM {:?}", vm);
+}
+
 fn main() {
     let matches = clap_app!(freja =>
+        (@arg input:  "input")
         (@subcommand ast =>
             (@arg full: -f "full")
             (@arg input: *  "input")
@@ -100,5 +111,9 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("dump") {
         let input = matches.value_of("input").unwrap();
         print_dump(input, matches.is_present("full"));
+    } else if let Some(input) = matches.value_of("input") {
+        print_eval(input);
+    } else {
+
     }
 }

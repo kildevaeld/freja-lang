@@ -22,6 +22,10 @@ impl Function {
             closure,
         }
     }
+
+    pub fn name(&self) -> &str {
+        self.inner.name.value.as_str()
+    }
 }
 
 impl FrejaCallable for Function {
@@ -41,7 +45,6 @@ impl FrejaCallable for Function {
         }
 
         let env = Rc::new(RefCell::new(env));
-
         match vm.execute_block(&vec![&self.inner.body], env) {
             Ok(m) => Ok(Rc::new(Value::Null)),
             Err(RuntimeError::Return(v)) => Ok(v),
@@ -52,5 +55,14 @@ impl FrejaCallable for Function {
     }
     fn arity(&self) -> u8 {
         self.inner.parameters.len() as u8
+    }
+
+    fn bind(&self, instance: ValuePtr) -> Box<dyn FrejaCallable> {
+        let mut env = Env::with_parent(self.closure.clone());
+        env.define("this", instance);
+        Box::new(Function::new(
+            self.inner.clone(),
+            EnvPtr::new(RefCell::new(env)),
+        ))
     }
 }

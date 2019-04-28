@@ -1,0 +1,5 @@
+
+
+class Array implements Iterator {
+    fn next(next: Int) -> Result
+}
