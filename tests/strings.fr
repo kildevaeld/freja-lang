@@ -1,0 +1,3 @@
+"Hello, World";
+
+"Test \nmig i øret 😀";

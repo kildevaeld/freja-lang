@@ -6,5 +6,6 @@ members = [
     "freja-ast",
     "freja-evaluator",
     "freja-runtime",
-    "freja"
+    "freja",
+    "freja-parser2"
 ]

@@ -3,7 +3,6 @@ extern crate pest_derive;
 
 pub mod lexer;
 pub mod parser;
-
 pub use freja_ast as ast;
 pub use pest::iterators::{Pair, Pairs};
 

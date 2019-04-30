@@ -1,0 +1,342 @@
+use super::ast::*;
+use super::{resolve_binary, resolve_logical};
+
+pub program -> Vec<Stmt>
+    = s:statements { s }
+
+statements -> Vec<Stmt>
+    = s:(statement ** __) { s }
+
+statement -> Stmt
+    = expression_statement
+
+expression_statement -> Stmt
+    = _ e:expression _s { Stmt::Expr(ExprStmt::new(e)) }
+
+block -> Vec<Stmt>
+    = "{" __s s:statements __s "}" { s }
+
+
+// Expressions
+
+expression -> Expr
+    = assignment_expr // (__s "," __s assignment_expr)*
+
+assignment_expr -> Expr
+    = l:left_hand_side __ o:$assignment_operator __  r:assignment_expr {
+        Expr::Assign(AssignExpr::new(Box::new(l),Box::new(r)))
+    } / logical_or_expr
+
+left_hand_side -> Expr
+    = call_expr / member_expr
+
+call_expr -> Expr
+    = m:member_expr a:arguments {
+        Expr::Call(CallExpr::new(Box::new(m), a))
+    }
+
+ //( arguments / "[" expression "]" / "." identifier_name)* {
+
+arguments -> Vec<Expr>
+    = "(" __  a:((logical_or_expr) ** (__","__))? __ ")" { if a.is_some() { a.unwrap() } else { Vec::new() } }
+
+member_expr -> Expr
+    //= ( primary_expr /*/ function_expr*/ ) ( "[" expression "]" / "." identifier_name )*
+    = o:( primary_expr /*/ function_expr*/ ) p:( "[" e:expression "]" { e } / "." i:identifier { i } ) {
+        Expr::Member(MemberExpr::new(Box::new(o), Box::new(p), false))
+    }
+    / primary_expr
+
+
+
+primary_expr -> Expr
+    //= "this" / identifier / literal / "(" expression ")"
+    = i:identifier { i }
+      / l:literal { l }
+      / "(" e:expression ")" { e }
+
+
+/*
+primary_expr -> Expr
+    = "this" / identifier / literal / "(" expression ")"
+
+member_expr -> Expr
+    = ( primary_expr / function_expr ) ( "[" expression "]" / "." identifier_name )*
+
+call_expr -> Expr
+    = member_expr arguments ( arguments / "[" expression "]" / "." identifier_name)*
+
+arguments -> Expr
+    = "("  (argument_list )? ")"
+
+argument_list -> Expr
+    = assignment_expr __s ("," __s assignment_expr)*
+
+function_expr -> Expr
+    = token_function _s identifier _s "(" __s formal_parameter_list? __s ")" block
+
+formal_parameter_list -> Expr
+    = formal_parameter_item_vaargs / identifier ("," _s formal_parameter_item_vaargs / (__s "," __s identifier)*)?
+
+formal_parameter_item_vaargs -> Expr
+    = SPREAD_OPERATOR _s identifier
+
+left_hand_side_expr -> Expr
+    = call_expr / member_expr
+
+postfix_expr -> Expr
+    = left_hand_side_expr _s POSTFIX_OPERATOR / left_hand_side_expr
+
+unary_expr -> Expr
+    = postfix_expr / UNARY_OPERATOR __s unary_expr
+
+multiplicative_expr -> Expr
+    = unary_expr (__s MULTIPLICATIVE_OPERATOR __s unary_expr)*
+
+additive_expr -> Expr
+    = multiplicative_expr (__s ADDITIVE_OPERATOR __s multiplicative_expr)*
+
+shift_expr -> Expr
+    = additive_expr (__s SHIFT_OPERATOR __s additive_expr)*
+
+relational_expr -> Expr
+    = r:shift_expr __ o:RELATIONAL_OPERATOR __ r:shift_expr {
+
+    }*/
+
+postfix_expr -> Expr
+    = v:left_hand_side _s o:POSTFIX_OPERATOR __ { Expr::Postfix(PostfixExpr::new(Box::new(v),o)) }
+    / left_hand_side
+
+unary_expr -> Expr 
+    = o:UNARY_OPERATOR __ v:unary_expr __ { Expr::Unary(UnaryExpr::new(Box::new(v),o)) }
+    / postfix_expr
+
+multiplicative_expr -> Expr
+    = l:unary_expr __ ops:(o:MULTIPLICATIVE_OPERATOR __ e:unary_expr __ { (o,e) } )* {
+        resolve_binary(l, ops)
+    }
+
+additive_expr -> Expr
+    = l:multiplicative_expr __ ops:(o:ADDITIVE_OPERATOR __ e:multiplicative_expr __ { (o, e) })* {
+        resolve_binary(l, ops)
+    }
+
+shift_expr -> Expr
+    = l:additive_expr __ ops:(o:SHIFT_OPERATOR __ r:additive_expr __ { (o,r) })* {
+        resolve_binary(l, ops)
+    }
+
+relational_expr -> Expr
+    = l:shift_expr __ ops:(o:RELATIONAL_OPERATOR __ r:shift_expr __ { (o,r) })* {
+        resolve_binary(l, ops)
+    }
+
+equality_expr -> Expr
+    = l:relational_expr __ ops:(o:EQUALITY_OPERATOR __ r:relational_expr __ { (o,r) })* {
+        resolve_binary(l, ops)
+    }
+
+bitwise_and_expr -> Expr
+    = l:equality_expr __ ops:(o:BITWISE_AND_OPERATOR __ r:equality_expr __ { (o,r) } )* {
+        resolve_binary(l, ops)
+    }
+
+bitwise_xor_expr -> Expr
+    = l:bitwise_and_expr __ ops:(o:BITWISE_XOR_OPERATOR __ r:bitwise_and_expr __ { (o,r) } )* {
+        resolve_binary(l, ops)
+    }
+
+bitwise_or_expr -> Expr
+    = l:bitwise_xor_expr __ ops:(o:BITWISE_OR_OPERATOR __ r:bitwise_xor_expr __ { (o,r) } )* {
+        resolve_binary(l, ops)
+    }
+
+logical_and_expr -> Expr
+    //= bitwise_or_expr (__s LOGICAL_AND_OPERATOR __s bitwise_or_expr)*
+    = l:equality_expr __ ops:(o:LOGICAL_AND_OPERATOR __ r:equality_expr __ { (o,r) })* {
+        resolve_logical(l, ops)
+    }
+
+logical_or_expr -> Expr
+    = l:logical_and_expr __ ops:(o:LOGICAL_OR_OPERATOR __ r:logical_and_expr __ { (o,r) })* {
+        resolve_logical(l, ops)
+    }
+
+
+// Literals
+
+literal -> Expr
+    = lit:(
+        literal_boolean
+        / literal_number
+        / literal_string
+    ) { Expr::Literal(LiteralExpr::new(lit))  }
+
+
+literal_boolean -> Literal
+    = b:$("true" / "false") {
+        Literal::Boolean(if b == "true" { true } else { false })
+    }
+
+// Literal Number
+
+literal_number -> Literal
+    =  n:(double / int) { Literal::Number(n) }
+
+int -> Number
+    = i:$("0" / [1-9] [0-9]*)  {
+        Number::Integer(i.parse().unwrap())
+    }
+
+double -> Number
+    =  i:$(("0" / [1-9] [0-9]*) "." [0-9]+) {
+        Number::Double(i.parse().unwrap())
+    }
+
+
+// Literal String
+literal_string -> Literal
+    = "\"" s:$(raw_string / escape)* "\"" { Literal::String(s.to_string()) }
+
+raw_string
+    =  (!("\\" / "\"") . )+
+hex
+    =  [0-9] / [a-f] / [A-F]
+
+unicode_hex
+    =  hex*<1, 6>
+
+predefined
+    =  "n" / "r" / "t" / "\\" / "0" / "\"" / "'"
+
+byte
+    =  "x"  hex*<2>
+
+unicode
+    =  "u" "{" unicode_hex "}"
+
+escape
+    = "\\" (predefined / byte / unicode)
+
+char_literal
+    = "'" (escape / .) "'"
+
+
+// Tokens
+
+token_this = "this"
+
+token_function = "fn"
+
+token_var = "let"
+
+token_return = "return"
+
+token_class = "class"
+
+token_true = "true"
+
+token_false = "false"
+
+token_if = "if"
+
+token_else = "else"
+
+token_for = "for"
+
+token_continue = "continue"
+
+token_break = "break"
+
+token_in = "in"
+
+// Operators
+
+POSTFIX_OPERATOR -> PostfixOperator
+    = "++" { PostfixOperator::Increment } / "--" { PostfixOperator::Decrement }
+
+UNARY_OPERATOR -> UnaryOperator
+    = "++" { UnaryOperator::Increment }
+      / "--" { UnaryOperator::Decrement }
+      / "+" !"=" { UnaryOperator::Plus }
+      / "-" !"=" { UnaryOperator::Minus }
+
+ADDITIVE_OPERATOR -> BinaryOperator
+    = "+" !("+" / "=") { BinaryOperator::Add }
+      / "-" !("-" / "=") { BinaryOperator::Sub }
+
+MULTIPLICATIVE_OPERATOR -> BinaryOperator
+    = "*" !"=" { BinaryOperator::Mul }
+      / "/" !"=" { BinaryOperator::Div }
+      / "%" !"=" { BinaryOperator::Mod }
+
+SHIFT_OPERATOR  -> BinaryOperator
+    = "<<" !"=" { BinaryOperator::ShiftLeft } / ">>" !"=" { BinaryOperator::ShiftRight }
+
+RELATIONAL_OPERATOR -> BinaryOperator
+    = "<=" { BinaryOperator::Lte }
+      / ">=" { BinaryOperator::Gte }
+      / "<" !"<" { BinaryOperator::Lt }
+      / ">" !">" { BinaryOperator::Gt }
+
+EQUALITY_OPERATOR -> BinaryOperator
+    = "==" { BinaryOperator::Eq } / "!=" { BinaryOperator::Neq }
+
+LOGICAL_AND_OPERATOR -> LogicalOperator
+    = "&&" { LogicalOperator::And }
+
+LOGICAL_OR_OPERATOR -> LogicalOperator
+    = "||" { LogicalOperator::Or }
+
+assignment_operator
+    = "*=" / "/=" / "%=" / "+=" / "-=" / "<<=" / ">>=" / ">>>=" / "&=" / "^=" / "|=" / ("=" !"=")
+
+BITWISE_AND_OPERATOR -> BinaryOperator       
+    = "&" !("&" / "=") { BinaryOperator::BitwiseAnd }
+BITWISE_XOR_OPERATOR -> BinaryOperator
+    = "^" !"=" { BinaryOperator::BitwiseXor }
+BITWISE_OR_OPERATOR -> BinaryOperator
+    = "|" !("|" / "=") { BinaryOperator::BitwiseOr }
+
+SPREAD_OPERATOR             = "..."
+
+
+reserved_words
+    = token_this / token_function / token_var / token_return / token_class
+      / token_true / token_false / token_if / token_else / token_for / token_continue
+      / token_break / token_in
+
+
+identifier -> Expr
+    = i:$(!reserved_words identifier_name) { Expr::Identifier(IdentifierExpr::new(i.to_string())) }
+
+
+identifier_name
+    = [a-zA-Z] [a-zA-Z]*
+
+
+// Utils
+
+whitespace
+    =  "\t" / "\\v" / "\\f" / " " / "\u{00A0}" / "\u{FEFF}"
+
+
+
+line_terminator
+    =  "\n" / "\r" / "\u{2028}" / "\u{2029}"
+
+line_terminator_sequence
+    =  "\n" / "\r\n" / "\r" / "\u{2028}" / "\u{2029}"
+
+
+
+_ = whitespace*
+
+__ = (whitespace / line_terminator_sequence )*
+
+_s = ("\n" / ";") _
+
+__s = (whitespace / line_terminator_sequence )*
+
+
