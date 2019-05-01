@@ -30,17 +30,38 @@ pub struct Token {
 
 impl Token {
     pub fn new(location: Location, kind: TokenType, value: &str) -> Token {
-        Token {
-            location,
-            value: value.to_owned(),
-            kind,
-        }
+        Token { location, value: value.to_owned(), kind }
     }
 }
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value)
+    }
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct Object {
+    entries: Vec<ObjectEntry>,
+}
+
+impl Object {
+    pub fn new(entries: Vec<ObjectEntry>) -> Object {
+        Object { entries }
+    }
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct ObjectEntry {
+    pub key: Expr,
+    pub value: Expr,
+}
+
+impl ObjectEntry {
+    pub fn new(key: Expr, value: Expr) -> ObjectEntry {
+        ObjectEntry { key, value }
     }
 }
 
@@ -51,6 +72,7 @@ pub trait StmtVisitor<R> {
     fn visit_expr_stmt(&mut self, e: &ExprStmt) -> R;
     fn visit_func_stmt(&mut self, e: &FuncStmt) -> R;
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> R;
+    fn visit_interface_stmt(&mut self, e: &InterfaceStmt) -> R;
     fn visit_block_stmt(&mut self, e: &BlockStmt) -> R;
     fn visit_if_stmt(&mut self, e: &IfStmt) -> R;
     fn visit_for_stmt(&mut self, e: &ForStmt) -> R;
@@ -116,6 +138,7 @@ pub enum BinaryOperator {
     Lte,
     Gt,
     Gte,
+    Is,
 }
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
@@ -144,6 +167,24 @@ pub enum LogicalOperator {
 #[derive(Debug, Clone, PartialEq)]
 // #[serde(tag = "type", content = "value")]
 #[cfg_attr(feature = "serde_support", serde(tag = "type", content = "value"))]
+pub enum AssignmentOperator {
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+    ShiftLeft,
+    ShiftRight,
+    BitwiseAnd,
+    BitwiseOr,
+    BitwiseXor,
+    Assign,
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+// #[serde(tag = "type", content = "value")]
+#[cfg_attr(feature = "serde_support", serde(tag = "type", content = "value"))]
 pub enum Number {
     Double(f64),
     Integer(i64),
@@ -157,6 +198,8 @@ pub enum Literal {
     String(String),
     Number(Number),
     Boolean(bool),
+    Array(Vec<Expr>),
+    Object(Object),
     Null,
 }
 
@@ -179,6 +222,7 @@ pub enum Stmt {
     Expr(ExprStmt),
     Func(FuncStmt),
     Class(ClassStmt),
+    Interface(InterfaceStmt),
     Block(BlockStmt),
     If(IfStmt),
     For(ForStmt),
@@ -196,6 +240,7 @@ impl Stmt {
             Stmt::Expr(s) => visitor.visit_expr_stmt(&s),
             Stmt::Func(s) => visitor.visit_func_stmt(&s),
             Stmt::Class(s) => visitor.visit_class_stmt(&s),
+            Stmt::Interface(s) => visitor.visit_interface_stmt(&s),
             Stmt::Block(s) => visitor.visit_block_stmt(&s),
             Stmt::If(s) => visitor.visit_if_stmt(&s),
             Stmt::For(s) => visitor.visit_for_stmt(&s),
@@ -260,12 +305,12 @@ impl ProgramStmt {
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct VarStmt {
-    pub name: Token,
+    pub name: String,
     pub initializer: Option<Expr>,
 }
 
 impl VarStmt {
-    pub fn new(name: Token, initializer: Option<Expr>) -> VarStmt {
+    pub fn new(name: String, initializer: Option<Expr>) -> VarStmt {
         VarStmt { name, initializer }
     }
 }
@@ -297,31 +342,43 @@ impl ExprStmt {
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct FuncStmt {
-    pub name: Token,
+    pub name: String,
     pub body: Box<Stmt>,
     pub parameters: Vec<Argument>,
 }
 
 impl FuncStmt {
-    pub fn new(name: Token, body: Box<Stmt>, parameters: Vec<Argument>) -> FuncStmt {
-        FuncStmt {
-            name,
-            body,
-            parameters,
-        }
+    pub fn new(name: String, body: Box<Stmt>, parameters: Vec<Argument>) -> FuncStmt {
+        FuncStmt { name, body, parameters }
     }
 }
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassStmt {
-    pub name: Token,
+    pub name: String,
     pub members: Vec<Box<Stmt>>,
+    pub extends: Option<String>,
+    pub implements: Vec<String>,
 }
 
 impl ClassStmt {
-    pub fn new(name: Token, members: Vec<Box<Stmt>>) -> ClassStmt {
-        ClassStmt { name, members }
+    pub fn new(name: String, members: Vec<Box<Stmt>>, extends: Option<String>, implements: Vec<String>) -> ClassStmt {
+        ClassStmt { name, members, extends, implements }
+    }
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+pub struct InterfaceStmt {
+    pub name: String,
+    pub extends: Option<String>,
+    pub members: Vec<Box<Stmt>>,
+}
+
+impl InterfaceStmt {
+    pub fn new(name: String, extends: Option<String>, members: Vec<Box<Stmt>>) -> InterfaceStmt {
+        InterfaceStmt { name, extends, members }
     }
 }
 
@@ -347,11 +404,7 @@ pub struct IfStmt {
 
 impl IfStmt {
     pub fn new(test: Expr, consequent: Box<Stmt>, alternative: Option<Box<Stmt>>) -> IfStmt {
-        IfStmt {
-            test,
-            consequent,
-            alternative,
-        }
+        IfStmt { test, consequent, alternative }
     }
 }
 
@@ -366,12 +419,7 @@ pub struct ForStmt {
 
 impl ForStmt {
     pub fn new(element: Token, index: Option<Token>, iterator: Expr, body: Box<Stmt>) -> ForStmt {
-        ForStmt {
-            element,
-            index,
-            iterator,
-            body,
-        }
+        ForStmt { element, index, iterator, body }
     }
 }
 
@@ -412,11 +460,12 @@ impl BreakStmt {
 pub struct AssignExpr {
     pub destination: Box<Expr>,
     pub value: Box<Expr>,
+    pub operator: AssignmentOperator,
 }
 
 impl AssignExpr {
-    pub fn new(destination: Box<Expr>, value: Box<Expr>) -> AssignExpr {
-        AssignExpr { destination, value }
+    pub fn new(destination: Box<Expr>, value: Box<Expr>, operator: AssignmentOperator) -> AssignExpr {
+        AssignExpr { destination, value, operator }
     }
 }
 
@@ -455,11 +504,7 @@ pub struct BinaryExpr {
 
 impl BinaryExpr {
     pub fn new(left: Box<Expr>, right: Box<Expr>, operator: BinaryOperator) -> BinaryExpr {
-        BinaryExpr {
-            left,
-            right,
-            operator,
-        }
+        BinaryExpr { left, right, operator }
     }
 }
 
@@ -473,11 +518,7 @@ pub struct MemberExpr {
 
 impl MemberExpr {
     pub fn new(object: Box<Expr>, property: Box<Expr>, computed: bool) -> MemberExpr {
-        MemberExpr {
-            object,
-            property,
-            computed,
-        }
+        MemberExpr { object, property, computed }
     }
 }
 
@@ -515,11 +556,7 @@ pub struct LogicalExpr {
 
 impl LogicalExpr {
     pub fn new(left: Box<Expr>, right: Box<Expr>, operator: LogicalOperator) -> LogicalExpr {
-        LogicalExpr {
-            left,
-            right,
-            operator,
-        }
+        LogicalExpr { left, right, operator }
     }
 }
 

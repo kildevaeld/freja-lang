@@ -1,15 +1,15 @@
 
-class Greeter {
+class Greeter implements Greet {
     fn greet(msg) {
         return this.fmt("Hello", msg)
     }
 
     fn fmt(msg, greet){
-        return greet + " " + msg + "!";
+        return greet + " " + msg + "!"
     }
  
 }
 
-let greeter = Greeter();
-let gretting = greeter.greet("Rasmus");
-print(gretting);
+let greeter = Greeter()
+let gretting = greeter.greet("Rasmus")
+print(gretting)

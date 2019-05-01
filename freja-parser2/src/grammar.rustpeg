@@ -2,19 +2,123 @@ use super::ast::*;
 use super::{resolve_binary, resolve_logical};
 
 pub program -> Vec<Stmt>
-    = s:statements { s }
+    = __ s:statements __ { s }
 
 statements -> Vec<Stmt>
     = s:(statement ** __) { s }
 
 statement -> Stmt
-    = expression_statement
+    = block
+    / class_decl
+    / func_statement
+    / return_stmt
+    / var_statement
+    / if_stmt
+    / expression_statement
+
+
+// Declarations
+
+// Class
+class_decl -> Stmt
+    = token_class __ name:$identifier_raw
+      __ extends:("extends" __ s:$identifier_raw { s.to_string() })?
+      __ implements:("implements" __ i:((s:$identifier_raw { s.to_string() }) ++ (__ "," __)) { i })?
+      __  "{" 
+      __ body:(class_body ** __) __ "}" {
+        Stmt::Class(ClassStmt::new(name.to_string(), body, extends, implements.unwrap_or(Vec::new())))
+    }
+
+class_body -> Box<Stmt>
+    = s:func_statement { Box::new(s) }
+
+
+/*interface_declartion -> Stmt {
+    = token_interface __ name:$identifier_raw
+      __ extends:("extends" __ s:$identifier_raw { s.to_string() })? 
+      __ "{" 
+      __ body:(interface_body ** __) __ "}" {
+        Stmt::Interface(Interface::new(name.to_string(), body, extends))
+    }
+}
+
+interface_body -> Stmt
+    = s:func_declaration { Box::new(s) }
+
+func_declaration -> Stmt {
+
+}*/
+
+// Function
+
+func_statement -> Stmt
+    = token_function __ name:$identifier_raw __
+      "(" __ params:formal_parameter_list? __  ")"
+      __ b:block __ {
+          Stmt::Func(FuncStmt::new(name.to_string(), Box::new(b), params.unwrap_or(Vec::new())))
+      }
+
+formal_parameter_list -> Vec<Argument>
+    = a:formal_parameter_item_vaargs { vec![a] }
+    / args:(formal_parameter_item ++ (__"," __)) __ rest:formal_parameter_item_vaargs? {
+        let mut a = args;
+        if rest.is_some() {
+            a.push(rest.unwrap());
+        }
+        a
+    }
+
+formal_parameter_item -> Argument
+    = o:$identifier_raw {  Argument::Regular(o.to_string()) }
+
+
+formal_parameter_item_vaargs -> Argument
+    = SPREAD_OPERATOR __ i:$identifier_raw { Argument::Rest(i.to_string()) }
+
+// Return
+
+return_stmt -> Stmt                 
+    = token_return __ e:expression? { Stmt::Return(ReturnStmt::new(e))  }
+
 
 expression_statement -> Stmt
-    = _ e:expression _s { Stmt::Expr(ExprStmt::new(e)) }
+    = _ e:expression { Stmt::Expr(ExprStmt::new(e)) }
 
-block -> Vec<Stmt>
-    = "{" __s s:statements __s "}" { s }
+
+
+var_statement -> Stmt
+    = token_var __ vars:(var_decl ** (__ "," __)) {
+        if vars.len() == 1 {
+            Stmt::Var(vars.into_iter().nth(0).unwrap())
+        } else {
+            Stmt::VarList(VarListStmt::new(vars))
+        }
+    }
+
+var_decl -> VarStmt
+    = i:$identifier_raw __ init:initializer?  {
+        VarStmt::new(i.to_string(), init)
+    }
+
+initializer -> Expr
+    = "=" !"=" __ a:assignment_expr { a }
+
+block -> Stmt
+    = "{" __ s:statements __ "}" { Stmt::Block(BlockStmt::new(s.into_iter().map(|m| Box::new(m)).collect())) }
+
+// Control flows
+
+if_stmt -> Stmt
+    = token_if __ test:expression __  b:block __ e:else_stmt? {
+        Stmt::If(IfStmt::new(test, Box::new(b), e))
+    }
+
+
+else_stmt -> Box<Stmt>
+    = token_else __  s:statement {
+        Box::new(s)
+    }
+
 
 
 // Expressions
@@ -23,8 +127,8 @@ expression -> Expr
     = assignment_expr // (__s "," __s assignment_expr)*
 
 assignment_expr -> Expr
-    = l:left_hand_side __ o:$assignment_operator __  r:assignment_expr {
-        Expr::Assign(AssignExpr::new(Box::new(l),Box::new(r)))
+    = l:left_hand_side __ o:assignment_operator __  r:assignment_expr {
+        Expr::Assign(AssignExpr::new(Box::new(l),Box::new(r), o))
     } / logical_or_expr
 
 left_hand_side -> Expr
@@ -51,64 +155,21 @@ member_expr -> Expr
 
 primary_expr -> Expr
     //= "this" / identifier / literal / "(" expression ")"
-    = i:identifier { i }
+    = t:this { t } 
+      / i:identifier { i }
       / l:literal { l }
       / "(" e:expression ")" { e }
 
 
-/*
-primary_expr -> Expr
-    = "this" / identifier / literal / "(" expression ")"
+this -> Expr
+    =  token_this { Expr::This(ThisExpr::new()) } 
 
-member_expr -> Expr
-    = ( primary_expr / function_expr ) ( "[" expression "]" / "." identifier_name )*
-
-call_expr -> Expr
-    = member_expr arguments ( arguments / "[" expression "]" / "." identifier_name)*
-
-arguments -> Expr
-    = "("  (argument_list )? ")"
-
-argument_list -> Expr
-    = assignment_expr __s ("," __s assignment_expr)*
-
-function_expr -> Expr
-    = token_function _s identifier _s "(" __s formal_parameter_list? __s ")" block
-
-formal_parameter_list -> Expr
-    = formal_parameter_item_vaargs / identifier ("," _s formal_parameter_item_vaargs / (__s "," __s identifier)*)?
-
-formal_parameter_item_vaargs -> Expr
-    = SPREAD_OPERATOR _s identifier
-
-left_hand_side_expr -> Expr
-    = call_expr / member_expr
 
 postfix_expr -> Expr
-    = left_hand_side_expr _s POSTFIX_OPERATOR / left_hand_side_expr
-
-unary_expr -> Expr
-    = postfix_expr / UNARY_OPERATOR __s unary_expr
-
-multiplicative_expr -> Expr
-    = unary_expr (__s MULTIPLICATIVE_OPERATOR __s unary_expr)*
-
-additive_expr -> Expr
-    = multiplicative_expr (__s ADDITIVE_OPERATOR __s multiplicative_expr)*
-
-shift_expr -> Expr
-    = additive_expr (__s SHIFT_OPERATOR __s additive_expr)*
-
-relational_expr -> Expr
-    = r:shift_expr __ o:RELATIONAL_OPERATOR __ r:shift_expr {
-
-    }*/
-
-postfix_expr -> Expr
-    = v:left_hand_side _s o:POSTFIX_OPERATOR __ { Expr::Postfix(PostfixExpr::new(Box::new(v),o)) }
+    = v:left_hand_side _ o:POSTFIX_OPERATOR __ { Expr::Postfix(PostfixExpr::new(Box::new(v),o)) }
     / left_hand_side
 
-unary_expr -> Expr 
+unary_expr -> Expr
     = o:UNARY_OPERATOR __ v:unary_expr __ { Expr::Unary(UnaryExpr::new(Box::new(v),o)) }
     / postfix_expr
 
@@ -153,8 +214,7 @@ bitwise_or_expr -> Expr
     }
 
 logical_and_expr -> Expr
-    //= bitwise_or_expr (__s LOGICAL_AND_OPERATOR __s bitwise_or_expr)*
-    = l:equality_expr __ ops:(o:LOGICAL_AND_OPERATOR __ r:equality_expr __ { (o,r) })* {
+    = l:bitwise_or_expr __ ops:(o:LOGICAL_AND_OPERATOR __ r:bitwise_or_expr __ { (o,r) })* {
         resolve_logical(l, ops)
     }
 
@@ -171,6 +231,8 @@ literal -> Expr
         literal_boolean
         / literal_number
         / literal_string
+        / literal_array
+        / literal_object
     ) { Expr::Literal(LiteralExpr::new(lit))  }
 
 
@@ -223,6 +285,27 @@ char_literal
     = "'" (escape / .) "'"
 
 
+// Literal Array;
+literal_array -> Literal
+    = "[" __ e:(expression ** (__ "," __))  __ "]" {
+        Literal::Array(e)
+    }
+
+literal_object -> Literal
+    = "{" __ entries:((
+        k:$identifier_raw __ ":" __ v:expression { 
+            ObjectEntry::new(Expr::Literal(LiteralExpr::new(Literal::String(k.to_string()))), v)
+        }
+        / k:(literal_string / literal_number) __ ":" __ v:expression {
+            ObjectEntry::new(Expr::Literal(LiteralExpr::new(k)), v)
+        }
+        / k:("[" __ e:expression __ "]" { e }) __ ":" __ v:expression {
+            ObjectEntry::new(k, v)
+        }
+    ) ** (__ "," __)) (__ ",")? __ "}" {
+        Literal::Object(Object::new(entries))
+    }
+
 // Tokens
 
 token_this = "this"
@@ -234,6 +317,8 @@ token_var = "let"
 token_return = "return"
 
 token_class = "class"
+
+token_interface = "interface"
 
 token_true = "true"
 
@@ -279,6 +364,7 @@ RELATIONAL_OPERATOR -> BinaryOperator
       / ">=" { BinaryOperator::Gte }
       / "<" !"<" { BinaryOperator::Lt }
       / ">" !">" { BinaryOperator::Gt }
+      / "is" { BinaryOperator::Is }
 
 EQUALITY_OPERATOR -> BinaryOperator
     = "==" { BinaryOperator::Eq } / "!=" { BinaryOperator::Neq }
@@ -289,10 +375,22 @@ LOGICAL_AND_OPERATOR -> LogicalOperator
 LOGICAL_OR_OPERATOR -> LogicalOperator
     = "||" { LogicalOperator::Or }
 
-assignment_operator
-    = "*=" / "/=" / "%=" / "+=" / "-=" / "<<=" / ">>=" / ">>>=" / "&=" / "^=" / "|=" / ("=" !"=")
+assignment_operator -> AssignmentOperator
+    = "*=" { AssignmentOperator::Mul }
+    / "/=" { AssignmentOperator::Div }
+    / "%=" { AssignmentOperator::Mod }
+    / "+=" { AssignmentOperator::Add }
+    / "-=" { AssignmentOperator::Sub }
+    / "<<=" { AssignmentOperator::ShiftLeft }
+    / ">>=" { AssignmentOperator::ShiftRight }
+    / "&=" { AssignmentOperator::BitwiseAnd }
+    / "^=" { AssignmentOperator::BitwiseXor }
+    / "|=" { AssignmentOperator::BitwiseOr }
+    / ("=" !"=") { AssignmentOperator::Assign }
 
-BITWISE_AND_OPERATOR -> BinaryOperator       
+// ">>>=" { AssignmentOperator::Mul }
+
+BITWISE_AND_OPERATOR -> BinaryOperator
     = "&" !("&" / "=") { BinaryOperator::BitwiseAnd }
 BITWISE_XOR_OPERATOR -> BinaryOperator
     = "^" !"=" { BinaryOperator::BitwiseXor }
@@ -311,6 +409,8 @@ reserved_words
 identifier -> Expr
     = i:$(!reserved_words identifier_name) { Expr::Identifier(IdentifierExpr::new(i.to_string())) }
 
+identifier_raw
+    = !reserved_words identifier_name
 
 identifier_name
     = [a-zA-Z] [a-zA-Z]*
@@ -321,7 +421,8 @@ identifier_name
 whitespace
     =  "\t" / "\\v" / "\\f" / " " / "\u{00A0}" / "\u{FEFF}"
 
-
+source_character
+    = .
 
 line_terminator
     =  "\n" / "\r" / "\u{2028}" / "\u{2029}"
@@ -329,14 +430,23 @@ line_terminator
 line_terminator_sequence
     =  "\n" / "\r\n" / "\r" / "\u{2028}" / "\u{2029}"
 
+comment = multi_line_comment / single_line_comment
 
+multi_line_comment = "/*" (!"*/" source_character)* "*/"
+
+multi_line_comment_no_line_terminator = "/*" (!("*/" / line_terminator) source_character)* "*/"
+
+single_line_comment = "//" (!line_terminator source_character)*
 
 _ = whitespace*
 
-__ = (whitespace / line_terminator_sequence )*
+__ = (whitespace / line_terminator_sequence / comment )*
 
-_s = ("\n" / ";") _
+__c = (whitespace / line_terminator_sequence / multi_line_comment / multi_line_comment_no_line_terminator / ";" )+
 
-__s = (whitespace / line_terminator_sequence )*
+/*_s = ("\n" / ";") _
+
+__s = (whitespace / line_terminator_sequence )**/
 
 
+EOS =  single_line_comment? line_terminator_sequence / _ ";" _ / _ &"}" / !.

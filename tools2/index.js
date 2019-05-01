@@ -33,6 +33,7 @@ function generateStucture(list, base, ref = false) {
                         case "Literal":
                         case "Argument":
                         case "Token":
+                        case "String":
                             // let token = value + "<'a>";
                             let token = value;
                             if (isBox) token = `Box<${token}>`;

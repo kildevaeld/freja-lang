@@ -19,7 +19,13 @@ peg = { version = "~0.5" }
 [[example]]
 name = "parser"
 path = "example/parser.rs"
+required-features = ["serde_support"]
+
+[[example]]
+name = "dump"
+path = "example/dump.rs"
+
 
 [features]
-default = ["serde_support"]
+default = []
 serde_support = ["serde"]

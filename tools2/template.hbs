@@ -34,6 +34,31 @@ impl fmt::Display for Token {
     }
 }
 
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct Object {
+    entries: Vec<ObjectEntry>,
+}
+
+impl Object {
+    pub fn new(entries: Vec<ObjectEntry>) -> Object {
+        Object{entries}
+    }
+}
+
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct ObjectEntry {
+    pub key: Expr,
+    pub value: Expr
+}
+
+impl ObjectEntry {
+    pub fn new(key: Expr, value: Expr) -> ObjectEntry {
+        ObjectEntry{key,value}
+    }
+}
 
 
 {{#each enums}}

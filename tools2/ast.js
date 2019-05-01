@@ -2,7 +2,7 @@
 
 
 exports.expressions = [
-    ["Assign", ["destination: Expr", "value: Expr"]],
+    ["Assign", ["destination: Expr", "value: Expr", "operator: AssignmentOperator"]],
     ["Call", ["member: Expr", "arguments: Vec<Expr>"]],
     ["Literal", ["value: Literal"]],
     ["Binary", ["left: Expr", "right: Expr", "operator: BinaryOperator"]],
@@ -19,11 +19,12 @@ exports.expressions = [
 
 exports.statements = [
     ["Program", ["statements: *Stmt"]],
-    ["Var", ["name: Token", "initializer: ?Expr"]],
+    ["Var", ["name: String", "initializer: ?Expr"]],
     ["VarList", ["variables: Vec<VarStmt>"]],
     ["Expr", ["expression: Expr"]],
-    ["Func", ["name: Token", "body: Stmt", "parameters: *Argument"]],
-    ["Class", ["name: Token", "members: *Stmt"]],
+    ["Func", ["name: String", "body: Stmt", "parameters: *Argument"]],
+    ["Class", ["name: String", "members: *Stmt", "extends: ?String", "implements: *String"]],
+    ["Interface", ["name: String", "extends: ?String", "members: *Stmt"]],
     ["Block", ["statements: *Stmt"]],
     ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Stmt"]],
     ["For", ["element: Token", "index: ?Token", "iterator: Expr", "body: Stmt"]],
@@ -33,6 +34,9 @@ exports.statements = [
 ];
 
 exports.literals = [
+    // ["Type", [
+    //     ["Integer", "Double", "String", "Array", "Map", "Boolean"]
+    // ]],
     ["UnaryOperator",
         ["Plus", "Minus", "Increment", "Decrement"]
     ],
@@ -44,7 +48,7 @@ exports.literals = [
             "Add", "Sub", "Mul", "Div", "Mod",
             "BitwiseXor", "BitwiseAnd", "BitwiseOr",
             "ShiftLeft", "ShiftRight",
-            "Eq", "Neq", "Lt", "Lte", "Gt", "Gte"
+            "Eq", "Neq", "Lt", "Lte", "Gt", "Gte", "Is"
         ]
     ],
     ["ComparisonOperator",
@@ -52,6 +56,12 @@ exports.literals = [
     ],
     ["LogicalOperator",
         ["And", "Or"]
+    ],
+    ["AssignmentOperator",
+        [
+            "Add", "Sub", "Mul", "Div", "Mod", "ShiftLeft", "ShiftRight",
+            "BitwiseAnd", "BitwiseOr", "BitwiseXor", "Assign"
+        ]
     ],
     ["Number", [
         ["Double", "f64"],
@@ -61,11 +71,13 @@ exports.literals = [
         ["String", "String"],
         ["Number", "Number"],
         ["Boolean", "bool"],
+        ["Array", "Vec<Expr>"],
+        ["Object", "Object"],
         "Null",
     ]],
     ["Argument", [
         ["Regular", "String"],
         ["Rest", "String"]
-    ]],
+    ]]
 ];
 

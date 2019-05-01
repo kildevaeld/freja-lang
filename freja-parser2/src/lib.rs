@@ -4,6 +4,7 @@ extern crate serde;
 
 pub mod ast;
 
+#[inline]
 pub(crate) fn resolve_binary(l: ast::Expr, mut o:Vec<(ast::BinaryOperator, ast::Expr)>) -> ast::Expr {
     if o.is_empty() {
         return l;
@@ -16,6 +17,7 @@ pub(crate) fn resolve_binary(l: ast::Expr, mut o:Vec<(ast::BinaryOperator, ast::
     resolve_binary(left, o)
 }
 
+#[inline]
 pub(crate) fn resolve_logical(l: ast::Expr, mut o:Vec<(ast::LogicalOperator, ast::Expr)>) -> ast::Expr {
     if o.is_empty() {
         return l;
@@ -29,29 +31,6 @@ pub(crate) fn resolve_logical(l: ast::Expr, mut o:Vec<(ast::LogicalOperator, ast
 
 
 }
-
-// #[derive(PartialEq, Debug)]
-// pub enum Stmt {
-//     Expr(Expr),
-// }
-
-// #[derive(PartialEq, Debug)]
-// pub enum Expr {
-//     Literal(Literal),
-// }
-
-// #[derive(PartialEq, Debug)]
-// pub enum Literal {
-//     String(String),
-//     Boolean(bool),
-//     Number(Number),
-// }
-
-// #[derive(PartialEq, Debug)]
-// pub enum Number {
-//     Double(f64),
-//     Integer(i64),
-// }
 
 pub mod grammar2;
 pub use grammar2 as parser;
