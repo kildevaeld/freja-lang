@@ -3,7 +3,7 @@
 
 
 build:
-	node tools2/index.js | rustfmt > freja-parser2/src/ast.rs
+	node tools/index.js | rustfmt > freja-parser/src/ast.rs
 
 ast: freja-ast/src/ast.rs
 
@@ -14,13 +14,13 @@ clean:
 	rm freja-ast/src/ast.rs
 
 peg:
-	rust-peg freja-parser2/src/grammar.rustpeg | rustfmt > freja-parser2/src/grammar2.rs
+	rust-peg freja-parser/src/grammar.rustpeg | rustfmt > freja-parser/src/grammar2.rs
 
 watch: watch-grammer watch-ast
 	
 
 watch-ast:
-	@echo tools2/ast.js | entr make build
+	@echo tools/ast.js | entr make build
 
 watch-grammer:
-	@echo freja-parser2/src/grammar.rustpeg | entr make peg
+	@echo freja-parser/src/grammar.rustpeg | entr make peg

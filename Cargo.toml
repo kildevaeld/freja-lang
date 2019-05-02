@@ -3,6 +3,7 @@
 members = [
 
     "freja-parser",
+    "freja-vm",
     #"freja-ast",
     #"freja-evaluator",
     #"freja-runtime",

@@ -1,5 +1,7 @@
-if something {
-    print("Hello, World")
-} else if 2000 == 10 {
+if "test" {
+    2000
+    //print("Hello, World")
+} //else {}
+/*else if 2000 == 10 {
     20030
-}
+}*/

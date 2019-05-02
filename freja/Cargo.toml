@@ -5,6 +5,7 @@ authors = ["Rasmus Kildevaeld <rasmuskildevaeld@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+freja-vm = { path = "../freja-vm"}
 freja-parser = { path = "../freja-parser", features = ["serde_support"] }
 #freja-ast = { path = "../freja-ast" }
 #freja-evaluator = { path = "../freja-evaluator" }
