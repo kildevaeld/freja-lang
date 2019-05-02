@@ -1,0 +1,175 @@
+[
+  {
+    "type": "Class",
+    "name": "Greeter",
+    "members": [
+      {
+        "type": "Func",
+        "name": "greet",
+        "body": {
+          "type": "Block",
+          "statements": [
+            {
+              "type": "Return",
+              "expression": {
+                "type": "Call",
+                "member": {
+                  "type": "Member",
+                  "object": {
+                    "type": "This"
+                  },
+                  "property": {
+                    "type": "Identifier",
+                    "value": "fmt"
+                  },
+                  "computed": false
+                },
+                "arguments": [
+                  {
+                    "type": "Literal",
+                    "value": {
+                      "type": "String",
+                      "value": "Hello"
+                    }
+                  },
+                  {
+                    "type": "Identifier",
+                    "value": "msg"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "type": "Regular",
+            "value": "msg"
+          }
+        ]
+      },
+      {
+        "type": "Func",
+        "name": "fmt",
+        "body": {
+          "type": "Block",
+          "statements": [
+            {
+              "type": "Return",
+              "expression": {
+                "type": "Binary",
+                "left": {
+                  "type": "Binary",
+                  "left": {
+                    "type": "Binary",
+                    "left": {
+                      "type": "Identifier",
+                      "value": "greet"
+                    },
+                    "right": {
+                      "type": "Literal",
+                      "value": {
+                        "type": "String",
+                        "value": "!"
+                      }
+                    },
+                    "operator": {
+                      "type": "Add"
+                    }
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "value": "msg"
+                  },
+                  "operator": {
+                    "type": "Add"
+                  }
+                },
+                "right": {
+                  "type": "Literal",
+                  "value": {
+                    "type": "String",
+                    "value": " "
+                  }
+                },
+                "operator": {
+                  "type": "Add"
+                }
+              }
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "type": "Regular",
+            "value": "msg"
+          },
+          {
+            "type": "Regular",
+            "value": "greet"
+          }
+        ]
+      }
+    ],
+    "extends": null,
+    "implements": [
+      "Greet"
+    ]
+  },
+  {
+    "type": "Var",
+    "name": "greeter",
+    "initializer": {
+      "type": "Call",
+      "member": {
+        "type": "Identifier",
+        "value": "Greeter"
+      },
+      "arguments": []
+    }
+  },
+  {
+    "type": "Var",
+    "name": "gretting",
+    "initializer": {
+      "type": "Call",
+      "member": {
+        "type": "Member",
+        "object": {
+          "type": "Identifier",
+          "value": "greeter"
+        },
+        "property": {
+          "type": "Identifier",
+          "value": "greet"
+        },
+        "computed": false
+      },
+      "arguments": [
+        {
+          "type": "Literal",
+          "value": {
+            "type": "String",
+            "value": "Rasmus"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "type": "Expr",
+    "expression": {
+      "type": "Call",
+      "member": {
+        "type": "Identifier",
+        "value": "print"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "gretting"
+        }
+      ]
+    }
+  }
+]

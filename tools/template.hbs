@@ -1,9 +1,11 @@
 use std::fmt;
 
-#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Location(pub usize, pub usize);
 
-#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum TokenType {
     This, Identifier,
     OpAdditive, OpMultiplicative,
@@ -11,26 +13,53 @@ pub enum TokenType {
     BitwiseOrOperator, BitwiseAndOperator,
     LogicalOrOperator, LogicalAndOperator
 }
-
-#[derive(Serialize, Debug, PartialEq, Eq, Hash, Clone, Deserialize)]
-#[serde(tag = "type")]
-pub struct Token<'a> {
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[cfg_attr(feature = "serde_support", serde(tag = "type"))]
+pub struct Token {
     pub kind: TokenType,
     pub location: Location,
-    pub value: &'a str,
+    pub value: String,
 }
 
-impl<'a> Token<'a> {
-    pub fn new(location: Location, kind: TokenType, value: &'a str) -> Token<'a> {
-        Token { location, value, kind }
+impl Token {
+    pub fn new(location: Location, kind: TokenType, value: &str) -> Token {
+        Token { location, value: value.to_owned(), kind }
     }
 }
 
-impl<'a> fmt::Display for Token<'a> {
+impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value)
     }
 }
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct Object {
+    entries: Vec<ObjectEntry>,
+}
+
+impl Object {
+    pub fn new(entries: Vec<ObjectEntry>) -> Object {
+        Object{entries}
+    }
+}
+
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, PartialEq, Clone)]
+pub struct ObjectEntry {
+    pub key: Expr,
+    pub value: Expr
+}
+
+impl ObjectEntry {
+    pub fn new(key: Expr, value: Expr) -> ObjectEntry {
+        ObjectEntry{key,value}
+    }
+}
+
 
 {{#each enums}}
 {{#if visitor}}
@@ -44,20 +73,22 @@ pub trait {{name}}Visitor<R> {
 {{/each}}
 
 {{#each enums }}
-#[derive(Serialize, Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
 {{#if flatten}}
-#[serde(tag = "type")]
+#[cfg_attr(feature = "serde_support", serde(tag = "type"))]
 {{else}}
-#[serde(tag = "type", content = "value")]
+// #[serde(tag = "type", content = "value")]
+#[cfg_attr(feature = "serde_support", serde(tag = "type", content = "value"))]
 {{/if}}
-pub enum {{{name}}}{{#if lifetime}}<'a>{{/if}} {
+pub enum {{{name}}} {
     {{#each variants}}
     {{{name}}}{{#if value}}({{{value}}}){{/if}},
     {{/each}}
 }
 {{#if visitor}}
 
-impl<'a> {{{name}}}<'a> {
+impl {{{name}}} {
     pub fn accept<R>(&self, visitor: &mut {{name}}Visitor<R>) -> R {
         match self {
             {{#each visitor}}
@@ -71,12 +102,26 @@ impl<'a> {{{name}}}<'a> {
 {{/each}}
 
 {{#each structures}}
-#[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct {{{name}}}{{#if fields.length}}<'a>{{/if}} {
-    pub location: Location,
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+pub struct {{{name}}}{{#if fields.length}}{{/if}} {
+    {{!-- pub location: Location, --}}
     {{#each fields}}
     pub {{{name}}}: {{{value}}},
     {{/each}}
+}
+
+impl {{{name}}} {
+    pub fn new(
+        {{!-- location: Location, --}}
+        {{#each fields}}{{{name}}}: {{{value}}},
+        {{/each}}) -> {{{name}}} {
+        {{{name}}} {
+            {{!-- location, --}}
+            {{#each fields}}{{{name}}},
+            {{/each}}
+        }
+    }
 }
 
 {{/each}}

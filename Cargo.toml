@@ -3,9 +3,9 @@
 members = [
 
     "freja-parser",
-    "freja-ast",
-    "freja-evaluator",
-    "freja-runtime",
+    #"freja-ast",
+    #"freja-evaluator",
+    #"freja-runtime",
     "freja",
-    "freja-parser2"
+    #"freja-parser2"
 ]

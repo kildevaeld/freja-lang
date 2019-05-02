@@ -1,119 +1,52 @@
-#[macro_use]
-extern crate clap;
-
-use freja_evaluator::VM;
 use freja_parser::*;
 use serde_json;
-
 use std::fs;
+use getopts::Options;
+use std::env;
 
-fn print_ast(input: &str, full: bool) {
+
+fn print_ast(input: &str)  {
     let data = fs::read_to_string(input).unwrap();
-    let tokens = lexer::tokenize(data.as_str()).unwrap();
-    let ast = parser::parse(tokens);
+    let ast = parser::program(&data).expect("could not parse");
     let json = serde_json::to_string_pretty(&ast).unwrap();
     println!("{}", json);
 }
 
-fn format_pair<'a>(
-    pair: Pair<'a, lexer::Rule>,
-    indent_level: usize,
-    is_newline: bool,
-    full: bool,
-) -> String {
-    let indent = if is_newline {
-        "  ".repeat(indent_level)
-    } else {
-        "".to_string()
-    };
-
-    let children: Vec<_> = pair.clone().into_inner().collect();
-    let len = children.len();
-    let children: Vec<_> = children
-        .into_iter()
-        .map(|pair| {
-            format_pair(
-                pair,
-                if len > 1 {
-                    indent_level + 1
-                } else {
-                    indent_level
-                },
-                len > 1,
-                full,
-            )
-        })
-        .collect();
-
-    let dash = if is_newline { "- " } else { "" };
-
-    match len {
-        0 => format!(
-            "{}{}{:?}: {:?}",
-            indent,
-            dash,
-            pair.as_rule(),
-            pair.into_span().as_str()
-        ),
-        1 => {
-            if full {
-                format!("{}{}{:?} > {}", indent, dash, pair.as_rule(), children[0])
-            } else {
-                format!("{}{}{}", indent, dash, children[0])
-            }
-        }
-        _ => format!(
-            "{}{}{:?}\n{}",
-            indent,
-            dash,
-            pair.as_rule(),
-            children.join("\n")
-        ),
-    }
-}
-
-fn print_dump(input: &str, full: bool) {
-    let data = fs::read_to_string(input).unwrap();
-    let tokens = lexer::tokenize(data.as_str()).unwrap();
-    let lines: Vec<_> = tokens
-        .map(|pair| format_pair(pair, 0, true, full))
-        .collect();
-    let lines = lines.join("\n");
-    println!("{}", lines);
-}
-
-fn print_eval(input: &str) {
-    let data = fs::read_to_string(input).unwrap();
-    let tokens = lexer::tokenize(data.as_str()).unwrap();
-    let ast = parser::parse(tokens);
-    let mut vm = VM::new();
-    vm.interpret(&ast).unwrap(); //.unwrap();
-                                 //println!("VM {:?}", vm);
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} FILE [options]", program);
+    print!("{}", opts.usage(&brief));
 }
 
 fn main() {
-    let matches = clap_app!(freja =>
-        (@arg input:  "input")
-        (@subcommand ast =>
-            (@arg full: -f "full")
-            (@arg input: *  "input")
-        )
-        (@subcommand dump =>
-            (@arg full: -f "full")
-            (@arg input: *  "input")
-        )
-    )
-    .get_matches();
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
 
-    if let Some(matches) = matches.subcommand_matches("ast") {
-        let input = matches.value_of("input").unwrap();
-        print_ast(input, matches.is_present("full"));
-    } else if let Some(matches) = matches.subcommand_matches("dump") {
-        let input = matches.value_of("input").unwrap();
-        print_dump(input, matches.is_present("full"));
-    } else if let Some(input) = matches.value_of("input") {
-        print_eval(input);
+
+
+    let mut opts = Options::new();
+    opts.optopt("o", "", "set output file name", "NAME").optflag("h", "help", "print this help menu").optflag("a", "ast", "print ast");
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => { m }
+        Err(f) => { panic!(f.to_string()) }
+    };
+    if matches.opt_present("h") {
+        print_usage(&program, opts);
+        return;
+    }
+
+    let output = matches.opt_str("o");
+    let input = if !matches.free.is_empty() {
+        matches.free[0].clone()
+    } else {
+        print_usage(&program, opts);
+        return;
+    };
+
+    if matches.opt_present("a") {
+        print_ast(&input);
     } else {
 
     }
+
+
 }

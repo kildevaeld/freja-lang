@@ -1,5 +1,5 @@
 {
-  "name": "tools2",
+  "name": "tools",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hbs": "^4.0.4",
+    "hbs": "^4.0.2",
     "mz": "^2.7.0",
     "to-snake-case": "^1.0.0"
   }

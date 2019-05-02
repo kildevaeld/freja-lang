@@ -5,9 +5,9 @@ authors = ["Rasmus Kildevaeld <rasmuskildevaeld@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-freja-parser = { path = "../freja-parser" }
-freja-ast = { path = "../freja-ast" }
-freja-evaluator = { path = "../freja-evaluator" }
-clap = "~2.33"
+freja-parser = { path = "../freja-parser", features = ["serde_support"] }
+#freja-ast = { path = "../freja-ast" }
+#freja-evaluator = { path = "../freja-evaluator" }
+getopts = "0.2"
 serde = "~1.0"
 serde_json = "~1.0"

@@ -15,3 +15,12 @@ clean:
 
 peg:
 	rust-peg freja-parser2/src/grammar.rustpeg | rustfmt > freja-parser2/src/grammar2.rs
+
+watch: watch-grammer watch-ast
+	
+
+watch-ast:
+	@echo tools2/ast.js | entr make build
+
+watch-grammer:
+	@echo freja-parser2/src/grammar.rustpeg | entr make peg

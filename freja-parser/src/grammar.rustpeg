@@ -16,7 +16,6 @@ statement -> Stmt
     / if_stmt
     / expression_statement
 
-
 // Declarations
 
 // Class
