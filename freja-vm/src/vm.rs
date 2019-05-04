@@ -213,12 +213,13 @@ use std::rc::Rc;
 struct CallFrame {
     closure: Rc<Closure>,
     ip: RefCell<usize>,
-    slots: Vec<ValuePtr>,
+    idx: usize,
+    //slots: Vec<ValuePtr>,
 }
 
 impl CallFrame {
-    pub fn new(closure: Rc<Closure>) -> CallFrame {
-        CallFrame { closure, ip: RefCell::new(0), slots: Vec::new() }
+    pub fn new(closure: Rc<Closure>, idx: usize) -> CallFrame {
+        CallFrame { closure, ip: RefCell::new(0), idx }
     }
 
     pub fn read_byte(&self) -> u8 {
@@ -305,11 +306,13 @@ impl VM {
                 }
                 OpCode::GetLocal => {
                     let b = frame.read_byte();
-                    self.push(&frame.slots[b as usize]);
+                    self.stack.push(self.stack[frame.idx + b as usize].clone()).expect("stack overflow");
+                    //self.push(&self.stack[frame.idx + b as usize]);
                 }
                 OpCode::Return => {
                     let result = self.pop().unwrap();
                     self.frames.pop();
+                    self.stack.truncate(frame.idx);
                     self.push(&result);
                     frame = match self.frames.last() {
                         Some(f) => f.clone(),
@@ -372,23 +375,24 @@ impl VM {
         // TODO check aritity
         let a = closure.function.arity;
         let count = if self.stack.len() == 0 { 0 } else { a + 1 };
-
-        let slots = self.stack[self.stack.len() - (count as usize)..].to_vec();
-        self.stack.truncate(self.stack.len() - (count as usize));
-        let frame = CallFrame { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
+        let idx = self.stack.len() - (count as usize);
+        let frame = CallFrame::new(closure.clone(), idx); // { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
         self.frames.push(Rc::new(frame));
 
         Ok(())
     }
 
+    #[inline(always)]
     fn push(&mut self, value: &Rc<Value>) {
         self.stack.push(value.clone()).expect("stack overflow")
     }
 
+    #[inline(always)]
     fn pop(&mut self) -> Option<ValuePtr> {
         self.stack.pop()
     }
 
+    #[inline(always)]
     fn peek(&mut self, distance: usize) -> Option<&ValuePtr> {
         let i = -1 - distance as i32;
         let idx = (self.stack.len() as i32) + i;
