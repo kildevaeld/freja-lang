@@ -135,6 +135,11 @@ impl Chunk {
     }
 
     pub fn add_constant(&mut self, value: Value) -> usize {
+        for kv in self.constants.iter().enumerate() {
+            if kv.1.as_ref() == &value {
+                return kv.0;
+            }
+        }
         self.constants.push(Rc::new(value));
         self.constants.len() - 1
     }

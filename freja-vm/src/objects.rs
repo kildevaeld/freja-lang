@@ -1,0 +1,46 @@
+use super::chunk::Chunk;
+use std::fmt;
+use super::value::ValuePtr;
+use std::rc::Rc;
+
+
+#[derive(PartialEq)]
+pub struct Function {
+    pub(crate) chunk: Chunk,
+    pub(crate) up_value_count: i32,
+    pub(crate) name: Option<String>,
+    pub(crate) arity: i32,
+}
+
+impl fmt::Display for Function {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.chunk)
+    }
+}
+
+impl Function {
+    pub fn new() -> Function {
+        Function { chunk: Chunk::new(), up_value_count: 0, name: None, arity: 0 }
+    }
+}
+
+#[derive(PartialEq)]
+pub struct Closure {
+    pub(crate) function: Rc<Function>,
+}
+
+impl Closure {
+    pub fn new(function: Rc<Function>) -> Closure {
+        Closure { function }
+    }
+}
+
+pub struct Native {
+    pub(crate) function: Box<Fn(&[ValuePtr])>,
+}
+
+impl PartialEq for Native {
+    fn eq(&self, other: &Native) -> bool {
+        false
+    }
+}

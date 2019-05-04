@@ -63,10 +63,10 @@ exports.literals = [
             "BitwiseAnd", "BitwiseOr", "BitwiseXor", "Assign"
         ]
     ],
-    ["Number", [
-        ["Double", "f64"],
-        ["Integer", "i64"]
-    ]],
+    // ["Number", [
+    //     ["Double", "f64"],
+    //     ["Integer", "i64"]
+    // ]],
     ["Literal", [
         ["String", "String"],
         ["Number", "Number"],

@@ -1,6 +1,7 @@
 use super::chunk::{Chunk, OpCode};
 use super::error::{CompileError, CompileResult};
-use super::value::{Function, Value};
+use super::objects::Function;
+use super::value::Value;
 use freja_parser::ast::*;
 use std::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
@@ -33,7 +34,7 @@ type CompilerStatePtr = Rc<RefCell<CompilerState>>;
 
 impl CompilerState {
     pub fn new(enclosing: Option<CompilerStatePtr>, scope_depth: i32, function_type: FunctionType) -> CompilerStatePtr {
-        Rc::new(RefCell::new(CompilerState { enclosing, locals: Vec::new(), scope_depth, function_type, function: Function::new(), up_values: Vec::new() }))
+        Rc::new(RefCell::new(CompilerState { enclosing, locals: vec![Local(scope_depth, "".to_owned(), false)], scope_depth, function_type, function: Function::new(), up_values: Vec::new() }))
     }
 }
 
@@ -187,6 +188,7 @@ impl Compiler {
 
     pub fn end_scope(&mut self) {
         self.state_mut().scope_depth -= 1;
+
         while !self.state().locals.is_empty() && self.state().locals.last().map(|n| n.0).unwrap_or(0) > self.state().scope_depth {
             self.emit(OpCode::Pop);
             self.state_mut().locals.pop();
@@ -318,10 +320,10 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_func_stmt(&mut self, e: &FuncStmt) -> CompileResult<()> {
-        self.declare_variable(e.name.as_str())?;
-        let global = if self.state().scope_depth > 0 { 0 } else { self.make_constant(Value::String(e.name.to_string())) };
-        //let global = if self.state().locals.len() == 0 { 0 } else { self.state().locals.len() - 1 };
-
+        // self.declare_variable(e.name.as_str())?;
+        // let global = if self.state().scope_depth > 0 { 0 } else { self.make_constant(Value::String(e.name.to_string())) };
+        // //let global = if self.state().locals.len() == 0 { 0 } else { self.state().locals.len() - 1 };
+        let global = self.parse_var(e.name.as_str());
         self.mark_initialized();
         let state = CompilerState::new(Some(self.state.clone()), 1, FunctionType::Function);
         {
@@ -333,12 +335,24 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
         for p in &e.parameters {
             match p {
-                Argument::Regular(m) => self.declare_variable(m)?,
+                Argument::Regular(m) => {
+                    let global = self.parse_var(m.as_str());
+                    self.define_variable(global);
+                }
                 Argument::Rest(_) => unimplemented!("rest not implemented"),
             };
         }
 
-        e.body.accept(self)?;
+        match e.body.as_ref() {
+            Stmt::Block(b) => {
+                for bb in &b.statements {
+                    bb.accept(self)?;
+                }
+            }
+            _ => unimplemented!("should be block"),
+        };
+
+        self.end_scope();
 
         let function = self.end_compile();
 
@@ -442,8 +456,9 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     fn visit_literal_expr(&mut self, e: &LiteralExpr) -> CompileResult<()> {
         //
         let val = match &e.value {
-            Literal::Number(Number::Double(d)) => Value::Double(*d),
-            Literal::Number(Number::Integer(i)) => Value::Integer(*i),
+            Literal::Number(n) => Value::Number(n.clone()),
+            //Literal::Number(Number::Double(d)) => Value::Double(*d),
+            //Literal::Number(Number::Integer(i)) => Value::Integer(*i),
             Literal::Boolean(b) => Value::Boolean(*b),
             Literal::String(s) => Value::String(s.clone()),
             _ => unimplemented!("literal"),
@@ -454,18 +469,32 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_binary_expr(&mut self, e: &BinaryExpr) -> CompileResult<()> {
         //
+
+        e.left.accept(self)?;
+        e.right.accept(self)?;
+
         let opc = match &e.operator {
             BinaryOperator::Add => OpCode::Add,
             BinaryOperator::Sub => OpCode::Substract,
             BinaryOperator::Mul => OpCode::Multiply,
             BinaryOperator::Div => OpCode::Divide,
             BinaryOperator::Eq => OpCode::Equal,
-            BinaryOperator::Lte => OpCode::Less,
+            BinaryOperator::Lte => {
+                self.emit(OpCode::Greater);
+                OpCode::Not
+            }
+            BinaryOperator::Lt => OpCode::Less,
+            BinaryOperator::Gt => OpCode::Greater,
+            BinaryOperator::Gte => {
+                self.emit(OpCode::Less);
+                OpCode::Not
+            }
+            BinaryOperator::Neq => {
+                self.emit(OpCode::Equal);
+                OpCode::Not
+            }
             _ => unimplemented!("binary {:?}", e.operator),
         };
-
-        e.left.accept(self)?;
-        e.right.accept(self)?;
 
         self.emit(opc);
 

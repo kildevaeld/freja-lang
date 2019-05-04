@@ -1,0 +1,5 @@
+fn test(msg) {
+    return "Hello " + msg + "!"
+}
+
+print(test("World"))

@@ -112,6 +112,7 @@ pub fn value_binary(lhs: &Value, rhs: &Value, op: &Token) -> RuntimeResult<Value
         "*" => value_mul(lhs, rhs),
         "/" => value_div(lhs, rhs),
         "<=" => value_eqlt(lhs, rhs),
+        ">" => value_gt(lhs, rhs),
         _ => Err(RuntimeError::Unknown(format!(
             "invalid binary token {:?}",
             op

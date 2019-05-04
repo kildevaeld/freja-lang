@@ -60,6 +60,15 @@ impl ObjectEntry {
     }
 }
 
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+// #[serde(tag = "type", content = "value")]
+#[cfg_attr(feature = "serde_support", serde(tag = "type", content = "value"))]
+pub enum Number {
+    Double(f64),
+    Integer(i64),
+}
+
 
 {{#each enums}}
 {{#if visitor}}

@@ -1,7 +1,8 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
 use super::error::CompileResult;
-use super::value::{Closure, Native, Value, ValuePtr};
+use super::objects::*;
+use super::value::{value_binary, Value, ValuePtr};
 use freja_parser::ast::*;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -93,6 +94,7 @@ impl VM {
                 }
                 OpCode::GetGlobal => {
                     let name = frame.read_constant().unwrap().as_string().unwrap();
+
                     let m = match self.globals.get(name) {
                         Some(m) => m.clone(),
                         None => panic!("undefined variable: {}", name),
@@ -101,8 +103,6 @@ impl VM {
                 }
                 OpCode::GetLocal => {
                     let b = frame.read_byte();
-                    // println!("{} {}", frame.slots.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", "), b);
-                    //unimplemented!("{:?}", instruction);
                     self.push(&frame.slots[b as usize]);
                 }
                 OpCode::Return => {
@@ -127,7 +127,25 @@ impl VM {
                     let cl = Rc::new(Value::Closure(Rc::new(Closure::new(fu))));
                     self.push(&cl);
                 }
-                OpCode::Divide | OpCode::Multiply | OpCode::Add | OpCode::Substract => {}
+                OpCode::Divide | OpCode::Multiply | OpCode::Add | OpCode::Substract | OpCode::Equal | OpCode::Less | OpCode::Greater => {
+                    let right = self.pop().unwrap();
+                    let left = self.pop().unwrap();
+
+                    let ret = Rc::new(value_binary(left.as_ref(), right.as_ref(), instruction).expect("binary"));
+                    self.push(&ret);
+                }
+                OpCode::JumpIfFalse => {
+                    let offset = frame.read_short();
+                    let v = self.peek(0).unwrap();
+                    if !v.is_truthy() {
+                        *frame.ip.borrow_mut() += offset as usize;
+                    }
+                }
+                OpCode::Not => {
+                    let current = self.pop().unwrap();
+                    let v = Rc::new(Value::Boolean(!current.is_truthy()));
+                    self.push(&v);
+                }
                 OpCode::Nil => self.push(&Rc::new(Value::Null)),
                 _ => unimplemented!("instruction {:?}", instruction),
             };
@@ -150,8 +168,11 @@ impl VM {
 
     fn call(&mut self, closure: &Rc<Closure>) -> CompileResult<()> {
         // TODO check aritity
+        let a = closure.function.arity;
+        let count = if self.stack.len() == 0 { 0 } else { a + 1 };
 
-        let slots = self.stack[self.stack.len() - (closure.function.arity) as usize..].to_vec();
+        let slots = self.stack[self.stack.len() - (count as usize)..].to_vec();
+        self.stack.resize_with(self.stack.len() - (count as usize), Rc::default);
         let frame = CallFrame { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
         self.frames.push(Rc::new(frame));
 
