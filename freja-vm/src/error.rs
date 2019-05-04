@@ -7,6 +7,7 @@ pub type CompileResult<T> = Result<T, CompileError>;
 #[derive(Debug)]
 pub enum CompileError {
     DuplicateVariable,
+    ReturnTopLevel,
 }
 
 impl fmt::Display for CompileError {

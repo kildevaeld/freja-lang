@@ -1,5 +1,6 @@
 use freja_parser::*;
 use freja_vm::compiler::*;
+use freja_vm::vm::VM;
 use getopts::Options;
 use serde_json;
 use std::env;
@@ -20,8 +21,16 @@ fn print_usage(program: &str, opts: Options) {
 fn run(input: &str) {
     let data = fs::read_to_string(input).unwrap();
     let ast = parser::program(&data).expect("could not parse");
-    let ret = Compiler::new().compile(&ast).expect("compile");
-    println!("{}", ret);
+    //let ret = Compiler::new().compile(&ast).expect("compile");
+    let mut vm = VM::new();
+    vm.push_native("print", |vals| {
+        let v = vals.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ");
+        println!("print {}", v);
+    });
+    vm.interpret_ast(&ast).unwrap();
+
+    //println!("{}", vm.dump());
+    //println!("{}", vm.dump_global());
 }
 
 fn main() {

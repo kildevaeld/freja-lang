@@ -12,9 +12,9 @@ macro_rules! byte_instruction {
 
 macro_rules! constant_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
-        let code = $chunk.get_code($offset + 1);
+        let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).unwrap();
-        write!($fmt, "{:24}{}", $name, constant)?;
+        write!($fmt, "{:24} {:4} '{}'", $name, code, constant)?;
         $offset + 2
     }};
 }
@@ -23,7 +23,8 @@ macro_rules! jump_instruction {
     ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
         let mut jump = ($chunk.code[$offset + 1] as u16) << 8;
         jump |= $chunk.code[$offset + 2] as u16;
-        write!($fmt, "{:24} {:4} -> {}", $name, $offset, $offset + 3 + ($sign as u16) * jump)?;
+
+        write!($fmt, "{:24} {:4} -> {}", $name, $offset, $offset + 3 + $sign * (jump as usize))?;
         $offset + 3
     }};
 }
@@ -35,8 +36,15 @@ macro_rules! simple_instruction {
     }};
 }
 
+macro_rules! simple_instruction_n {
+    ($name:expr, $offset: expr, $n: expr, $fmt:expr) => {{
+        write!($fmt, "{}_{}", $name, $n)?;
+        $offset + 1
+    }};
+}
+
 #[repr(u8)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum OpCode {
     Constant,
     Nil,
@@ -48,6 +56,8 @@ pub enum OpCode {
     GetGlobal,
     SetGlobal,
     DefineGlobal,
+    GetUpValue,
+    SetUpValue,
     Equal,
     Greater,
     Less,
@@ -60,11 +70,21 @@ pub enum OpCode {
     Return,
     Jump,
     JumpIfFalse,
+    Closure,
+    Call0,
+    Call1,
+    Call2,
+    Call3,
+    Call4,
+    Call5,
+    Call6,
+    Call7,
+    Call8,
 }
 
 impl From<u8> for OpCode {
     fn from(i: u8) -> OpCode {
-        if i <= (OpCode::JumpIfFalse as u8) {
+        if i <= (OpCode::Call8 as u8) {
             return unsafe { std::mem::transmute::<_, OpCode>(i) };
         }
         panic!("invalid repo {}", i);
@@ -77,6 +97,7 @@ impl From<OpCode> for u8 {
     }
 }
 
+#[derive(PartialEq)]
 pub struct Chunk {
     pub(crate) code: Vec<u8>,
     constants: Vec<ValuePtr>,
@@ -128,6 +149,8 @@ impl Chunk {
             OpCode::True => simple_instruction!("OP_TRUE", offset, f),
             OpCode::False => simple_instruction!("OP_FALSE", offset, f),
             OpCode::Pop => simple_instruction!("OP_POP", offset, f),
+            OpCode::GetUpValue => byte_instruction!("OP_GET_UPVALUE", self, offset, f),
+            OpCode::SetUpValue => byte_instruction!("OP_SET_UPVALUE", self, offset, f),
             OpCode::GetLocal => byte_instruction!("OP_GET_LOCAL", self, offset, f),
             OpCode::GetGlobal => constant_instruction!("OP_GET_GLOBAL", self, offset, f),
             OpCode::DefineGlobal => constant_instruction!("OP_DEFINE_GLOBAL", self, offset, f),
@@ -142,10 +165,46 @@ impl Chunk {
             OpCode::Divide => simple_instruction!("OP_DIVIDE", offset, f),
             OpCode::Not => simple_instruction!("OP_NOT", offset, f),
             OpCode::Negate => simple_instruction!("OP_NEGATE", offset, f),
-            //OpCode::Print => simple_instruction!("OP_PRINT", offset, f),
             OpCode::Return => simple_instruction!("OP_RETURN", offset, f),
-            OpCode::Jump => jump_instruction!("OP_JUMP", self, 1, offset, f),
-            OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, 1, offset, f),
+            OpCode::Jump => jump_instruction!("OP_JUMP", self, offset, 1, f),
+            OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
+            OpCode::Closure => {
+                let mut offset = offset + 1;
+                let constant = self.code[offset];
+                offset += 1;
+                let value = &self.constants[constant as usize];
+                writeln!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
+
+                if let Some(fu) = value.as_function() {
+                    for u in 0..fu.up_value_count {
+                        let local = self.code.get(offset);
+                        offset += 1;
+                        let index = self.code[offset];
+                        offset += 1;
+                        writeln!(f, "{:04}   | {:16} {}", offset - 2, if local.is_some() { "local" } else { "upvalue" }, index)?;
+                    }
+
+                    writeln!(f, "{:}", fu.chunk)?;
+                };
+
+                offset
+                // printf("%-16s %4d ", "OP_CLOSURE", constant);
+                // printValue(chunk->constants.values[constant]);
+                // printf("\n");
+
+                // ObjFunction* function = AS_FUNCTION(
+                //     chunk->constants.values[constant]);
+                // for (int j = 0; j < function->upvalueCount; j++) {
+                //     int isLocal = chunk->code[offset++];
+                //     int index = chunk->code[offset++];
+                //     printf("%04d   |                     %s %d\n",
+                //         offset - 2, isLocal ? "local" : "upvalue", index);
+                // }
+
+                //&offset
+            }
+            OpCode::Call0 | OpCode::Call1 | OpCode::Call2 | OpCode::Call3 | OpCode::Call4 | OpCode::Call5 | OpCode::Call6 | OpCode::Call7 | OpCode::Call8 => simple_instruction_n!("OP_CALL", offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
+            _ => unimplemented!("unknown code {:?}", opcode),
         };
         Ok(m)
     }
