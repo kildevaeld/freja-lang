@@ -1,8 +1,7 @@
 use super::chunk::Chunk;
-use std::fmt;
 use super::value::ValuePtr;
+use std::fmt;
 use std::rc::Rc;
-
 
 #[derive(PartialEq)]
 pub struct Function {
@@ -18,13 +17,19 @@ impl fmt::Display for Function {
     }
 }
 
+impl fmt::Debug for Function {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Function")
+    }
+}
+
 impl Function {
     pub fn new() -> Function {
         Function { chunk: Chunk::new(), up_value_count: 0, name: None, arity: 0 }
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub struct Closure {
     pub(crate) function: Rc<Function>,
 }
@@ -42,5 +47,11 @@ pub struct Native {
 impl PartialEq for Native {
     fn eq(&self, other: &Native) -> bool {
         false
+    }
+}
+
+impl fmt::Debug for Native {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Native")
     }
 }

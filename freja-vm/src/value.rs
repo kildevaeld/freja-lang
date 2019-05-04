@@ -9,7 +9,7 @@ pub type ValuePtr = Rc<Value>;
 
 
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Value {
     Number(Number),
     String(String),
