@@ -9,7 +9,7 @@ pub type ValuePtr = Rc<Value>;
 
 
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Value {
     Number(Number),
     String(String),
@@ -72,8 +72,62 @@ impl Value {
     }
 }
 
+#[derive(Debug, Clone)]
+pub enum Val {
+    Heap(ValuePtr),
+    Stack(Value),
+}
 
-#[inline]
+impl Val {
+    pub fn into_heap(self) -> ValuePtr {
+        match self {
+            Val::Heap(h) => h,
+            Val::Stack(s) => Rc::new(s),
+        }
+    }
+
+    pub fn into_heap2(&mut self) {
+        let this = std::mem::replace(self, Val::Stack(Value::Null));
+        match this {
+            Val::Heap(h) => {
+                *self = Val::Heap(h);
+            },
+            Val::Stack(s) => {
+                *self = Val::Heap(Rc::new(s));
+            },
+        }
+    }
+
+    pub fn as_ref(&self) -> &Value {
+        match &self {
+            Val::Heap(h) => h,
+            Val::Stack(s) => s,
+        }
+    }
+
+    pub fn as_value(&self) -> &Value {
+        match &self {
+            Val::Heap(h) => h,
+            Val::Stack(s) => s,
+        }
+    }
+
+    pub fn is_truthy(&self) -> bool {
+        self.as_value().is_truthy()
+    }
+}
+
+impl fmt::Display for Val {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Val::Heap(h) => <Value as fmt::Display>::fmt(h, f),
+            Val::Stack(h) => <Value as fmt::Display>::fmt(h, f),
+        }
+    }
+}
+
+
+#[inline(always)]
 fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -91,7 +145,7 @@ fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-#[inline]
+#[inline(always)]
 fn value_sub(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -102,7 +156,7 @@ fn value_sub(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-#[inline]
+#[inline(always)]
 fn value_mul(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -113,7 +167,7 @@ fn value_mul(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-#[inline]
+#[inline(always)]
 fn value_div(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -126,7 +180,7 @@ fn value_div(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
 
 
 
-#[inline]
+#[inline(always)]
 fn value_lt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -137,7 +191,7 @@ fn value_lt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-#[inline]
+#[inline(always)]
 fn value_gt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {
@@ -148,7 +202,7 @@ fn value_gt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-#[inline]
+#[inline(always)]
 fn value_eq(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
         Value::Number(n) => match rhs {

@@ -1,5 +1,5 @@
 use super::chunk::Chunk;
-use super::value::ValuePtr;
+use super::value::{Val, ValuePtr};
 use std::fmt;
 use std::rc::Rc;
 
@@ -41,7 +41,7 @@ impl Closure {
 }
 
 pub struct Native {
-    pub(crate) function: Box<Fn(&[ValuePtr])>,
+    pub(crate) function: Box<Fn(&[Val])>,
 }
 
 impl PartialEq for Native {

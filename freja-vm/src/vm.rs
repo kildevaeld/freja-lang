@@ -2,15 +2,16 @@ use super::chunk::OpCode;
 use super::compiler::Compiler;
 use super::error::CompileResult;
 use super::objects::*;
-use super::value::{value_binary, Value, ValuePtr};
+use super::value::{value_binary, Val, Value, ValuePtr};
 use freja_parser::ast::*;
 use heapless::consts::{U256, U64};
 use heapless::Vec as HVec;
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
+use std::fmt;
 use std::rc::Rc;
 
-pub type Stack = HVec<ValuePtr, U256>;
+pub type Stack = HVec<Val, U256>;
 type Frames = HVec<CallFrame, U64>;
 pub type Globals = HashMap<String, ValuePtr>;
 
@@ -70,7 +71,7 @@ impl CallFrame {
 }
 
 pub struct VM {
-    stack: HVec<ValuePtr, U256>,
+    stack: Stack,
     globals: HashMap<String, ValuePtr>,
     // frames: HVec<Rc<CallFrame>, U64>,
     frames: Frames,
@@ -83,7 +84,7 @@ impl VM {
 
     pub fn push_native<F: 'static>(&mut self, name: &str, fu: F)
     where
-        F: Fn(&[ValuePtr]),
+        F: Fn(&[Val]),
     {
         let value = Value::Native(Rc::new(Native { function: Box::new(fu) }));
         self.globals.insert(name.to_string(), Rc::new(value));
@@ -251,22 +252,20 @@ macro_rules! peek {
 }
 
 fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
-    let mut frame = frames.len() - 1; //frames.pop().unwrap(); //.clone();
+    let mut frame = frames.len() - 1;
 
     'outer: while frames[frame].ip.get() < frames[frame].closure.function.chunk.code.len() {
         let instruction = frames[frame].read_byte();
         let instruction = OpCode::from(instruction);
-
         match instruction {
-            OpCode::Constant => push!(stack, frames[frame].read_constant().expect("constant").clone()).expect("stack overflow"),
+            OpCode::Constant => push!(stack, Val::Heap(frames[frame].read_constant().expect("constant").clone())).expect("stack overflow"),
             OpCode::Pop => {
                 pop!(stack);
             }
             OpCode::DefineGlobal => {
                 let name = frames[frame].read_constant().unwrap();
-                let value = peek!(stack, 0).unwrap().clone();
-                globals.insert(name.as_string().unwrap().to_string(), value);
-                pop!(stack);
+                let value = pop!(stack).unwrap();
+                globals.insert(name.as_string().unwrap().to_string(), value.into_heap());
             }
             OpCode::GetGlobal => {
                 let name = frames[frame].read_constant().unwrap().as_string().unwrap();
@@ -275,23 +274,19 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                     Some(m) => m.clone(),
                     None => panic!("undefined variable: {}", name),
                 };
-                push!(stack, m);
+                push!(stack, Val::Heap(m));
             }
             OpCode::GetLocal => {
                 let b = frames[frame].read_byte();
-                stack.push(stack[frames[frame].idx + b as usize].clone()).expect("stack overflow");
-                //push!(stack, &stack[frames[frame].idx + b as usize]);
+                let idx = frames[frame].idx + b as usize;
+                stack[idx].into_heap2();
+                stack.push(stack[idx].clone()).expect("stack overflow");
             }
             OpCode::Return => {
                 let result = pop!(stack).unwrap();
-
                 stack.truncate(frames[frame].idx);
                 frames.pop();
                 push!(stack, result);
-                // frame = match fram {
-                //     Some(f) => f,
-                //     None => break 'outer,
-                // }
                 if frames.is_empty() {
                     break 'outer;
                 }
@@ -301,20 +296,20 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             OpCode::Call0 | OpCode::Call1 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
                 let callee = peek!(stack, count as usize).expect("expect callee").clone();
-                call_value(stack, frames, &callee, count).unwrap();
-                frame = frames.len() - 1 //.clone();
+                call_value(stack, frames, callee.as_value(), count).unwrap();
+                frame = frames.len() - 1
             }
             OpCode::Closure => {
                 let fu = frames[frame].read_constant().unwrap().as_function().unwrap().clone();
-                let cl = Rc::new(Value::Closure(Rc::new(Closure::new(fu))));
-                push!(stack, cl);
+                let cl = Value::Closure(Rc::new(Closure::new(fu)));
+                push!(stack, Val::Stack(cl));
             }
             OpCode::Divide | OpCode::Multiply | OpCode::Add | OpCode::Substract | OpCode::Equal | OpCode::Less | OpCode::Greater => {
                 let right = pop!(stack).unwrap();
                 let left = pop!(stack).unwrap();
 
-                let ret = Rc::new(value_binary(left.as_ref(), right.as_ref(), instruction).expect("binary"));
-                push!(stack, ret);
+                let ret = value_binary(left.as_ref(), right.as_ref(), instruction).expect("binary");
+                push!(stack, Val::Stack(ret));
             }
             OpCode::JumpIfFalse => {
                 let offset = frames[frame].read_short();
@@ -326,10 +321,10 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             }
             OpCode::Not => {
                 let current = pop!(stack).unwrap();
-                let v = Rc::new(Value::Boolean(!current.is_truthy()));
-                push!(stack, v);
+                let v = Value::Boolean(!current.is_truthy());
+                push!(stack, Val::Stack(v));
             }
-            OpCode::Nil => push!(stack, Rc::new(Value::Null)).expect("stack overflow"),
+            OpCode::Nil => push!(stack, Val::Stack(Value::Null)).expect("stack overflow"),
             _ => unimplemented!("instruction {:?}", instruction),
         };
     }
@@ -355,7 +350,7 @@ fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileRes
     let count = if stack.len() == 0 { 0 } else { a + 1 };
     let idx = stack.len() - (count as usize);
     let frame = CallFrame::new(closure.clone(), idx); // { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
-    frames.push(frame);
+    frames.push(frame).expect("too many frames");
 
     Ok(())
 }
