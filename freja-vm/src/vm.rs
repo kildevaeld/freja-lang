@@ -8,6 +8,36 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+struct CallFrame2<'a> {
+    closure: &'a Closure,
+    ip: usize,
+    slots: &'a [ValuePtr],
+}
+
+impl<'a> CallFrame2<'a> {
+    pub fn new(closure: &'a Closure, slots: &'a [ValuePtr]) -> CallFrame2<'a> {
+        CallFrame2 { closure, ip: 0, slots }
+    }
+
+    pub fn read_byte(&mut self) -> u8 {
+        let b = self.closure.function.chunk.code[self.ip];
+        self.ip += 1;
+        b
+    }
+
+    pub fn read_short(&mut self) -> u16 {
+        let mut jump = (self.closure.function.chunk.code[self.ip] as u16) << 8;
+        jump |= self.closure.function.chunk.code[self.ip + 1] as u16;
+        self.ip += 2;
+        jump
+    }
+
+    pub fn read_constant(&mut self) -> Option<&ValuePtr> {
+        let b = self.read_byte();
+        self.closure.function.chunk.get_constant(b as usize)
+    }
+}
+
 struct CallFrame {
     closure: Rc<Closure>,
     ip: RefCell<usize>,
