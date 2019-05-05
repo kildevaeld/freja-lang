@@ -34,7 +34,14 @@ type CompilerStatePtr = Rc<RefCell<CompilerState>>;
 
 impl CompilerState {
     pub fn new(enclosing: Option<CompilerStatePtr>, scope_depth: i32, function_type: FunctionType) -> CompilerStatePtr {
-        Rc::new(RefCell::new(CompilerState { enclosing, locals: vec![Local(scope_depth, "".to_owned(), false)], scope_depth, function_type, function: Function::new(), up_values: Vec::new() }))
+        Rc::new(RefCell::new(CompilerState {
+            enclosing,
+            locals: vec![Local(scope_depth, "".to_owned(), false)],
+            scope_depth,
+            function_type,
+            function: Function::new(),
+            up_values: Vec::new(),
+        }))
     }
 }
 
@@ -47,7 +54,9 @@ pub struct Compiler {
 
 impl Compiler {
     pub fn new() -> Compiler {
-        Compiler { state: CompilerState::new(None, 0, FunctionType::TopLevel) }
+        Compiler {
+            state: CompilerState::new(None, 0, FunctionType::TopLevel),
+        }
     }
 
     pub fn compile(mut self, ast: &ProgramStmt) -> CompileResult<Function> {
@@ -89,7 +98,10 @@ impl Compiler {
             }
         }
 
-        state.borrow_mut().up_values.push(UpValue { index: index as u8, is_local });
+        state.borrow_mut().up_values.push(UpValue {
+            index: index as u8,
+            is_local,
+        });
 
         state.borrow().up_values.len()
     }
@@ -128,14 +140,26 @@ impl Compiler {
     }
 
     pub fn resolve_local(&self, name: &str) -> Option<usize> {
-        match self.state().locals.iter().enumerate().find(|m| (m.1).1.as_str() == name) {
+        match self
+            .state()
+            .locals
+            .iter()
+            .enumerate()
+            .find(|m| (m.1).1.as_str() == name)
+        {
             Some(m) => Some(m.0),
             None => None,
         }
     }
 
     fn _resolve_local(&self, state: &CompilerStatePtr, name: &str) -> Option<usize> {
-        match state.borrow().locals.iter().enumerate().find(|m| (m.1).1.as_str() == name) {
+        match state
+            .borrow()
+            .locals
+            .iter()
+            .enumerate()
+            .find(|m| (m.1).1.as_str() == name)
+        {
             Some(m) => Some(m.0),
             None => None,
         }
@@ -189,7 +213,9 @@ impl Compiler {
     pub fn end_scope(&mut self) {
         self.state_mut().scope_depth -= 1;
 
-        while !self.state().locals.is_empty() && self.state().locals.last().map(|n| n.0).unwrap_or(0) > self.state().scope_depth {
+        while !self.state().locals.is_empty()
+            && self.state().locals.last().map(|n| n.0).unwrap_or(0) > self.state().scope_depth
+        {
             self.emit(OpCode::Pop);
             self.state_mut().locals.pop();
         }
@@ -290,11 +316,6 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_var_stmt(&mut self, e: &VarStmt) -> CompileResult<()> {
-        // let mut global = 0;
-        // self.declare_variable(e.name.as_str())?;
-        // if !self.is_local() {
-        //     global = self.make_constant(Value::String(e.name.to_string()));
-        // }
         let global = self.parse_var(e.name.as_str());
 
         match &e.initializer {
@@ -320,9 +341,6 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_func_stmt(&mut self, e: &FuncStmt) -> CompileResult<()> {
-        // self.declare_variable(e.name.as_str())?;
-        // let global = if self.state().scope_depth > 0 { 0 } else { self.make_constant(Value::String(e.name.to_string())) };
-        // //let global = if self.state().locals.len() == 0 { 0 } else { self.state().locals.len() - 1 };
         let global = self.parse_var(e.name.as_str());
         self.mark_initialized();
         let state = CompilerState::new(Some(self.state.clone()), 1, FunctionType::Function);
@@ -461,6 +479,13 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
             //Literal::Number(Number::Integer(i)) => Value::Integer(*i),
             Literal::Boolean(b) => Value::Boolean(*b),
             Literal::String(s) => Value::String(s.clone()),
+            Literal::Array(arr) => {
+                for a in arr.iter() {
+                    a.accept(self)?;
+                }
+                self.emit_opcode_byte(OpCode::Array, arr.len() as u8);
+                return Ok(());
+            }
             _ => unimplemented!("literal"),
         };
         self.emit_constant(val);
@@ -503,7 +528,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_member_expr(&mut self, e: &MemberExpr) -> CompileResult<()> {
         //
-        unimplemented!("member");
+        e.object.accept(self)?;
+        e.property.accept(self)?;
+        self.emit(OpCode::Property);
+        //unimplemented!("member");
+        Ok(())
     }
 
     fn visit_lookup_expr(&mut self, e: &LookupExpr) -> CompileResult<()> {
@@ -518,7 +547,25 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_logical_expr(&mut self, e: &LogicalExpr) -> CompileResult<()> {
         //
-        unimplemented!("logical");
+        e.left.accept(self)?;
+
+        let jump = match e.operator {
+            LogicalOperator::And => {
+                let jump = self.emit_jump(OpCode::JumpIfFalse);
+                self.emit(OpCode::Pop);
+                jump
+            }
+            LogicalOperator::Or => {
+                let else_jump = self.emit_jump(OpCode::JumpIfFalse);
+                let end_jump = self.emit_jump(OpCode::Jump);
+                self.patch_jump(else_jump);
+                self.emit(OpCode::Pop);
+                end_jump
+            }
+        };
+        e.right.accept(self)?;
+        self.patch_jump(jump);
+        Ok(())
     }
 
     fn visit_this_expr(&mut self, e: &ThisExpr) -> CompileResult<()> {

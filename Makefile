@@ -14,7 +14,7 @@ clean:
 	rm freja-ast/src/ast.rs
 
 peg:
-	rust-peg freja-parser/src/grammar.rustpeg | rustfmt > freja-parser/src/grammar2.rs
+	rust-peg freja-parser/src/grammar.rustpeg | rustfmt  > freja-parser/src/grammar2.rs
 
 watch: watch-grammer watch-ast
 	

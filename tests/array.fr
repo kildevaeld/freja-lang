@@ -1,2 +1,5 @@
 []
-["Hello, World", 200, 200 + rapper]
+let rapper = 200, a = ["Hello, World", 200, 200 + rapper]
+print(a)
+
+print(a[0])

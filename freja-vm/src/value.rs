@@ -14,6 +14,7 @@ pub enum Value {
     Number(Number),
     String(String),
     Boolean(bool),
+    Array(Array),
     Function(Rc<Function>),
     Closure(Rc<Closure>),
     Native(Rc<Native>),
@@ -50,6 +51,10 @@ impl fmt::Display for Value {
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
+            Value::Array(a) => {
+                write!(f, "{}",a)
+            }
+            Value::Native(_) => write!(f, "<fn native>"),
             Value::Closure(cl) => write!(f, "<fn {}>", cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             _ => write!(f, "Unknown"),
         }
@@ -64,7 +69,7 @@ impl Value {
             Value::Number(Number::Integer(d)) => *d > 0,
             Value::Boolean(b) => *b,
             
-            //Value::Array(_) => true,
+            Value::Array(a) => !a.is_empty(),
             Value::Null => false,
             Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
             //Value::Instance(_) => true,
@@ -72,7 +77,7 @@ impl Value {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Val {
     Heap(ValuePtr),
     Stack(Value),
@@ -86,7 +91,7 @@ impl Val {
         }
     }
 
-    pub fn into_heap2(&mut self) {
+    pub fn into_heap2(&mut self) -> &mut Self {
         let this = std::mem::replace(self, Val::Stack(Value::Null));
         match this {
             Val::Heap(h) => {
@@ -96,6 +101,7 @@ impl Val {
                 *self = Val::Heap(Rc::new(s));
             },
         }
+        self
     }
 
    

@@ -5,7 +5,7 @@ use std::rc::Rc;
 macro_rules! byte_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1);
-        write!($fmt, "{:24}{}", $name, code as u8)?;
+        write!($fmt, "{:24}{:4}", $name, code as u8)?;
         $offset + 2
     }};
 }
@@ -14,7 +14,7 @@ macro_rules! constant_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).unwrap();
-        write!($fmt, "{:24} {:4} '{}'", $name, code, constant)?;
+        write!($fmt, "{:24}{:4} '{}'", $name, code, constant)?;
         $offset + 2
     }};
 }
@@ -24,7 +24,7 @@ macro_rules! jump_instruction {
         let mut jump = ($chunk.code[$offset + 1] as u16) << 8;
         jump |= $chunk.code[$offset + 2] as u16;
 
-        write!($fmt, "{:24} {:4} -> {}", $name, $offset, $offset + 3 + $sign * (jump as usize))?;
+        write!($fmt, "{:24}{:4} -> {}", $name, $offset, $offset + 3 + $sign * (jump as usize))?;
         $offset + 3
     }};
 }
@@ -70,6 +70,8 @@ pub enum OpCode {
     Return,
     Jump,
     JumpIfFalse,
+    Array,
+    Property,
     Closure,
     Call0,
     Call1,
@@ -145,7 +147,7 @@ impl Chunk {
     }
 
     fn disamble(&self, offset: usize, f: &mut fmt::Formatter) -> Result<usize, fmt::Error> {
-        write!(f, "{:04} ", offset)?;
+        write!(f, "{:04}    ", offset)?;
 
         let opcode = OpCode::from(self.code[offset]);
         let m = match opcode {
@@ -173,6 +175,8 @@ impl Chunk {
             OpCode::Return => simple_instruction!("OP_RETURN", offset, f),
             OpCode::Jump => jump_instruction!("OP_JUMP", self, offset, 1, f),
             OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
+            OpCode::Array => byte_instruction!("OP_ARRAY", self, offset, f),
+            OpCode::Property => simple_instruction!("OP_PROPERTY", offset, f),
             OpCode::Closure => {
                 let mut offset = offset + 1;
                 let constant = self.code[offset];
@@ -193,20 +197,6 @@ impl Chunk {
                 };
 
                 offset
-                // printf("%-16s %4d ", "OP_CLOSURE", constant);
-                // printValue(chunk->constants.values[constant]);
-                // printf("\n");
-
-                // ObjFunction* function = AS_FUNCTION(
-                //     chunk->constants.values[constant]);
-                // for (int j = 0; j < function->upvalueCount; j++) {
-                //     int isLocal = chunk->code[offset++];
-                //     int index = chunk->code[offset++];
-                //     printf("%04d   |                     %s %d\n",
-                //         offset - 2, isLocal ? "local" : "upvalue", index);
-                // }
-
-                //&offset
             }
             OpCode::Call0 | OpCode::Call1 | OpCode::Call2 | OpCode::Call3 | OpCode::Call4 | OpCode::Call5 | OpCode::Call6 | OpCode::Call7 | OpCode::Call8 => simple_instruction_n!("OP_CALL", offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
             _ => unimplemented!("unknown code {:?}", opcode),
@@ -218,6 +208,7 @@ impl Chunk {
 impl fmt::Display for Chunk {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut i = 0;
+
         while i < self.code.len() {
             i = self.disamble(i, f)?;
             write!(f, "\n")?;

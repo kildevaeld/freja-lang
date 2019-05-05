@@ -55,3 +55,24 @@ impl fmt::Debug for Native {
         write!(f, "Native")
     }
 }
+
+#[derive(PartialEq, Debug, Clone, Default)]
+pub struct Array {
+    inner: Vec<Val>,
+}
+
+impl Array {
+    pub fn new(inner: Vec<Val>) -> Array {
+        Array { inner }
+    }
+    pub fn is_empty(&self) -> bool {
+        true
+    }
+}
+
+impl fmt::Display for Array {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = self.inner.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ");
+        write!(f, "[{}]", s)
+    }
+}
