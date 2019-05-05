@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 freja-parser = { path = "../freja-parser" }
 heapless = "0.4"
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { version = "1.0", features = ["derive", "rc"], optional = true }
 
 [features]
 default = []

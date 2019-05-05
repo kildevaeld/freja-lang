@@ -254,6 +254,16 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                 let class = pop!(stack).unwrap().as_class().unwrap().clone();
                 class.add_method(name.to_owned(), method.clone());
             }
+            OpCode::Inherit => {
+                let super_c = peek!(stack, 1).unwrap();
+                let super_c = match super_c.as_class() {
+                    Some(c) => c,
+                    None => panic!("super"),
+                };
+                let subclass = peek!(stack, 0).unwrap().as_class().unwrap();
+                subclass.inherit(super_c);
+                pop!(stack);
+            }
             OpCode::Nil => push!(stack, Val::Stack(Value::Null)).expect("stack overflow"),
             _ => unimplemented!("instruction {:?}", instruction),
         };

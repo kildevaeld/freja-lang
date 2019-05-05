@@ -88,6 +88,7 @@ pub enum OpCode {
     JumpIfFalse,
     Array,
     Class,
+    Inherit,
     Property,
     Closure,
     Method,
@@ -129,7 +130,9 @@ impl From<OpCode> for u8 {
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq)]
 pub struct Chunk {
+    #[cfg_attr(feature = "serde_support", serde(rename = "b"))]
     pub(crate) code: Vec<u8>,
+    #[cfg_attr(feature = "serde_support", serde(rename = "c"))]
     constants: Vec<ValuePtr>,
     lines: Vec<i32>,
 }
@@ -238,6 +241,7 @@ impl Chunk {
                 offset
             }
             OpCode::Class => constant_instruction!("OP_CLASS", self, offset, f),
+            OpCode::Inherit => simple_instruction!("OP_INHERIT", offset, f),
             OpCode::Call0
             | OpCode::Call1
             | OpCode::Call2

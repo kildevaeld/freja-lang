@@ -15,4 +15,4 @@ serde_json = { version = "~1.0", optional = true }
 
 [features]
 default = []
-serializing = ["freja-parser/serde_support", "serde", "serde_json"]
+serializing = ["freja-parser/serde_support", "serde", "serde_json", "freja-vm/serde_support"]

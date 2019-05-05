@@ -8,17 +8,28 @@ use std::rc::Rc;
 pub type ValuePtr = Rc<Value>;
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde_support", serde(tag = "t", content = "c"))]
 #[derive(PartialEq, Debug, Clone)]
 pub enum Value {
+    #[cfg_attr(feature = "serde_support", serde(rename = "N"))]
     Number(Number),
+    #[cfg_attr(feature = "serde_support", serde(rename = "S"))]
     String(String),
+    #[cfg_attr(feature = "serde_support", serde(rename = "B"))]
     Boolean(bool),
+    #[cfg_attr(feature = "serde_support", serde(rename = "A"))]
     Array(Array),
+    #[cfg_attr(feature = "serde_support", serde(rename = "F"))]
     Function(Rc<Function>),
+    #[cfg_attr(feature = "serde_support", serde(rename = "C"))]
     Closure(Rc<Closure>),
+    #[cfg_attr(feature = "serde_support", serde(skip))]
     Native(Rc<Native>),
+    #[cfg_attr(feature = "serde_support", serde(rename = "CC"))]
     Class(Rc<Class>),
+    #[cfg_attr(feature = "serde_support", serde(rename = "I"))]
     Instance(ClassInstance),
+    #[cfg_attr(feature = "serde_support", serde(rename = "nil"))]
     Null,
 }
 
@@ -103,7 +114,7 @@ impl Value {
         }
     }
 }
-
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug, Clone)]
 pub enum Val {
     Heap(ValuePtr),

@@ -1,0 +1,13 @@
+
+class Base {
+    fn meow() {
+        print("wow wow")
+    }
+}
+
+class Test extends Base {
+
+}
+
+let test = Test()
+test.meow()

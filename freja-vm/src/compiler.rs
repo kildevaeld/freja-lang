@@ -490,10 +490,15 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
             e.extends.is_some(),
         ));
 
-        // if let Some(su) = e.extends {
-        //     self.begin_scope();
-
-        // }
+        if let Some(su) = &e.extends {
+            self.class.as_ref().unwrap().borrow_mut().has_super_class = true;
+            self.begin_scope();
+            self.variable(su.as_str());
+            self.add_local("super");
+            self.define_variable(0);
+            self.variable(e.name.as_str());
+            self.emit(OpCode::Inherit);
+        }
 
         for m in &e.members {
             match m.as_ref() {
@@ -512,6 +517,10 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
                 }
                 _ => unimplemented!("invalid class member {:?}", m),
             }
+        }
+
+        if e.extends.is_some() {
+            self.end_scope();
         }
 
         let enc = self.class.as_ref().unwrap().borrow().enclosing.clone();

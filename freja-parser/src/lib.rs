@@ -51,23 +51,64 @@ mod tests {
 
         #[test]
         fn number_test() {
-            assert_eq!(parser::program("2000").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(Number::Integer(2000)))))));
-            assert_eq!(parser::program("0").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(Number::Integer(0)))))));
-            assert_eq!(parser::program("2.02").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(Number::Double(2.02)))))));
-            assert_eq!(parser::program("103030302.20202").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(Number::Double(103030302.20202)))))));
-            assert_eq!(parser::program("0.1").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(Number::Double(0.1)))))));
+            assert_eq!(
+                parser::program("2000").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(
+                    Number::Integer(2000)
+                )))))
+            );
+            assert_eq!(
+                parser::program("0").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(
+                    Number::Integer(0)
+                )))))
+            );
+            assert_eq!(
+                parser::program("2.02").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(
+                    Number::Double(2.02)
+                )))))
+            );
+            assert_eq!(
+                parser::program("103030302.20202").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(
+                    Number::Double(103030302.20202)
+                )))))
+            );
+            assert_eq!(
+                parser::program("0.1").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Number(
+                    Number::Double(0.1)
+                )))))
+            );
         }
 
         #[test]
         fn boolean_test() {
-            assert_eq!(parser::program("true").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Boolean(true))))));
-            assert_eq!(parser::program("false").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Boolean(false))))));
+            assert_eq!(
+                parser::program("true").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Boolean(true)))))
+            );
+            assert_eq!(
+                parser::program("false").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::Boolean(false)))))
+            );
         }
 
         #[test]
         fn string_test() {
-            assert_eq!(parser::program("\"Hello, World!\"").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::String("Hello, World!".to_string()))))));
-            assert_eq!(parser::program("\"Test \nmig i øret 😀\"").unwrap()[0], Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::String("Test \nmig i øret 😀".to_string()))))));
+            assert_eq!(
+                parser::program("\"Hello, World!\"").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::String(
+                    "Hello, World!".to_string()
+                )))))
+            );
+            assert_eq!(
+                parser::program("\"Test \nmig i øret 😀\"").unwrap()[0],
+                Stmt::Expr(ExprStmt::new(Expr::Literal(LiteralExpr::new(Literal::String(
+                    "Test \nmig i øret 😀".to_string()
+                )))))
+            );
         }
     }
 }
