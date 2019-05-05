@@ -1,5 +1,4 @@
 use super::ast::{Literal, Number};
-use std::cmp::Ordering;
 use std::fmt;
 use std::ops::{Add, Div, Mul, Sub};
 
