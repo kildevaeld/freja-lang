@@ -6,9 +6,13 @@ edition = "2018"
 
 [dependencies]
 freja-vm = { path = "../freja-vm"}
-freja-parser = { path = "../freja-parser", features = ["serde_support"] }
+freja-parser = { path = "../freja-parser" }
 #freja-ast = { path = "../freja-ast" }
 #freja-evaluator = { path = "../freja-evaluator" }
 getopts = "0.2"
-serde = "~1.0"
-serde_json = "~1.0"
+serde = { version = "~1.0", optional = true }
+serde_json = { version = "~1.0", optional = true }
+
+[features]
+default = []
+serializing = ["freja-parser/serde_support", "serde", "serde_json"]

@@ -2,16 +2,21 @@ use freja_parser::*;
 use freja_vm::compiler::*;
 use freja_vm::vm::VM;
 use getopts::Options;
+#[cfg(feature = "serializing")]
 use serde_json;
 use std::env;
 use std::fs;
 
+#[cfg(feature = "serializing")]
 fn print_ast(input: &str) {
     let data = fs::read_to_string(input).unwrap();
     let ast = parser::program(&data).expect("could not parse");
     let json = serde_json::to_string_pretty(&ast).unwrap();
     println!("{}", json);
 }
+
+#[cfg(not(feature = "serializing"))]
+fn print_ast(input: &str) {}
 
 fn print_bytecode(input: &str) {
     let data = fs::read_to_string(input).unwrap();
@@ -47,7 +52,14 @@ fn main() {
     let program = args[0].clone();
 
     let mut opts = Options::new();
-    opts.optopt("o", "", "set output file name", "NAME").optflag("h", "help", "print this help menu").optflag("b", "bytecode", "print bytecode").optflag("a", "ast", "print ast");
+    opts.optopt("o", "", "set output file name", "NAME")
+        .optflag("h", "help", "print this help menu")
+        .optflag("b", "bytecode", "print bytecode");
+
+    if cfg!(feature = "serializing") {
+        opts.optflag("a", "ast", "print ast");
+    }
+
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
         Err(f) => panic!(f.to_string()),
@@ -65,7 +77,7 @@ fn main() {
         return;
     };
 
-    if matches.opt_present("a") {
+    if cfg!(feature = "serializing") && matches.opt_present("a") {
         print_ast(&input);
     } else if matches.opt_present("b") {
         print_bytecode(&input);

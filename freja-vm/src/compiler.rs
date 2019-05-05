@@ -46,9 +46,6 @@ impl CompilerState {
 }
 
 pub struct Compiler {
-    // locals: Vec<Local>,
-    // scope_depth: i32,
-    // chunk: Chunk,
     state: CompilerStatePtr,
 }
 
@@ -59,13 +56,17 @@ impl Compiler {
         }
     }
 
-    pub fn compile(mut self, ast: &ProgramStmt) -> CompileResult<Function> {
+    pub fn compile(&mut self, ast: &ProgramStmt) -> CompileResult<Function> {
         for stmt in &ast.statements {
-            stmt.accept(&mut self)?;
+            stmt.accept(self)?;
         }
 
         let function = self.end_compile();
         Ok(function)
+    }
+
+    pub fn reset_state(&mut self) {
+        self.state = CompilerState::new(None, 0, FunctionType::TopLevel);
     }
 
     fn state(&self) -> Ref<CompilerState> {

@@ -1,2 +1,11 @@
 true && true
 200 || els
+
+let test = true
+if test && 200 {
+    print("Heelo, World!")
+}
+
+if !test {
+    
+}
