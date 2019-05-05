@@ -19,12 +19,27 @@ macro_rules! constant_instruction {
     }};
 }
 
+macro_rules! constant_instruction_n {
+    ($name:expr, $chunk:expr, $offset: expr, $n:expr, $fmt:expr) => {{
+        let code = $chunk.get_code($offset + 1) as u8;
+        let constant = $chunk.get_constant(code as usize).unwrap();
+        write!($fmt, "{:24}{:4} '{}'", format!("{}_{}", $name, $n), code, constant)?;
+        $offset + 2
+    }};
+}
+
 macro_rules! jump_instruction {
     ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
         let mut jump = ($chunk.code[$offset + 1] as u16) << 8;
         jump |= $chunk.code[$offset + 2] as u16;
 
-        write!($fmt, "{:24}{:4} -> {}", $name, $offset, $offset + 3 + $sign * (jump as usize))?;
+        write!(
+            $fmt,
+            "{:24}{:4} -> {}",
+            $name,
+            $offset,
+            $offset + 3 + $sign * (jump as usize)
+        )?;
         $offset + 3
     }};
 }
@@ -43,6 +58,7 @@ macro_rules! simple_instruction_n {
     }};
 }
 
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[repr(u8)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum OpCode {
@@ -71,8 +87,10 @@ pub enum OpCode {
     Jump,
     JumpIfFalse,
     Array,
+    Class,
     Property,
     Closure,
+    Method,
     Call0,
     Call1,
     Call2,
@@ -82,11 +100,20 @@ pub enum OpCode {
     Call6,
     Call7,
     Call8,
+    Invoke0,
+    Invoke1,
+    Invoke2,
+    Invoke3,
+    Invoke4,
+    Invoke5,
+    Invoke6,
+    Invoke7,
+    Invoke8,
 }
 
 impl From<u8> for OpCode {
     fn from(i: u8) -> OpCode {
-        if i <= (OpCode::Call8 as u8) {
+        if i <= (OpCode::Invoke8 as u8) {
             return unsafe { std::mem::transmute::<_, OpCode>(i) };
         }
         panic!("invalid repo {}", i);
@@ -99,6 +126,7 @@ impl From<OpCode> for u8 {
     }
 }
 
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq)]
 pub struct Chunk {
     pub(crate) code: Vec<u8>,
@@ -108,7 +136,11 @@ pub struct Chunk {
 
 impl Chunk {
     pub fn new() -> Chunk {
-        Chunk { code: Vec::new(), constants: Vec::new(), lines: Vec::new() }
+        Chunk {
+            code: Vec::new(),
+            constants: Vec::new(),
+            lines: Vec::new(),
+        }
     }
 
     pub fn len(&self) -> usize {
@@ -177,6 +209,7 @@ impl Chunk {
             OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
             OpCode::Array => byte_instruction!("OP_ARRAY", self, offset, f),
             OpCode::Property => simple_instruction!("OP_PROPERTY", offset, f),
+            OpCode::Method => constant_instruction!("OP_METHOD", self, offset, f),
             OpCode::Closure => {
                 let mut offset = offset + 1;
                 let constant = self.code[offset];
@@ -190,7 +223,13 @@ impl Chunk {
                         offset += 1;
                         let index = self.code[offset];
                         offset += 1;
-                        writeln!(f, "{:04}   | {:16} {}", offset - 2, if local.is_some() { "local" } else { "upvalue" }, index)?;
+                        writeln!(
+                            f,
+                            "{:04}   | {:16} {}",
+                            offset - 2,
+                            if local.is_some() { "local" } else { "upvalue" },
+                            index
+                        )?;
                     }
 
                     writeln!(f, "{:}", fu.chunk)?;
@@ -198,7 +237,27 @@ impl Chunk {
 
                 offset
             }
-            OpCode::Call0 | OpCode::Call1 | OpCode::Call2 | OpCode::Call3 | OpCode::Call4 | OpCode::Call5 | OpCode::Call6 | OpCode::Call7 | OpCode::Call8 => simple_instruction_n!("OP_CALL", offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
+            OpCode::Class => constant_instruction!("OP_CLASS", self, offset, f),
+            OpCode::Call0
+            | OpCode::Call1
+            | OpCode::Call2
+            | OpCode::Call3
+            | OpCode::Call4
+            | OpCode::Call5
+            | OpCode::Call6
+            | OpCode::Call7
+            | OpCode::Call8 => simple_instruction_n!("OP_CALL", offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
+            OpCode::Invoke0
+            | OpCode::Invoke1
+            | OpCode::Invoke2
+            | OpCode::Invoke3
+            | OpCode::Invoke4
+            | OpCode::Invoke5
+            | OpCode::Invoke6
+            | OpCode::Invoke7
+            | OpCode::Invoke8 => {
+                constant_instruction_n!("OP_INVOKE", self, offset, ((opcode as u8) - (OpCode::Invoke0 as u8)), f)
+            }
             _ => unimplemented!("unknown code {:?}", opcode),
         };
         Ok(m)

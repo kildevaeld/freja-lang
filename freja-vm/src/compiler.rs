@@ -34,25 +34,56 @@ type CompilerStatePtr = Rc<RefCell<CompilerState>>;
 
 impl CompilerState {
     pub fn new(enclosing: Option<CompilerStatePtr>, scope_depth: i32, function_type: FunctionType) -> CompilerStatePtr {
-        Rc::new(RefCell::new(CompilerState {
+        let local = if function_type != FunctionType::Function {
+            // In a method, it holds the receiver, "this".
+            Local(scope_depth, "this".to_string(), false)
+        } else {
+            // In a function, it holds the function, but cannot be referenced,
+            // so has no name.
+            Local(scope_depth, "".to_string(), false)
+        };
+
+        let state = CompilerState {
             enclosing,
-            locals: vec![Local(scope_depth, "".to_owned(), false)],
+            locals: vec![local],
             scope_depth,
             function_type,
             function: Function::new(),
             up_values: Vec::new(),
+        };
+
+        Rc::new(RefCell::new(state))
+    }
+}
+
+type ClassCompilerStatePtr = Rc<RefCell<ClassCompilerState>>;
+
+pub struct ClassCompilerState {
+    enclosing: Option<ClassCompilerStatePtr>,
+    name: String,
+    has_super_class: bool,
+}
+
+impl ClassCompilerState {
+    pub fn new(enclosing: Option<ClassCompilerStatePtr>, name: String, has_super_class: bool) -> ClassCompilerStatePtr {
+        Rc::new(RefCell::new(ClassCompilerState {
+            enclosing,
+            name,
+            has_super_class,
         }))
     }
 }
 
 pub struct Compiler {
     state: CompilerStatePtr,
+    class: Option<ClassCompilerStatePtr>,
 }
 
 impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
             state: CompilerState::new(None, 0, FunctionType::TopLevel),
+            class: None,
         }
     }
 
@@ -306,45 +337,9 @@ impl Compiler {
         }
         function
     }
-}
 
-impl StmtVisitor<CompileResult<()>> for Compiler {
-    fn visit_program_stmt(&mut self, e: &ProgramStmt) -> CompileResult<()> {
-        //
-        for stmt in &e.statements {
-            stmt.accept(self)?;
-        }
-        Ok(())
-    }
-    fn visit_var_stmt(&mut self, e: &VarStmt) -> CompileResult<()> {
-        let global = self.parse_var(e.name.as_str());
-
-        match &e.initializer {
-            Some(init) => init.accept(self)?,
-            None => self.emit(OpCode::Nil),
-        };
-        if self.is_local() {
-            self.mark_initialized();
-        } else {
-            self.emit_opcode_byte(OpCode::DefineGlobal, global as u8);
-        }
-        Ok(())
-    }
-    fn visit_varlist_stmt(&mut self, e: &VarListStmt) -> CompileResult<()> {
-        for v in &e.variables {
-            self.visit_var_stmt(v)?;
-        }
-        Ok(())
-    }
-    fn visit_expr_stmt(&mut self, e: &ExprStmt) -> CompileResult<()> {
-        e.expression.accept(self)?;
-        self.emit(OpCode::Pop);
-        Ok(())
-    }
-    fn visit_func_stmt(&mut self, e: &FuncStmt) -> CompileResult<()> {
-        let global = self.parse_var(e.name.as_str());
-        self.mark_initialized();
-        let state = CompilerState::new(Some(self.state.clone()), 1, FunctionType::Function);
+    fn function(&mut self, e: &FuncStmt, type_: FunctionType) -> CompileResult<()> {
+        let state = CompilerState::new(Some(self.state.clone()), 1, type_);
         {
             let mut s = state.borrow_mut();
             s.function.arity = e.parameters.len() as i32;
@@ -383,6 +378,100 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
             self.emit(i.index);
         }
 
+        Ok(())
+    }
+
+    fn variable(&mut self, name: &str) {
+        let (a, get, set) = if let Some(a) = self.resolve_local(name) {
+            (a, OpCode::GetLocal, OpCode::SetLocal)
+        } else if let Some(a) = self.resolve_upvalue(name) {
+            (a, OpCode::GetUpValue, OpCode::SetUpValue)
+        } else {
+            let a = self.make_constant(Value::String(name.to_owned()));
+            (a, OpCode::GetGlobal, OpCode::SetGlobal)
+        };
+        //unimplemented!("idenfier");
+        self.emit_opcode_byte(get, a as u8);
+    }
+}
+
+impl StmtVisitor<CompileResult<()>> for Compiler {
+    fn visit_program_stmt(&mut self, e: &ProgramStmt) -> CompileResult<()> {
+        //
+        for stmt in &e.statements {
+            stmt.accept(self)?;
+        }
+        Ok(())
+    }
+    fn visit_var_stmt(&mut self, e: &VarStmt) -> CompileResult<()> {
+        let global = self.parse_var(e.name.as_str());
+
+        match &e.initializer {
+            Some(init) => init.accept(self)?,
+            None => self.emit(OpCode::Nil),
+        };
+        if self.is_local() {
+            self.mark_initialized();
+        } else {
+            self.emit_opcode_byte(OpCode::DefineGlobal, global as u8);
+        }
+        Ok(())
+    }
+    fn visit_varlist_stmt(&mut self, e: &VarListStmt) -> CompileResult<()> {
+        for v in &e.variables {
+            self.visit_var_stmt(v)?;
+        }
+        Ok(())
+    }
+    fn visit_expr_stmt(&mut self, e: &ExprStmt) -> CompileResult<()> {
+        e.expression.accept(self)?;
+        self.emit(OpCode::Pop);
+        Ok(())
+    }
+    fn visit_func_stmt(&mut self, e: &FuncStmt) -> CompileResult<()> {
+        let global = self.parse_var(e.name.as_str());
+        self.mark_initialized();
+
+        self.function(e, FunctionType::Function)?;
+        // let state = CompilerState::new(Some(self.state.clone()), 1, FunctionType::Function);
+        // {
+        //     let mut s = state.borrow_mut();
+        //     s.function.arity = e.parameters.len() as i32;
+        //     s.function.name = Some(e.name.clone());
+        // }
+        // self.state = state.clone();
+
+        // for p in &e.parameters {
+        //     match p {
+        //         Argument::Regular(m) => {
+        //             let global = self.parse_var(m.as_str());
+        //             self.define_variable(global);
+        //         }
+        //         Argument::Rest(_) => unimplemented!("rest not implemented"),
+        //     };
+        // }
+
+        // match e.body.as_ref() {
+        //     Stmt::Block(b) => {
+        //         for bb in &b.statements {
+        //             bb.accept(self)?;
+        //         }
+        //     }
+        //     _ => unimplemented!("should be block"),
+        // };
+
+        // self.end_scope();
+
+        // let function = self.end_compile();
+
+        // let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
+        // self.emit_opcode_byte(OpCode::Closure, constant);
+
+        // for i in state.borrow().up_values.iter() {
+        //     self.emit(if i.is_local { 1 } else { 0 });
+        //     self.emit(i.index);
+        // }
+
         self.define_variable(global as usize);
 
         // TODO: Upvalues
@@ -390,8 +479,45 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> CompileResult<()> {
-        //
-        unimplemented!("class");
+        let global = self.make_constant(Value::String(e.name.to_string()));
+        self.declare_variable(&e.name)?;
+        self.emit_opcode_byte(OpCode::Class, global as u8);
+        self.define_variable(global);
+
+        self.class = Some(ClassCompilerState::new(
+            self.class.as_ref().map(|m| m.clone()),
+            e.name.clone(),
+            e.extends.is_some(),
+        ));
+
+        // if let Some(su) = e.extends {
+        //     self.begin_scope();
+
+        // }
+
+        for m in &e.members {
+            match m.as_ref() {
+                Stmt::Func(stmt) => {
+                    self.variable(&e.name);
+                    let name = self.make_constant(Value::String(stmt.name.to_string()));
+                    let ty = if stmt.name.as_str() == "init" {
+                        FunctionType::Initializer
+                    } else {
+                        FunctionType::Method
+                    };
+
+                    self.function(stmt, ty)?;
+
+                    self.emit_opcode_byte(OpCode::Method, name as u8);
+                }
+                _ => unimplemented!("invalid class member {:?}", m),
+            }
+        }
+
+        let enc = self.class.as_ref().unwrap().borrow().enclosing.clone();
+        self.class = enc;
+
+        Ok(())
     }
     fn visit_interface_stmt(&mut self, e: &InterfaceStmt) -> CompileResult<()> {
         //
@@ -461,13 +587,30 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     }
 
     fn visit_call_expr(&mut self, e: &CallExpr) -> CompileResult<()> {
-        e.member.accept(self)?;
-        for a in &e.arguments {
-            a.accept(self)?;
-        }
-        //
         let c = e.arguments.len() as u8;
-        self.emit(OpCode::from((OpCode::Call0 as u8) + c));
+        match e.member.as_ref() {
+            Expr::Member(mem) => {
+                mem.object.accept(self)?;
+                let name = match mem.property.as_ref() {
+                    Expr::Identifier(i) => i.value.as_str(),
+                    _ => unimplemented!("invalid call member"),
+                };
+                let name = self.make_constant(Value::String(name.to_string()));
+                for a in &e.arguments {
+                    a.accept(self)?;
+                }
+                self.emit_opcode_byte(OpCode::from((OpCode::Invoke0 as u8) + c), name as u8);
+            }
+            _ => {
+                e.member.accept(self)?;
+                for a in &e.arguments {
+                    a.accept(self)?;
+                }
+
+                self.emit(OpCode::from((OpCode::Call0 as u8) + c));
+            }
+        }
+
         //unimplemented!("call");
         Ok(())
     }
@@ -529,7 +672,13 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_member_expr(&mut self, e: &MemberExpr) -> CompileResult<()> {
         //
+
         e.object.accept(self)?;
+
+        // match &e.property {
+        //     Expr::Identifier(i) => {}
+        //     _ => unimplemented!("member lookup: {:?}", e.property),
+        // };
         e.property.accept(self)?;
         self.emit(OpCode::Property);
         //unimplemented!("member");
@@ -571,7 +720,8 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_this_expr(&mut self, e: &ThisExpr) -> CompileResult<()> {
         //
-        unimplemented!("this");
+        self.variable("this");
+        Ok(())
     }
 
     fn visit_var_expr(&mut self, e: &VarExpr) -> CompileResult<()> {

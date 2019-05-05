@@ -1,14 +1,13 @@
 use super::chunk::{Chunk, OpCode};
-use std::fmt;
-use std::rc::Rc;
-use super::error::{RuntimeResult, RuntimeError};
+use super::error::{RuntimeError, RuntimeResult};
 use super::objects::*;
 use freja_parser::ast::Number;
+use std::fmt;
+use std::rc::Rc;
 
 pub type ValuePtr = Rc<Value>;
 
-
-
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug, Clone)]
 pub enum Value {
     Number(Number),
@@ -18,6 +17,8 @@ pub enum Value {
     Function(Rc<Function>),
     Closure(Rc<Closure>),
     Native(Rc<Native>),
+    Class(Rc<Class>),
+    Instance(ClassInstance),
     Null,
 }
 
@@ -35,9 +36,30 @@ impl Value {
         }
     }
 
+    pub fn as_closure(&self) -> Option<&Rc<Closure>> {
+        match self {
+            Value::Closure(f) => Some(f),
+            _ => None,
+        }
+    }
+
     pub fn as_string(&self) -> Option<&String> {
         match self {
             Value::String(f) => Some(f),
+            _ => None,
+        }
+    }
+
+    pub fn as_class(&self) -> Option<&Rc<Class>> {
+        match self {
+            Value::Class(f) => Some(f),
+            _ => None,
+        }
+    }
+
+    pub fn as_instance(&self) -> Option<&ClassInstance> {
+        match self {
+            Value::Instance(f) => Some(f),
             _ => None,
         }
     }
@@ -51,11 +73,15 @@ impl fmt::Display for Value {
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
-            Value::Array(a) => {
-                write!(f, "{}",a)
-            }
+            Value::Array(a) => write!(f, "{}", a),
+            Value::Class(c) => write!(f, "<class {}>", c.name),
+            Value::Instance(i) => write!(f, "<instance {}>", i.class.name),
             Value::Native(_) => write!(f, "<fn native>"),
-            Value::Closure(cl) => write!(f, "<fn {}>", cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
+            Value::Closure(cl) => write!(
+                f,
+                "<fn {}>",
+                cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")
+            ),
             _ => write!(f, "Unknown"),
         }
     }
@@ -68,7 +94,8 @@ impl Value {
             Value::Number(Number::Double(d)) => *d > 0.0,
             Value::Number(Number::Integer(d)) => *d > 0,
             Value::Boolean(b) => *b,
-            
+            Value::Class(_) => true,
+            Value::Instance(_) => true,
             Value::Array(a) => !a.is_empty(),
             Value::Null => false,
             Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
@@ -96,15 +123,13 @@ impl Val {
         match this {
             Val::Heap(h) => {
                 *self = Val::Heap(h);
-            },
+            }
             Val::Stack(s) => {
                 *self = Val::Heap(Rc::new(s));
-            },
+            }
         }
         self
     }
-
-   
 
     pub fn as_value(&self) -> &Value {
         match &self {
@@ -154,7 +179,7 @@ fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
         _ => {
             println!("n {}", lhs);
             Err("could not add".into())
-        },
+        }
     }
 }
 
@@ -191,8 +216,6 @@ fn value_div(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     }
 }
 
-
-
 #[inline(always)]
 fn value_lt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
     match lhs {
@@ -228,16 +251,13 @@ fn value_eq(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
 
 pub fn value_binary(lhs: &Value, rhs: &Value, op: OpCode) -> RuntimeResult<Value> {
     match op {
-        OpCode::Add=> value_add(lhs, rhs),
+        OpCode::Add => value_add(lhs, rhs),
         OpCode::Substract => value_sub(lhs, rhs),
         OpCode::Multiply => value_mul(lhs, rhs),
         OpCode::Divide => value_div(lhs, rhs),
         OpCode::Equal => value_eq(lhs, rhs),
         OpCode::Less => value_lt(lhs, rhs),
         OpCode::Greater => value_gt(lhs, rhs),
-        _ => Err(RuntimeError::Error(format!(
-            "invalid binary token {:?}",
-            op
-        ))),
+        _ => Err(RuntimeError::Error(format!("invalid binary token {:?}", op))),
     }
 }

@@ -4,7 +4,7 @@ class Greeter implements Greet {
         return this.fmt("Hello", msg)
     }
 
-    fn fmt(msg, greet){
+    fn fmt(greet, msg){
         return greet + " " + msg + "!"
     }
  

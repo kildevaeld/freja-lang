@@ -1,5 +1,7 @@
 use super::chunk::Chunk;
 use super::value::{Val, ValuePtr};
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
@@ -25,7 +27,12 @@ impl fmt::Debug for Function {
 
 impl Function {
     pub fn new() -> Function {
-        Function { chunk: Chunk::new(), up_value_count: 0, name: None, arity: 0 }
+        Function {
+            chunk: Chunk::new(),
+            up_value_count: 0,
+            name: None,
+            arity: 0,
+        }
     }
 }
 
@@ -47,6 +54,36 @@ pub struct Native {
 impl PartialEq for Native {
     fn eq(&self, other: &Native) -> bool {
         false
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Class {
+    pub(crate) name: String,
+    pub(crate) methods: RefCell<HashMap<String, Rc<Closure>>>,
+}
+
+impl Class {
+    pub fn new(name: String) -> Class {
+        Class {
+            name,
+            methods: RefCell::new(HashMap::new()),
+        }
+    }
+
+    pub fn add_method(&self, name: String, method: Rc<Closure>) {
+        self.methods.borrow_mut().insert(name, method);
+    }
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct ClassInstance {
+    pub(crate) class: Rc<Class>,
+}
+
+impl ClassInstance {
+    pub fn new(class: Rc<Class>) -> ClassInstance {
+        ClassInstance { class }
     }
 }
 

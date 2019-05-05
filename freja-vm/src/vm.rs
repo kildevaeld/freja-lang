@@ -1,6 +1,6 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
-use super::error::CompileResult;
+use super::error::{CompileError, CompileResult};
 use super::objects::*;
 use super::value::{value_binary, Val, Value, ValuePtr};
 use freja_parser::ast::*;
@@ -93,7 +93,7 @@ impl VM {
         let cl = Closure::new(Rc::new(fu));
         // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
         // self.run();
-        call_value(&self.stack, &mut self.frames, &Value::Closure(Rc::new(cl)), 0)?;
+        call_value(&mut self.stack, &mut self.frames, &Value::Closure(Rc::new(cl)), 0)?;
         run(&mut self.frames, &mut self.stack, &mut self.globals);
         Ok(())
     }
@@ -117,6 +117,15 @@ macro_rules! peek {
         let idx = ($stack.len() as i32) + i;
         $stack.get(idx as usize)
     }};
+}
+
+macro_rules! dump_stack {
+    ($stack: expr) => {
+        println!(
+            "{}",
+            $stack.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ")
+        )
+    };
 }
 
 fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
@@ -171,6 +180,12 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                 call_value(stack, frames, callee.as_value(), count).unwrap();
                 frame = frames.len() - 1
             }
+            OpCode::Invoke0 | OpCode::Invoke1 | OpCode::Invoke2 => {
+                let count = (instruction as u8) - (OpCode::Invoke0 as u8);
+                let method = frames[frame].read_constant().unwrap().as_string().unwrap().clone();
+                invoke(stack, frames, method.as_str(), count).unwrap();
+                frame = frames.len() - 1;
+            }
             OpCode::Closure => {
                 let fu = frames[frame].read_constant().unwrap().as_function().unwrap().clone();
                 let cl = Value::Closure(Rc::new(Closure::new(fu)));
@@ -222,11 +237,22 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                 let v = Value::Boolean(!current.is_truthy());
                 push!(stack, Val::Stack(v));
             }
-            OpCode::Property => {
-                let prop = pop!(stack).unwrap();
-                let object = pop!(stack).unwrap();
+            // OpCode::Property => {
+            //     let prop = pop!(stack).unwrap();
+            //     let object = pop!(stack).unwrap();
 
-                println!("OBJECT {}, PROP {}", object, prop);
+            //     println!("OBJECT {}, PROP {}", object, prop);
+            // }
+            OpCode::Class => {
+                let name = frames[frame].read_constant().unwrap().as_string().unwrap();
+                let class = Class::new(name.to_owned());
+                push!(stack, Val::Stack(Value::Class(Rc::new(class))));
+            }
+            OpCode::Method => {
+                let name = frames[frame].read_constant().unwrap().as_string().unwrap();
+                let method = pop!(stack).unwrap().as_closure().unwrap().clone();
+                let class = pop!(stack).unwrap().as_class().unwrap().clone();
+                class.add_method(name.to_owned(), method.clone());
             }
             OpCode::Nil => push!(stack, Val::Stack(Value::Null)).expect("stack overflow"),
             _ => unimplemented!("instruction {:?}", instruction),
@@ -234,10 +260,19 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
     }
 }
 
-fn call_value(stack: &Stack, frames: &mut Frames, callee: &Value, count: u8) -> CompileResult<()> {
+fn call_value(stack: &mut Stack, frames: &mut Frames, callee: &Value, count: u8) -> CompileResult<()> {
     match callee {
         Value::Closure(cl) => {
             call(stack, frames, cl)?;
+        }
+        Value::Class(cl) => {
+            //
+            let s = if count == 0 { 0 } else { count - 1 };
+
+            stack[s as usize] = Val::Stack(Value::Instance(ClassInstance::new(cl.clone())));
+            if let Some(initializer) = cl.methods.borrow().get("init") {
+                call(stack, frames, initializer)?;
+            }
         }
         Value::Native(native) => {
             let len = stack.len();
@@ -258,4 +293,27 @@ fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileRes
     frames.push(frame).expect("too many frames");
 
     Ok(())
+}
+
+fn invoke_from_class(stack: &Stack, frames: &mut Frames, class: &ClassInstance, name: &str) -> CompileResult<()> {
+    let methods = class.class.methods.borrow();
+    let method = match methods.get(name) {
+        Some(m) => m,
+        None => return Err(CompileError::InvalidReceiver),
+    };
+
+    call(stack, frames, method)?;
+
+    Ok(())
+}
+
+fn invoke(stack: &Stack, frames: &mut Frames, name: &str, count: u8) -> CompileResult<()> {
+    let receiver = peek!(stack, count).unwrap();
+
+    let instance = match receiver.as_instance() {
+        Some(s) => s,
+        None => return Err(CompileError::InvalidReceiver),
+    };
+
+    invoke_from_class(stack, frames, receiver.as_instance().unwrap(), name)
 }

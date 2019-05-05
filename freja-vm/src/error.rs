@@ -8,6 +8,7 @@ pub type CompileResult<T> = Result<T, CompileError>;
 pub enum CompileError {
     DuplicateVariable,
     ReturnTopLevel,
+    InvalidReceiver,
 }
 
 impl fmt::Display for CompileError {
