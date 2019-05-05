@@ -345,6 +345,7 @@ UNARY_OPERATOR -> UnaryOperator
       / "--" { UnaryOperator::Decrement }
       / "+" !"=" { UnaryOperator::Plus }
       / "-" !"=" { UnaryOperator::Minus }
+      / "!" !"=" { UnaryOperator::Not }
 
 ADDITIVE_OPERATOR -> BinaryOperator
     = "+" !("+" / "=") { BinaryOperator::Add }

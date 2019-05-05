@@ -1,3 +1,5 @@
+/*! WARNING: AUTO GENERATED  - DO NOT EDIT **/
+
 use std::fmt;
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
@@ -30,7 +32,11 @@ pub struct Token {
 
 impl Token {
     pub fn new(location: Location, kind: TokenType, value: &str) -> Token {
-        Token { location, value: value.to_owned(), kind }
+        Token {
+            location,
+            value: value.to_owned(),
+            kind,
+        }
     }
 }
 
@@ -115,6 +121,7 @@ pub enum UnaryOperator {
     Minus,
     Increment,
     Decrement,
+    Not,
 }
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
@@ -364,7 +371,12 @@ pub struct ClassStmt {
 
 impl ClassStmt {
     pub fn new(name: String, members: Vec<Box<Stmt>>, extends: Option<String>, implements: Vec<String>) -> ClassStmt {
-        ClassStmt { name, members, extends, implements }
+        ClassStmt {
+            name,
+            members,
+            extends,
+            implements,
+        }
     }
 }
 
@@ -404,7 +416,11 @@ pub struct IfStmt {
 
 impl IfStmt {
     pub fn new(test: Expr, consequent: Box<Stmt>, alternative: Option<Box<Stmt>>) -> IfStmt {
-        IfStmt { test, consequent, alternative }
+        IfStmt {
+            test,
+            consequent,
+            alternative,
+        }
     }
 }
 
@@ -419,7 +435,12 @@ pub struct ForStmt {
 
 impl ForStmt {
     pub fn new(element: Token, index: Option<Token>, iterator: Expr, body: Box<Stmt>) -> ForStmt {
-        ForStmt { element, index, iterator, body }
+        ForStmt {
+            element,
+            index,
+            iterator,
+            body,
+        }
     }
 }
 
@@ -465,7 +486,11 @@ pub struct AssignExpr {
 
 impl AssignExpr {
     pub fn new(destination: Box<Expr>, value: Box<Expr>, operator: AssignmentOperator) -> AssignExpr {
-        AssignExpr { destination, value, operator }
+        AssignExpr {
+            destination,
+            value,
+            operator,
+        }
     }
 }
 
@@ -518,7 +543,11 @@ pub struct MemberExpr {
 
 impl MemberExpr {
     pub fn new(object: Box<Expr>, property: Box<Expr>, computed: bool) -> MemberExpr {
-        MemberExpr { object, property, computed }
+        MemberExpr {
+            object,
+            property,
+            computed,
+        }
     }
 }
 

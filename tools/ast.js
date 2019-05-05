@@ -38,7 +38,7 @@ exports.literals = [
     //     ["Integer", "Double", "String", "Array", "Map", "Boolean"]
     // ]],
     ["UnaryOperator",
-        ["Plus", "Minus", "Increment", "Decrement"]
+        ["Plus", "Minus", "Increment", "Decrement", "Not"]
     ],
     ["PostfixOperator",
         ["Increment", "Decrement"]

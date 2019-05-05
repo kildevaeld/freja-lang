@@ -7,5 +7,7 @@ if test && 200 {
 }
 
 if !test {
-    
+
+} else {
+    print("test is true")
 }

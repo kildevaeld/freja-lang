@@ -596,8 +596,14 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     }
 
     fn visit_unary_expr(&mut self, e: &UnaryExpr) -> CompileResult<()> {
-        //
-        unimplemented!("unary");
+        e.value.accept(self)?;
+        let op = match &e.operator {
+            UnaryOperator::Not => OpCode::Not,
+            UnaryOperator::Minus => OpCode::Negate,
+            _ => unimplemented!("unary operator {:?}", e.operator),
+        };
+        self.emit(op);
+        Ok(())
     }
 
     fn visit_postfix_expr(&mut self, e: &PostfixExpr) -> CompileResult<()> {
