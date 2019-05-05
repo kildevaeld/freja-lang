@@ -98,12 +98,7 @@ impl Val {
         }
     }
 
-    pub fn as_ref(&self) -> &Value {
-        match &self {
-            Val::Heap(h) => h,
-            Val::Stack(s) => s,
-        }
-    }
+   
 
     pub fn as_value(&self) -> &Value {
         match &self {
@@ -126,6 +121,18 @@ impl fmt::Display for Val {
     }
 }
 
+impl std::ops::Deref for Val {
+    type Target = Value;
+    fn deref(&self) -> &Self::Target {
+        self.as_value()
+    }
+}
+
+impl AsRef<Value> for Val {
+    fn as_ref(&self) -> &Value {
+        self.as_value()
+    }
+}
 
 #[inline(always)]
 fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {

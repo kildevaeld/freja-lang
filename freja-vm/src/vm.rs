@@ -15,28 +15,6 @@ pub type Stack = HVec<Val, U256>;
 type Frames = HVec<CallFrame, U64>;
 pub type Globals = HashMap<String, ValuePtr>;
 
-// struct Frames {
-//     inner: RefCell<HVec<CallFrame, U64>>,
-// }
-
-// impl Frames {
-//     pub fn new() -> Frames {
-//         Frames { inner: RefCell::new(HVec::default()) }
-//     }
-
-//     pub fn push(&self, frame: CallFrame) {
-//         self.inner.borrow_mut().push(frame);
-//     }
-
-//     pub fn pop(&self) -> Option<CallFrame> {
-//         self.inner.borrow_mut().pop()
-//     }
-
-//     pub fn last(&self) -> &CallFrame {
-//         self.inner.borrow_mut().last().unwrap()
-//     }
-// }
-
 #[derive(Debug)]
 struct CallFrame {
     closure: Rc<Closure>,
@@ -308,7 +286,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                 let right = pop!(stack).unwrap();
                 let left = pop!(stack).unwrap();
 
-                let ret = value_binary(left.as_ref(), right.as_ref(), instruction).expect("binary");
+                let ret = value_binary(&left, &right, instruction).expect("binary");
                 push!(stack, Val::Stack(ret));
             }
             OpCode::JumpIfFalse => {
@@ -347,6 +325,7 @@ fn call_value(stack: &Stack, frames: &mut Frames, callee: &Value, count: u8) -> 
 fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileResult<()> {
     // TODO check aritity
     let a = closure.function.arity;
+
     let count = if stack.len() == 0 { 0 } else { a + 1 };
     let idx = stack.len() - (count as usize);
     let frame = CallFrame::new(closure.clone(), idx); // { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
