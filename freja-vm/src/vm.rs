@@ -185,7 +185,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
 
             OpCode::Call0 | OpCode::Call1 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
-                let mut callee = peek!(stack, count as usize).expect("expect callee").clone();
+                let callee = peek!(stack, count as usize).expect("expect callee").clone();
                 call_value(stack, frames, callee.as_value(), count).unwrap();
                 frame = frames.len() - 1
             }
@@ -231,19 +231,17 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
                 let current = &frames[frame];
                 let offset = current.read_short();
                 let v = peek!(stack, 0).unwrap();
-                // if !v.is_truthy() {
-                //     let ip = current.ip.get();
-                //     current.ip.set(ip + offset as usize);
-                // }
+
                 if !value_is_truthy!(v.as_ref()) {
                     let ip = current.ip.get();
                     current.ip.set(ip + offset as usize);
                 }
             }
             OpCode::Jump => {
-                let offset = frames[frame].read_short();
-                let ip = frames[frame].ip.get();
-                frames[frame].ip.set(ip + offset as usize);
+                let current = &frames[frame];
+                let offset = current.read_short();
+                let ip = current.ip.get();
+                current.ip.set(ip + offset as usize);
             }
             OpCode::Not => {
                 let current = pop!(stack).unwrap();
