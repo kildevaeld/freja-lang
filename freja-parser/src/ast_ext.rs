@@ -1,6 +1,6 @@
 use super::ast::{Literal, Number};
-use std::fmt;
-use std::ops::{Add, Div, Mul, Sub};
+use core::fmt;
+use core::ops::{Add, Div, Mul, Sub};
 
 impl fmt::Display for Number {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

@@ -1,8 +1,9 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
-use super::error::{CompileError, CompileResult};
+use super::error::{CompileError, CompileResult, RuntimeError, RuntimeResult};
 use super::objects::*;
-use super::value::{value_binary, Val, Value, ValuePtr};
+#[macro_use]
+use super::value::*;
 use freja_parser::ast::*;
 use heapless::consts::{U256, U64};
 use heapless::Vec as HVec;
@@ -88,20 +89,20 @@ impl VM {
             .join(", ")
     }
 
-    pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> CompileResult<()> {
+    pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
         let cl = Closure::new(Rc::new(fu));
         // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
         // self.run();
         call_value(&mut self.stack, &mut self.frames, &Value::Closure(Rc::new(cl)), 0)?;
-        run(&mut self.frames, &mut self.stack, &mut self.globals);
+        run(&mut self.frames, &mut self.stack, &mut self.globals)?;
         Ok(())
     }
 }
 
 macro_rules! push {
     ($stack: expr, $val: expr) => {
-        $stack.push($val)
+        $stack.push($val).map_err(|_| RuntimeError::StackOverflow)
     };
 }
 
@@ -119,6 +120,14 @@ macro_rules! peek {
     }};
 }
 
+macro_rules! peek_mut {
+    ($stack: expr, $distance: expr) => {{
+        let i = -1 - $distance as i32;
+        let idx = ($stack.len() as i32) + i;
+        $stack.get_mut(idx as usize)
+    }};
+}
+
 macro_rules! dump_stack {
     ($stack: expr) => {
         println!(
@@ -128,7 +137,7 @@ macro_rules! dump_stack {
     };
 }
 
-fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
+fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResult<()> {
     let mut frame = frames.len() - 1;
 
     'outer: while frames[frame].ip.get() < frames[frame].closure.function.chunk.code.len() {
@@ -138,15 +147,14 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             OpCode::Constant => push!(
                 stack,
                 Val::Heap(frames[frame].read_constant().expect("constant").clone())
-            )
-            .expect("stack overflow"),
+            )?,
             OpCode::Pop => {
                 pop!(stack);
             }
             OpCode::DefineGlobal => {
                 let name = frames[frame].read_constant().unwrap();
                 let value = pop!(stack).unwrap();
-                globals.insert(name.as_string().unwrap().to_string(), value.into_heap());
+                globals.insert(name.as_string().unwrap().to_string(), value.into_value());
             }
             OpCode::GetGlobal => {
                 let name = frames[frame].read_constant().unwrap().as_string().unwrap();
@@ -160,8 +168,9 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             OpCode::GetLocal => {
                 let b = frames[frame].read_byte();
                 let idx = frames[frame].idx + b as usize;
-                stack[idx].into_heap2();
-                stack.push(stack[idx].clone()).expect("stack overflow");
+                stack[idx].into_heap();
+                push!(stack, stack[idx].clone())?;
+                //stack.push(stack[idx].clone())?;
             }
             OpCode::Return => {
                 let result = pop!(stack).unwrap();
@@ -176,7 +185,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
 
             OpCode::Call0 | OpCode::Call1 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
-                let callee = peek!(stack, count as usize).expect("expect callee").clone();
+                let mut callee = peek!(stack, count as usize).expect("expect callee").clone();
                 call_value(stack, frames, callee.as_value(), count).unwrap();
                 frame = frames.len() - 1
             }
@@ -200,8 +209,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             | OpCode::Greater => {
                 let right = pop!(stack).unwrap();
                 let left = pop!(stack).unwrap();
-
-                let ret = value_binary(&left, &right, instruction).expect("binary");
+                let ret = value_binary!(left.as_ref(), right.as_ref(), instruction)?;
                 push!(stack, Val::Stack(ret));
             }
             OpCode::Array => {
@@ -213,18 +221,23 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
                     let mut v = Vec::new();
                     let idx = stack.len() - o as usize;
                     for i in stack.iter_mut().skip(idx) {
-                        v.push(i.into_heap2().clone());
+                        v.push(i.into_heap().clone());
                     }
                     stack.truncate(idx);
                     push!(stack, Val::Stack(Value::Array(Array::new(v))));
                 }
             }
             OpCode::JumpIfFalse => {
-                let offset = frames[frame].read_short();
+                let current = &frames[frame];
+                let offset = current.read_short();
                 let v = peek!(stack, 0).unwrap();
-                if !v.is_truthy() {
-                    let ip = frames[frame].ip.get();
-                    frames[frame].ip.set(ip + offset as usize);
+                // if !v.is_truthy() {
+                //     let ip = current.ip.get();
+                //     current.ip.set(ip + offset as usize);
+                // }
+                if !value_is_truthy!(v.as_ref()) {
+                    let ip = current.ip.get();
+                    current.ip.set(ip + offset as usize);
                 }
             }
             OpCode::Jump => {
@@ -234,7 +247,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             }
             OpCode::Not => {
                 let current = pop!(stack).unwrap();
-                let v = Value::Boolean(!current.is_truthy());
+                let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
                 push!(stack, Val::Stack(v));
             }
             // OpCode::Property => {
@@ -268,8 +281,11 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) {
             _ => unimplemented!("instruction {:?}", instruction),
         };
     }
+
+    Ok(())
 }
 
+#[inline(always)]
 fn call_value(stack: &mut Stack, frames: &mut Frames, callee: &Value, count: u8) -> CompileResult<()> {
     match callee {
         Value::Closure(cl) => {
@@ -293,6 +309,7 @@ fn call_value(stack: &mut Stack, frames: &mut Frames, callee: &Value, count: u8)
     Ok(())
 }
 
+#[inline(always)]
 fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileResult<()> {
     // TODO check aritity
     let a = closure.function.arity;
@@ -305,6 +322,7 @@ fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileRes
     Ok(())
 }
 
+#[inline(always)]
 fn invoke_from_class(stack: &Stack, frames: &mut Frames, class: &ClassInstance, name: &str) -> CompileResult<()> {
     let methods = class.class.methods.borrow();
     let method = match methods.get(name) {
@@ -317,6 +335,7 @@ fn invoke_from_class(stack: &Stack, frames: &mut Frames, class: &ClassInstance, 
     Ok(())
 }
 
+#[inline(always)]
 fn invoke(stack: &Stack, frames: &mut Frames, name: &str, count: u8) -> CompileResult<()> {
     let receiver = peek!(stack, count).unwrap();
 

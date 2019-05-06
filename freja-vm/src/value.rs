@@ -122,14 +122,14 @@ pub enum Val {
 }
 
 impl Val {
-    pub fn into_heap(self) -> ValuePtr {
+    pub fn into_value(self) -> ValuePtr {
         match self {
             Val::Heap(h) => h,
             Val::Stack(s) => Rc::new(s),
         }
     }
 
-    pub fn into_heap2(&mut self) -> &mut Self {
+    pub fn into_heap(&mut self) -> &mut Self {
         let this = std::mem::replace(self, Val::Stack(Value::Null));
         match this {
             Val::Heap(h) => {
@@ -176,99 +176,100 @@ impl AsRef<Value> for Val {
     }
 }
 
-#[inline(always)]
-fn value_add(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Number(n + nn)),
-            _ => Err("nan".into()),
-        },
-        Value::String(s) => match rhs {
-            Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
-            _ => Err("nan".into()),
-        },
-        _ => {
-            println!("n {}", lhs);
-            Err("could not add".into())
+macro_rules! value_add {
+    ($lhs: expr, $rhs: expr) => {
+        match $lhs {
+            Value::Number(n) => match $rhs {
+                Value::Number(nn) => Ok(Value::Number(n + nn)),
+                _ => Err("nan".into()),
+            },
+            Value::String(s) => match $rhs {
+                Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
+                _ => Err("nan".into()),
+            },
+            _ => {
+                println!("n {}", $lhs);
+                Err("could not add".into())
+            }
         }
-    }
+    };
 }
 
-#[inline(always)]
-fn value_sub(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Number(n - nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could not sub".into()),
-    }
+macro_rules! value_arithmetic {
+    ($lhs: expr, $rhs: expr, $op: tt) => {
+        match $lhs {
+            Value::Number(n) => match $rhs {
+                Value::Number(nn) => Ok(Value::Number(n $op nn)),
+                _ => Err("nan".into()),
+            },
+            _ => Err("could not sub".into()),
+        }
+    };
 }
 
-#[inline(always)]
-fn value_mul(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Number(n * nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could mul".into()),
-    }
+macro_rules! value_comparison {
+    ($lhs: expr, $rhs: expr, $op: tt) => {
+        match $lhs {
+            Value::Number(n) => match $rhs {
+                Value::Number(nn) => Ok(Value::Boolean(n $op nn)),
+                _ => Err("nan".into()),
+            },
+            _ => Err("could not sub".into()),
+        }
+    };
 }
 
-#[inline(always)]
-fn value_div(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Number(n / nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could div".into()),
-    }
+// #[inline(always)]
+// pub fn value_binary(lhs: &Value, rhs: &Value, op: OpCode) -> RuntimeResult<Value> {
+//     match op {
+//         OpCode::Add => value_add!(lhs, rhs),
+//         OpCode::Substract => value_arithmetic!(lhs, rhs, -),
+//         OpCode::Multiply => value_arithmetic!(lhs, rhs, *),
+//         OpCode::Divide => value_arithmetic!(lhs, rhs, /),
+//         OpCode::Equal => value_comparison!(lhs, rhs, ==),
+//         OpCode::Less => value_comparison!(lhs, rhs, <),
+//         OpCode::Greater => value_comparison!(lhs, rhs, >),
+//         _ => Err(RuntimeError::Error(format!("invalid binary token {:?}", op))),
+//     }
+// }
+
+#[macro_export]
+macro_rules! value_binary {
+    ($lhs: expr, $rhs: expr, $op: expr) => {
+        match $op {
+            OpCode::Add => value_add!($lhs, $rhs),
+            OpCode::Substract => value_arithmetic!($lhs, $rhs, -),
+            OpCode::Multiply => value_arithmetic!($lhs, $rhs, *),
+            OpCode::Divide => value_arithmetic!($lhs, $rhs, /),
+            OpCode::Equal => value_comparison!($lhs, $rhs, ==),
+            OpCode::Less => value_comparison!($lhs, $rhs, <),
+            OpCode::Greater => value_comparison!($lhs, $rhs, >),
+            _ => Err(RuntimeError::Error(format!("invalid binary token {:?}", $op))),
+        }
+    };
 }
 
-#[inline(always)]
-fn value_lt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Boolean(n < nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could not less".into()),
-    }
+#[macro_export]
+macro_rules! value_is_truthy {
+    ($value: expr) => {
+        match $value {
+                            Value::String(s) => !s.is_empty(),
+                            Value::Number(Number::Double(d)) => *d > 0.0,
+                            Value::Number(Number::Integer(d)) => *d > 0,
+                            Value::Boolean(b) => *b,
+                             Value::Class(_) => true,
+                                                Value::Instance(_) => true,
+                                                Value::Array(a) => !a.is_empty(),
+                                                Value::Null => false,
+                                                Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
+                                                //Value::Instance(_) => true,
+                                            }
+    };
 }
 
-#[inline(always)]
-fn value_gt(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Boolean(n > nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could not greater".into()),
-    }
-}
-
-#[inline(always)]
-fn value_eq(lhs: &Value, rhs: &Value) -> RuntimeResult<Value> {
-    match lhs {
-        Value::Number(n) => match rhs {
-            Value::Number(nn) => Ok(Value::Boolean(n == nn)),
-            _ => Err("nan".into()),
-        },
-        _ => Err("could not equal".into()),
-    }
-}
-
-pub fn value_binary(lhs: &Value, rhs: &Value, op: OpCode) -> RuntimeResult<Value> {
-    match op {
-        OpCode::Add => value_add(lhs, rhs),
-        OpCode::Substract => value_sub(lhs, rhs),
-        OpCode::Multiply => value_mul(lhs, rhs),
-        OpCode::Divide => value_div(lhs, rhs),
-        OpCode::Equal => value_eq(lhs, rhs),
-        OpCode::Less => value_lt(lhs, rhs),
-        OpCode::Greater => value_gt(lhs, rhs),
-        _ => Err(RuntimeError::Error(format!("invalid binary token {:?}", op))),
-    }
+#[macro_export]
+macro_rules! is_falsey {
+    ($value: expr) => {
+        !value_is_truthy!($value)
+    };
 }

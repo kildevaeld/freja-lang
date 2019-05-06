@@ -134,7 +134,6 @@ pub struct Chunk {
     pub(crate) code: Vec<u8>,
     #[cfg_attr(feature = "serde_support", serde(rename = "c"))]
     constants: Vec<ValuePtr>,
-    lines: Vec<i32>,
 }
 
 impl Chunk {
@@ -142,7 +141,6 @@ impl Chunk {
         Chunk {
             code: Vec::new(),
             constants: Vec::new(),
-            lines: Vec::new(),
         }
     }
 
@@ -158,9 +156,9 @@ impl Chunk {
         self.constants.get(constant)
     }
 
-    pub fn get_line(&self, line: usize) -> Option<&i32> {
-        self.lines.get(line)
-    }
+    // pub fn get_line(&self, line: usize) -> Option<&i32> {
+    //     self.lines.get(line)
+    // }
 
     pub fn write_byte(&mut self, byte: u8) {
         self.code.push(byte);
@@ -235,7 +233,7 @@ impl Chunk {
                         )?;
                     }
 
-                    writeln!(f, "{:}", fu.chunk)?;
+                    //writeln!(f, "{:}", fu.chunk)?;
                 };
 
                 offset

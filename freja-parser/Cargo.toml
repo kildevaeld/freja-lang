@@ -27,4 +27,5 @@ path = "example/dump.rs"
 
 [features]
 default = []
+std = []
 serde_support = ["serde"]

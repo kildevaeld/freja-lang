@@ -390,7 +390,7 @@ impl Compiler {
             let a = self.make_constant(Value::String(name.to_owned()));
             (a, OpCode::GetGlobal, OpCode::SetGlobal)
         };
-        //unimplemented!("idenfier");
+
         self.emit_opcode_byte(get, a as u8);
     }
 }
@@ -433,44 +433,6 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         self.mark_initialized();
 
         self.function(e, FunctionType::Function)?;
-        // let state = CompilerState::new(Some(self.state.clone()), 1, FunctionType::Function);
-        // {
-        //     let mut s = state.borrow_mut();
-        //     s.function.arity = e.parameters.len() as i32;
-        //     s.function.name = Some(e.name.clone());
-        // }
-        // self.state = state.clone();
-
-        // for p in &e.parameters {
-        //     match p {
-        //         Argument::Regular(m) => {
-        //             let global = self.parse_var(m.as_str());
-        //             self.define_variable(global);
-        //         }
-        //         Argument::Rest(_) => unimplemented!("rest not implemented"),
-        //     };
-        // }
-
-        // match e.body.as_ref() {
-        //     Stmt::Block(b) => {
-        //         for bb in &b.statements {
-        //             bb.accept(self)?;
-        //         }
-        //     }
-        //     _ => unimplemented!("should be block"),
-        // };
-
-        // self.end_scope();
-
-        // let function = self.end_compile();
-
-        // let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
-        // self.emit_opcode_byte(OpCode::Closure, constant);
-
-        // for i in state.borrow().up_values.iter() {
-        //     self.emit(if i.is_local { 1 } else { 0 });
-        //     self.emit(i.index);
-        // }
 
         self.define_variable(global as usize);
 

@@ -1,6 +1,6 @@
 /*! WARNING: AUTO GENERATED  - DO NOT EDIT **/
 
-use std::fmt;
+use core::fmt;
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
