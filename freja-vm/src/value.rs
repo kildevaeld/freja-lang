@@ -1,5 +1,3 @@
-use super::chunk::{Chunk, OpCode};
-use super::error::{RuntimeError, RuntimeResult};
 use super::objects::*;
 use freja_parser::ast::Number;
 use std::fmt;
@@ -93,7 +91,7 @@ impl fmt::Display for Value {
                 "<fn {}>",
                 cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")
             ),
-            _ => write!(f, "Unknown"),
+            //_ => write!(f, "Unknown"),
         }
     }
 }
@@ -253,17 +251,17 @@ macro_rules! value_binary {
 macro_rules! value_is_truthy {
     ($value: expr) => {
         match $value {
-                            Value::String(s) => !s.is_empty(),
-                            Value::Number(Number::Double(d)) => *d > 0.0,
-                            Value::Number(Number::Integer(d)) => *d > 0,
-                            Value::Boolean(b) => *b,
-                             Value::Class(_) => true,
-                                                Value::Instance(_) => true,
-                                                Value::Array(a) => !a.is_empty(),
-                                                Value::Null => false,
-                                                Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-                                                //Value::Instance(_) => true,
-                                            }
+                    Value::String(s) => !s.is_empty(),
+                    Value::Number(Number::Double(d)) => *d > 0.0,
+                    Value::Number(Number::Integer(d)) => *d > 0,
+                    Value::Boolean(b) => *b,
+                    Value::Class(_) => true,
+                    Value::Instance(_) => true,
+                    Value::Array(a) => !a.is_empty(),
+                    Value::Null => false,
+                    Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
+                    //Value::Instance(_) => true,
+                }
     };
 }
 

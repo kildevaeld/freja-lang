@@ -1,5 +1,5 @@
 use super::chunk::Chunk;
-use super::value::{Val, ValuePtr};
+use super::value::Val;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -66,7 +66,7 @@ pub struct Native {
 }
 
 impl PartialEq for Native {
-    fn eq(&self, other: &Native) -> bool {
+    fn eq(&self, _other: &Native) -> bool {
         false
     }
 }

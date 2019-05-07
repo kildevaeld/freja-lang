@@ -35,7 +35,7 @@ fn dump(input: &str, output: Option<String>) {
 }
 
 #[cfg(not(feature = "serializing"))]
-fn dump(_input: &str, output: Option<String>) {}
+fn dump(_input: &str, _output: Option<String>) {}
 
 fn print_bytecode(input: &str) {
     let data = fs::read_to_string(input).unwrap();

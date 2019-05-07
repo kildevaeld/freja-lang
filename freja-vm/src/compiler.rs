@@ -1,4 +1,4 @@
-use super::chunk::{Chunk, OpCode};
+use super::chunk::OpCode;
 use super::error::{CompileError, CompileResult};
 use super::objects::Function;
 use super::value::Value;
@@ -382,7 +382,7 @@ impl Compiler {
     }
 
     fn variable(&mut self, name: &str) {
-        let (a, get, set) = if let Some(a) = self.resolve_local(name) {
+        let (a, get, _set) = if let Some(a) = self.resolve_local(name) {
             (a, OpCode::GetLocal, OpCode::SetLocal)
         } else if let Some(a) = self.resolve_upvalue(name) {
             (a, OpCode::GetUpValue, OpCode::SetUpValue)
@@ -490,7 +490,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
         Ok(())
     }
-    fn visit_interface_stmt(&mut self, e: &InterfaceStmt) -> CompileResult<()> {
+    fn visit_interface_stmt(&mut self, _e: &InterfaceStmt) -> CompileResult<()> {
         //
         unimplemented!("interface");
     }
@@ -522,9 +522,8 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
         Ok(())
     }
-    fn visit_for_stmt(&mut self, e: &ForStmt) -> CompileResult<()> {
-        //
-        Ok(())
+    fn visit_for_stmt(&mut self, _e: &ForStmt) -> CompileResult<()> {
+        unimplemented!("for loop");
     }
     fn visit_return_stmt(&mut self, e: &ReturnStmt) -> CompileResult<()> {
         if self.state().function_type == FunctionType::TopLevel {
@@ -541,18 +540,18 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         };
         Ok(())
     }
-    fn visit_continue_stmt(&mut self, e: &ContinueStmt) -> CompileResult<()> {
+    fn visit_continue_stmt(&mut self, _e: &ContinueStmt) -> CompileResult<()> {
         //
         unimplemented!("continue");
     }
-    fn visit_break_stmt(&mut self, e: &BreakStmt) -> CompileResult<()> {
+    fn visit_break_stmt(&mut self, _e: &BreakStmt) -> CompileResult<()> {
         //
         unimplemented!("break");
     }
 }
 
 impl ExprVisitor<CompileResult<()>> for Compiler {
-    fn visit_assign_expr(&mut self, e: &AssignExpr) -> CompileResult<()> {
+    fn visit_assign_expr(&mut self, _e: &AssignExpr) -> CompileResult<()> {
         //
         unimplemented!("assign");
     }
@@ -656,13 +655,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
 
-    fn visit_lookup_expr(&mut self, e: &LookupExpr) -> CompileResult<()> {
-        //
+    fn visit_lookup_expr(&mut self, _e: &LookupExpr) -> CompileResult<()> {
         unimplemented!("lookup");
     }
 
-    fn visit_arguments_expr(&mut self, e: &ArgumentsExpr) -> CompileResult<()> {
-        //
+    fn visit_arguments_expr(&mut self, _e: &ArgumentsExpr) -> CompileResult<()> {
         unimplemented!("arguments");
     }
 
@@ -689,20 +686,18 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
 
-    fn visit_this_expr(&mut self, e: &ThisExpr) -> CompileResult<()> {
-        //
+    fn visit_this_expr(&mut self, _e: &ThisExpr) -> CompileResult<()> {
         self.variable("this");
         Ok(())
     }
 
-    fn visit_var_expr(&mut self, e: &VarExpr) -> CompileResult<()> {
-        //
+    fn visit_var_expr(&mut self, _e: &VarExpr) -> CompileResult<()> {
         unimplemented!("expr");
     }
 
     fn visit_identifier_expr(&mut self, e: &IdentifierExpr) -> CompileResult<()> {
         //
-        let (a, get, set) = if let Some(a) = self.resolve_local(e.value.as_str()) {
+        let (a, get, _) = if let Some(a) = self.resolve_local(e.value.as_str()) {
             (a, OpCode::GetLocal, OpCode::SetLocal)
         } else if let Some(a) = self.resolve_upvalue(e.value.as_str()) {
             (a, OpCode::GetUpValue, OpCode::SetUpValue)
@@ -727,7 +722,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
 
-    fn visit_postfix_expr(&mut self, e: &PostfixExpr) -> CompileResult<()> {
+    fn visit_postfix_expr(&mut self, _e: &PostfixExpr) -> CompileResult<()> {
         //
         unimplemented!("postfix");
     }

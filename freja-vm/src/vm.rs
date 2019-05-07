@@ -1,89 +1,17 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
 use super::error::{CompileError, CompileResult, RuntimeError, RuntimeResult};
+use super::frames::*;
 use super::objects::*;
-#[macro_use]
 use super::value::*;
 use freja_parser::ast::*;
-use heapless::consts::{U256, U64};
+use heapless::consts::U256;
 use heapless::Vec as HVec;
-use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
-use std::fmt;
 use std::rc::Rc;
 
 pub type Stack = HVec<Val, U256>;
-//type Frames = HVec<CallFrame, U64>;
 pub type Globals = HashMap<String, ValuePtr>;
-
-pub struct Frames {
-    inner: std::cell::UnsafeCell<HVec<CallFrame, U64>>,
-}
-
-impl Frames {
-    pub fn new() -> Frames {
-        Frames {
-            inner: std::cell::UnsafeCell::new(HVec::default()),
-        }
-    }
-
-    pub fn push(&self, frame: CallFrame) -> RuntimeResult<()> {
-        unsafe {
-            (&mut *self.inner.get())
-                .push(frame)
-                .map_err(|_| RuntimeError::StackOverflow)
-        }
-    }
-
-    pub fn pop(&self) -> Option<CallFrame> {
-        unsafe { (&mut *self.inner.get()).pop() }
-    }
-
-    pub fn last(&self) -> Option<&CallFrame> {
-        unsafe { (&mut *self.inner.get()).last() }
-    }
-
-    pub fn is_empty(&self) -> bool {
-        unsafe { (&*self.inner.get()).is_empty() }
-    }
-}
-
-#[derive(Debug)]
-pub struct CallFrame {
-    closure: Rc<Closure>,
-    ip: Cell<usize>,
-    idx: usize,
-}
-
-impl CallFrame {
-    pub fn new(closure: Rc<Closure>, idx: usize) -> CallFrame {
-        CallFrame {
-            closure,
-            ip: Cell::new(0),
-            idx,
-        }
-    }
-
-    pub fn read_byte(&self) -> u8 {
-        let ip = self.ip.get();
-        let b = self.closure.function.chunk.code[ip];
-        self.ip.set(ip + 1);
-        b
-    }
-
-    pub fn read_short(&self) -> u16 {
-        let ip = self.ip.get();
-        let mut jump = (self.closure.function.chunk.code[ip] as u16) << 8;
-        jump |= self.closure.function.chunk.code[ip + 1] as u16;
-        self.ip.set(ip + 2);
-        jump
-    }
-
-    pub fn read_constant(&self) -> Option<&ValuePtr> {
-        let b = self.read_byte();
-        self.closure.function.chunk.get_constant(b as usize)
-    }
-}
 
 pub struct VM {
     stack: Stack,
@@ -133,13 +61,7 @@ impl VM {
 
     pub fn interpret(&mut self, ast: &str) -> RuntimeResult<()> {
         let ast = freja_parser::parser::program(ast)?;
-        let fu = Compiler::new().compile(&ast)?;
-        let cl = Closure::new(Rc::new(fu));
-        // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
-        // self.run();
-        call_value(&mut self.stack, &self.frames, &Value::Closure(Rc::new(cl)), 0)?;
-        run(&self.frames, &mut self.stack, &mut self.globals)?;
-        Ok(())
+        self.interpret_ast(&ast)
     }
 }
 
@@ -163,7 +85,7 @@ macro_rules! peek {
     }};
 }
 
-macro_rules! peek_mut {
+/*macro_rules! peek_mut {
     ($stack: expr, $distance: expr) => {{
         let i = -1 - $distance as i32;
         let idx = ($stack.len() as i32) + i;
@@ -178,7 +100,7 @@ macro_rules! dump_stack {
             $stack.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ")
         )
     };
-}
+}*/
 
 fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResult<()> {
     let mut frame = frames.last().unwrap(); // frames.len() - 1;
@@ -203,7 +125,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
                     Some(m) => m.clone(),
                     None => panic!("undefined variable: {}", name),
                 };
-                push!(stack, Val::Heap(m));
+                push!(stack, Val::Heap(m))?;
             }
             OpCode::GetLocal => {
                 let b = frame.read_byte();
@@ -216,7 +138,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
                 let result = pop!(stack).unwrap();
                 stack.truncate(frame.idx);
                 frames.pop();
-                push!(stack, result);
+                push!(stack, result)?;
                 if frames.is_empty() {
                     break 'outer;
                 }
@@ -238,7 +160,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
             OpCode::Closure => {
                 let fu = frame.read_constant().unwrap().as_function().unwrap().clone();
                 let cl = Value::Closure(Rc::new(Closure::new(fu)));
-                push!(stack, Val::Stack(cl));
+                push!(stack, Val::Stack(cl))?;
             }
             OpCode::Divide
             | OpCode::Multiply
@@ -250,13 +172,13 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
                 let right = pop!(stack).unwrap();
                 let left = pop!(stack).unwrap();
                 let ret = value_binary!(left.as_ref(), right.as_ref(), instruction)?;
-                push!(stack, Val::Stack(ret));
+                push!(stack, Val::Stack(ret))?;
             }
             OpCode::Array => {
                 let o = frame.read_byte();
 
                 if o == 0 {
-                    push!(stack, Val::Stack(Value::Array(Array::default())));
+                    push!(stack, Val::Stack(Value::Array(Array::default())))?;
                 } else {
                     let mut v = Vec::new();
                     let idx = stack.len() - o as usize;
@@ -264,7 +186,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
                         v.push(i.into_heap().clone());
                     }
                     stack.truncate(idx);
-                    push!(stack, Val::Stack(Value::Array(Array::new(v))));
+                    push!(stack, Val::Stack(Value::Array(Array::new(v))))?;
                 }
             }
             OpCode::JumpIfFalse => {
@@ -286,7 +208,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
             OpCode::Not => {
                 let current = pop!(stack).unwrap();
                 let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
-                push!(stack, Val::Stack(v));
+                push!(stack, Val::Stack(v))?;
             }
             // OpCode::Property => {
             //     let prop = pop!(stack).unwrap();
@@ -297,7 +219,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
             OpCode::Class => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
                 let class = Class::new(name.to_owned());
-                push!(stack, Val::Stack(Value::Class(Rc::new(class))));
+                push!(stack, Val::Stack(Value::Class(Rc::new(class))))?;
             }
             OpCode::Method => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -315,7 +237,7 @@ fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResu
                 subclass.inherit(super_c);
                 pop!(stack);
             }
-            OpCode::Nil => push!(stack, Val::Stack(Value::Null)).expect("stack overflow"),
+            OpCode::Nil => push!(stack, Val::Stack(Value::Null))?,
             _ => unimplemented!("instruction {:?}", instruction),
         };
     }
@@ -382,5 +304,5 @@ fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> CompileResul
         None => return Err(CompileError::InvalidReceiver),
     };
 
-    invoke_from_class(stack, frames, receiver.as_instance().unwrap(), name)
+    invoke_from_class(stack, frames, instance, name)
 }

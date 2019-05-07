@@ -8,6 +8,7 @@ pub mod error;
 pub mod objects;
 #[macro_use]
 pub mod value;
+pub mod frames;
 pub mod vm;
 
 #[cfg(test)]

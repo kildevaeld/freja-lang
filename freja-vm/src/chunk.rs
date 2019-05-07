@@ -219,7 +219,7 @@ impl Chunk {
                 writeln!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
 
                 if let Some(fu) = value.as_function() {
-                    for u in 0..fu.up_value_count {
+                    for _u in 0..fu.up_value_count {
                         let local = self.code.get(offset);
                         offset += 1;
                         let index = self.code[offset];
@@ -260,7 +260,7 @@ impl Chunk {
             | OpCode::Invoke8 => {
                 constant_instruction_n!("OP_INVOKE", self, offset, ((opcode as u8) - (OpCode::Invoke0 as u8)), f)
             }
-            _ => unimplemented!("unknown code {:?}", opcode),
+            //_ => unimplemented!("unknown code {:?}", opcode),
         };
         Ok(m)
     }
