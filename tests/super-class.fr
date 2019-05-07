@@ -2,12 +2,20 @@
 class Base {
     fn meow() {
         print("wow wow")
+        return this
+    }
+
+    fn rapper() {
+        print("rapper")
     }
 }
 
 class Test extends Base {
-
+    fn test() {
+        super.rapper()
+    }
 }
 
 let test = Test()
 test.meow()
+test.rapper()
