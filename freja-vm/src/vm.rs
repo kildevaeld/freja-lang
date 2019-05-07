@@ -17,7 +17,6 @@ pub type Globals = HashMap<String, ValuePtr>;
 pub struct VM {
     stack: Stack,
     globals: HashMap<String, ValuePtr>,
-    // frames: HVec<Rc<CallFrame>, U64>,
     frames: Frames,
 }
 
@@ -58,10 +57,6 @@ impl VM {
     pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
         let cl = Closure::new(Rc::new(fu));
-        // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
-        // self.run();
-        //let closure = Value::Closure(Rc::new(cl));
-        //call_value(&mut self.stack, &self.frames, &closure, 0)?;
         call(&self.stack, &self.frames, CloseurePtr::Stack(Rc::new(cl)))?;
         run(&self.frames, &mut self.stack, &mut self.globals)?;
         Ok(())
@@ -156,13 +151,29 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 frame = frames.last().unwrap();
             }
 
-            OpCode::Call0 | OpCode::Call1 => {
+            OpCode::Call0
+            | OpCode::Call1
+            | OpCode::Call2
+            | OpCode::Call3
+            | OpCode::Call4
+            | OpCode::Call5
+            | OpCode::Call6
+            | OpCode::Call7
+            | OpCode::Call8 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
                 let callee = peek!(stack, count as usize).expect("expect callee");
                 call_value(stack, frames, callee.as_value(), count).unwrap();
                 frame = frames.last().unwrap();
             }
-            OpCode::Invoke0 | OpCode::Invoke1 | OpCode::Invoke2 => {
+            OpCode::Invoke0
+            | OpCode::Invoke1
+            | OpCode::Invoke2
+            | OpCode::Invoke3
+            | OpCode::Invoke4
+            | OpCode::Invoke5
+            | OpCode::Invoke6
+            | OpCode::Invoke7
+            | OpCode::Invoke8 => {
                 let count = (instruction as u8) - (OpCode::Invoke0 as u8);
                 let method = frame.read_constant().unwrap().as_string().unwrap();
                 invoke(stack, frames, method.as_str(), count).unwrap();
