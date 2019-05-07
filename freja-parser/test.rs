@@ -4,10 +4,136 @@
 use ::std::prelude::v1::*;
 #[macro_use]
 extern crate std as std;
+#[cfg(feature = "serde_support")]
+#[macro_use]
+extern crate serde;
 pub mod ast {
-    use std::fmt;
+    #![doc = "/*! WARNING: AUTO GENERATED  - DO NOT EDIT **/"]
+    use core::fmt;
     #[structural_match]
     pub struct Location(pub usize, pub usize);
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Location: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Location {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_tuple_struct(
+                    __serializer,
+                    "Location",
+                    0 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeTupleStruct::serialize_field(
+                    &mut __serde_state,
+                    &self.0,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeTupleStruct::serialize_field(
+                    &mut __serde_state,
+                    &self.1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeTupleStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Location: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Location {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Location>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Location;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "tuple struct Location")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<usize>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"tuple struct Location with 2 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 =
+                            match match _serde::de::SeqAccess::next_element::<usize>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        1usize,
+                                        &"tuple struct Location with 2 elements",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(Location(__field0, __field1))
+                    }
+                }
+                _serde::Deserializer::deserialize_tuple_struct(
+                    __deserializer,
+                    "Location",
+                    2usize,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Location>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Location {
@@ -97,6 +223,365 @@ pub mod ast {
         LogicalOrOperator,
         LogicalAndOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_TokenType: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for TokenType {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    TokenType::This => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        0u32,
+                        "This",
+                    ),
+                    TokenType::Identifier => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        1u32,
+                        "Identifier",
+                    ),
+                    TokenType::OpAdditive => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        2u32,
+                        "OpAdditive",
+                    ),
+                    TokenType::OpMultiplicative => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        3u32,
+                        "OpMultiplicative",
+                    ),
+                    TokenType::ShiftOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        4u32,
+                        "ShiftOperator",
+                    ),
+                    TokenType::EqualityOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        5u32,
+                        "EqualityOperator",
+                    ),
+                    TokenType::RelationalOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        6u32,
+                        "RelationalOperator",
+                    ),
+                    TokenType::BitwiseOrOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        7u32,
+                        "BitwiseOrOperator",
+                    ),
+                    TokenType::BitwiseAndOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        8u32,
+                        "BitwiseAndOperator",
+                    ),
+                    TokenType::LogicalOrOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        9u32,
+                        "LogicalOrOperator",
+                    ),
+                    TokenType::LogicalAndOperator => _serde::Serializer::serialize_unit_variant(
+                        __serializer,
+                        "TokenType",
+                        10u32,
+                        "LogicalAndOperator",
+                    ),
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_TokenType: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for TokenType {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                    __field6,
+                    __field7,
+                    __field8,
+                    __field9,
+                    __field10,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            6u64 => _serde::export::Ok(__Field::__field6),
+                            7u64 => _serde::export::Ok(__Field::__field7),
+                            8u64 => _serde::export::Ok(__Field::__field8),
+                            9u64 => _serde::export::Ok(__Field::__field9),
+                            10u64 => _serde::export::Ok(__Field::__field10),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 11",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "This" => _serde::export::Ok(__Field::__field0),
+                            "Identifier" => _serde::export::Ok(__Field::__field1),
+                            "OpAdditive" => _serde::export::Ok(__Field::__field2),
+                            "OpMultiplicative" => _serde::export::Ok(__Field::__field3),
+                            "ShiftOperator" => _serde::export::Ok(__Field::__field4),
+                            "EqualityOperator" => _serde::export::Ok(__Field::__field5),
+                            "RelationalOperator" => _serde::export::Ok(__Field::__field6),
+                            "BitwiseOrOperator" => _serde::export::Ok(__Field::__field7),
+                            "BitwiseAndOperator" => _serde::export::Ok(__Field::__field8),
+                            "LogicalOrOperator" => _serde::export::Ok(__Field::__field9),
+                            "LogicalAndOperator" => _serde::export::Ok(__Field::__field10),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"This" => _serde::export::Ok(__Field::__field0),
+                            b"Identifier" => _serde::export::Ok(__Field::__field1),
+                            b"OpAdditive" => _serde::export::Ok(__Field::__field2),
+                            b"OpMultiplicative" => _serde::export::Ok(__Field::__field3),
+                            b"ShiftOperator" => _serde::export::Ok(__Field::__field4),
+                            b"EqualityOperator" => _serde::export::Ok(__Field::__field5),
+                            b"RelationalOperator" => _serde::export::Ok(__Field::__field6),
+                            b"BitwiseOrOperator" => _serde::export::Ok(__Field::__field7),
+                            b"BitwiseAndOperator" => _serde::export::Ok(__Field::__field8),
+                            b"LogicalOrOperator" => _serde::export::Ok(__Field::__field9),
+                            b"LogicalAndOperator" => _serde::export::Ok(__Field::__field10),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<TokenType>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = TokenType;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "enum TokenType")
+                    }
+                    fn visit_enum<__A>(
+                        self,
+                        __data: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::EnumAccess<'de>,
+                    {
+                        match match _serde::de::EnumAccess::variant(__data) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            (__Field::__field0, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::This)
+                            }
+                            (__Field::__field1, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::Identifier)
+                            }
+                            (__Field::__field2, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::OpAdditive)
+                            }
+                            (__Field::__field3, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::OpMultiplicative)
+                            }
+                            (__Field::__field4, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::ShiftOperator)
+                            }
+                            (__Field::__field5, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::EqualityOperator)
+                            }
+                            (__Field::__field6, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::RelationalOperator)
+                            }
+                            (__Field::__field7, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::BitwiseOrOperator)
+                            }
+                            (__Field::__field8, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::BitwiseAndOperator)
+                            }
+                            (__Field::__field9, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::LogicalOrOperator)
+                            }
+                            (__Field::__field10, __variant) => {
+                                match _serde::de::VariantAccess::unit_variant(__variant) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                _serde::export::Ok(TokenType::LogicalAndOperator)
+                            }
+                        }
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &[
+                    "This",
+                    "Identifier",
+                    "OpAdditive",
+                    "OpMultiplicative",
+                    "ShiftOperator",
+                    "EqualityOperator",
+                    "RelationalOperator",
+                    "BitwiseOrOperator",
+                    "BitwiseAndOperator",
+                    "LogicalOrOperator",
+                    "LogicalAndOperator",
+                ];
+                _serde::Deserializer::deserialize_enum(
+                    __deserializer,
+                    "TokenType",
+                    VARIANTS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<TokenType>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for TokenType {
@@ -208,12 +693,381 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type")]
     #[structural_match]
     pub struct Token {
         pub kind: TokenType,
         pub location: Location,
         pub value: String,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Token: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Token {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "Token",
+                    true as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "type",
+                    "Token",
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "kind",
+                    &self.kind,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "location",
+                    &self.location,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Token: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Token {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "kind" => _serde::export::Ok(__Field::__field0),
+                            "location" => _serde::export::Ok(__Field::__field1),
+                            "value" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"kind" => _serde::export::Ok(__Field::__field0),
+                            b"location" => _serde::export::Ok(__Field::__field1),
+                            b"value" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Token>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Token;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct Token")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<TokenType>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct Token with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field1 =
+                            match match _serde::de::SeqAccess::next_element::<Location>(&mut __seq)
+                            {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        1usize,
+                                        &"struct Token with 3 elements",
+                                    ));
+                                }
+                            };
+                        let __field2 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        2usize,
+                                        &"struct Token with 3 elements",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(Token {
+                            kind: __field0,
+                            location: __field1,
+                            value: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<TokenType> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Location> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<String> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "kind",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<TokenType>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "location",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Location>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("kind") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("location") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(Token {
+                            kind: __field0,
+                            location: __field1,
+                            value: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["kind", "location", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "Token",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Token>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Token {
@@ -347,6 +1201,237 @@ pub mod ast {
     pub struct Object {
         entries: Vec<ObjectEntry>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Object: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Object {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "Object",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "entries",
+                    &self.entries,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Object: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Object {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "entries" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"entries" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Object>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Object;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct Object")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<ObjectEntry>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct Object with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(Object { entries: __field0 })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Vec<ObjectEntry>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "entries",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<ObjectEntry>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("entries") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(Object { entries: __field0 })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["entries"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "Object",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Object>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Object {
@@ -413,6 +1498,297 @@ pub mod ast {
         pub key: Expr,
         pub value: Expr,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ObjectEntry: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ObjectEntry {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ObjectEntry",
+                    false as usize + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "key",
+                    &self.key,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ObjectEntry: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ObjectEntry {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "key" => _serde::export::Ok(__Field::__field0),
+                            "value" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"key" => _serde::export::Ok(__Field::__field0),
+                            b"value" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ObjectEntry>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ObjectEntry;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ObjectEntry")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Expr>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct ObjectEntry with 2 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 =
+                            match match _serde::de::SeqAccess::next_element::<Expr>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        1usize,
+                                        &"struct ObjectEntry with 2 elements",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(ObjectEntry {
+                            key: __field0,
+                            value: __field1,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Expr> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Expr> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "key",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Expr>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Expr>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => match _serde::private::de::missing_field("key")
+                            {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            },
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ObjectEntry {
+                            key: __field0,
+                            value: __field1,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["key", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ObjectEntry",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ObjectEntry>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ObjectEntry {
@@ -483,6 +1859,774 @@ pub mod ast {
             ObjectEntry { key, value }
         }
     }
+    #[serde(tag = "type", content = "value")]
+    pub enum Number {
+        Double(f64),
+        Integer(i64),
+    }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Number: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Number {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    Number::Double(ref __field0) => {
+                        let mut __struct =
+                            match _serde::Serializer::serialize_struct(__serializer, "Number", 2) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Double",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Number::Integer(ref __field0) => {
+                        let mut __struct =
+                            match _serde::Serializer::serialize_struct(__serializer, "Number", 2) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Integer",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Number: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Number {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Double" => _serde::export::Ok(__Field::__field0),
+                            "Integer" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Double" => _serde::export::Ok(__Field::__field0),
+                            b"Integer" => _serde::export::Ok(__Field::__field1),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &["Double", "Integer"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<Number>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = Number;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => _serde::export::Result::map(
+                                <f64 as _serde::Deserialize>::deserialize(__deserializer),
+                                Number::Double,
+                            ),
+                            __Field::__field1 => _serde::export::Result::map(
+                                <i64 as _serde::Deserialize>::deserialize(__deserializer),
+                                Number::Integer,
+                            ),
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Number>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Number;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum Number",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("value"),
+                                    ),
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret =
+                                            match match match _serde::de::MapAccess::next_value(
+                                                &mut __map,
+                                            ) {
+                                                _serde::export::Ok(__val) => __val,
+                                                _serde::export::Err(__err) => {
+                                                    return _serde::export::Err(__err);
+                                                }
+                                            } {
+                                                __Field::__field0 => _serde::export::Result::map(
+                                                    <f64 as _serde::Deserialize>::deserialize(
+                                                        __deserializer,
+                                                    ),
+                                                    Number::Double,
+                                                ),
+                                                __Field::__field1 => _serde::export::Result::map(
+                                                    <i64 as _serde::Deserialize>::deserialize(
+                                                        __deserializer,
+                                                    ),
+                                                    Number::Integer,
+                                                ),
+                                            } {
+                                                _serde::export::Ok(__val) => __val,
+                                                _serde::export::Err(__err) => {
+                                                    return _serde::export::Err(__err);
+                                                }
+                                            };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "Number",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Number>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
+    #[automatically_derived]
+    #[allow(unused_qualifications)]
+    impl ::std::fmt::Debug for Number {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            match (&*self,) {
+                (&Number::Double(ref __self_0),) => {
+                    let mut debug_trait_builder = f.debug_tuple("Double");
+                    let _ = debug_trait_builder.field(&&(*__self_0));
+                    debug_trait_builder.finish()
+                }
+                (&Number::Integer(ref __self_0),) => {
+                    let mut debug_trait_builder = f.debug_tuple("Integer");
+                    let _ = debug_trait_builder.field(&&(*__self_0));
+                    debug_trait_builder.finish()
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    #[allow(unused_qualifications)]
+    impl ::std::clone::Clone for Number {
+        #[inline]
+        fn clone(&self) -> Number {
+            match (&*self,) {
+                (&Number::Double(ref __self_0),) => {
+                    Number::Double(::std::clone::Clone::clone(&(*__self_0)))
+                }
+                (&Number::Integer(ref __self_0),) => {
+                    Number::Integer(::std::clone::Clone::clone(&(*__self_0)))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    #[allow(unused_qualifications)]
+    impl ::std::cmp::PartialEq for Number {
+        #[inline]
+        fn eq(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            (*__self_0) == (*__arg_1_0)
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            (*__self_0) == (*__arg_1_0)
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    false
+                }
+            }
+        }
+        #[inline]
+        fn ne(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            (*__self_0) != (*__arg_1_0)
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            (*__self_0) != (*__arg_1_0)
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    true
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    #[allow(unused_qualifications)]
+    impl ::std::cmp::PartialOrd for Number {
+        #[inline]
+        fn partial_cmp(&self, other: &Number) -> ::std::option::Option<::std::cmp::Ordering> {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            match ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)) {
+                                ::std::option::Option::Some(::std::cmp::Ordering::Equal) => {
+                                    ::std::option::Option::Some(::std::cmp::Ordering::Equal)
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            match ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)) {
+                                ::std::option::Option::Some(::std::cmp::Ordering::Equal) => {
+                                    ::std::option::Option::Some(::std::cmp::Ordering::Equal)
+                                }
+                                cmp => cmp,
+                            }
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    __self_vi.partial_cmp(&__arg_1_vi)
+                }
+            }
+        }
+        #[inline]
+        fn lt(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Greater,
+                            ) == ::std::cmp::Ordering::Less
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Greater,
+                            ) == ::std::cmp::Ordering::Less
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    __self_vi.lt(&__arg_1_vi)
+                }
+            }
+        }
+        #[inline]
+        fn le(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Greater,
+                            ) != ::std::cmp::Ordering::Greater
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Greater,
+                            ) != ::std::cmp::Ordering::Greater
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    __self_vi.le(&__arg_1_vi)
+                }
+            }
+        }
+        #[inline]
+        fn gt(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Less,
+                            ) == ::std::cmp::Ordering::Greater
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Less,
+                            ) == ::std::cmp::Ordering::Greater
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    __self_vi.gt(&__arg_1_vi)
+                }
+            }
+        }
+        #[inline]
+        fn ge(&self, other: &Number) -> bool {
+            {
+                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
+                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
+                if true && __self_vi == __arg_1_vi {
+                    match (&*self, &*other) {
+                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Less,
+                            ) != ::std::cmp::Ordering::Less
+                        }
+                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
+                            ::std::option::Option::unwrap_or(
+                                ::std::cmp::PartialOrd::partial_cmp(&(*__self_0), &(*__arg_1_0)),
+                                ::std::cmp::Ordering::Less,
+                            ) != ::std::cmp::Ordering::Less
+                        }
+                        _ => unsafe { ::std::intrinsics::unreachable() },
+                    }
+                } else {
+                    __self_vi.ge(&__arg_1_vi)
+                }
+            }
+        }
+    }
     pub trait StmtVisitor<R> {
         fn visit_program_stmt(&mut self, e: &ProgramStmt) -> R;
         fn visit_var_stmt(&mut self, e: &VarStmt) -> R;
@@ -513,12 +2657,662 @@ pub mod ast {
         fn visit_unary_expr(&mut self, e: &UnaryExpr) -> R;
         fn visit_postfix_expr(&mut self, e: &PostfixExpr) -> R;
     }
+    #[serde(tag = "type", content = "value")]
     pub enum UnaryOperator {
         Plus,
         Minus,
         Increment,
         Decrement,
+        Not,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_UnaryOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for UnaryOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    UnaryOperator::Plus => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "UnaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Plus",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    UnaryOperator::Minus => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "UnaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Minus",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    UnaryOperator::Increment => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "UnaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Increment",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    UnaryOperator::Decrement => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "UnaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Decrement",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    UnaryOperator::Not => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "UnaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Not",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_UnaryOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for UnaryOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 5",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Plus" => _serde::export::Ok(__Field::__field0),
+                            "Minus" => _serde::export::Ok(__Field::__field1),
+                            "Increment" => _serde::export::Ok(__Field::__field2),
+                            "Decrement" => _serde::export::Ok(__Field::__field3),
+                            "Not" => _serde::export::Ok(__Field::__field4),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Plus" => _serde::export::Ok(__Field::__field0),
+                            b"Minus" => _serde::export::Ok(__Field::__field1),
+                            b"Increment" => _serde::export::Ok(__Field::__field2),
+                            b"Decrement" => _serde::export::Ok(__Field::__field3),
+                            b"Not" => _serde::export::Ok(__Field::__field4),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] =
+                    &["Plus", "Minus", "Increment", "Decrement", "Not"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<UnaryOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = UnaryOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "UnaryOperator",
+                                    "Plus",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(UnaryOperator::Plus),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "UnaryOperator",
+                                    "Minus",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(UnaryOperator::Minus),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field2 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "UnaryOperator",
+                                    "Increment",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(UnaryOperator::Increment)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field3 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "UnaryOperator",
+                                    "Decrement",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(UnaryOperator::Decrement)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field4 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "UnaryOperator",
+                                    "Not",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(UnaryOperator::Not),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<UnaryOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = UnaryOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum UnaryOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(UnaryOperator::Plus)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(UnaryOperator::Minus)
+                                        }
+                                        __Field::__field2 => {
+                                            _serde::export::Ok(UnaryOperator::Increment)
+                                        }
+                                        __Field::__field3 => {
+                                            _serde::export::Ok(UnaryOperator::Decrement)
+                                        }
+                                        __Field::__field4 => _serde::export::Ok(UnaryOperator::Not),
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "UnaryOperator" , "Plus" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( UnaryOperator :: Plus ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "UnaryOperator" , "Minus" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( UnaryOperator :: Minus ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field2 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "UnaryOperator" , "Increment" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( UnaryOperator :: Increment ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field3 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "UnaryOperator" , "Decrement" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( UnaryOperator :: Decrement ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field4 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "UnaryOperator" , "Not" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( UnaryOperator :: Not ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "UnaryOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<UnaryOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for UnaryOperator {
@@ -540,6 +3334,10 @@ pub mod ast {
                     let mut debug_trait_builder = f.debug_tuple("Decrement");
                     debug_trait_builder.finish()
                 }
+                (&UnaryOperator::Not,) => {
+                    let mut debug_trait_builder = f.debug_tuple("Not");
+                    debug_trait_builder.finish()
+                }
             }
         }
     }
@@ -553,6 +3351,7 @@ pub mod ast {
                 (&UnaryOperator::Minus,) => UnaryOperator::Minus,
                 (&UnaryOperator::Increment,) => UnaryOperator::Increment,
                 (&UnaryOperator::Decrement,) => UnaryOperator::Decrement,
+                (&UnaryOperator::Not,) => UnaryOperator::Not,
             }
         }
     }
@@ -574,10 +3373,540 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum PostfixOperator {
         Increment,
         Decrement,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_PostfixOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for PostfixOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    PostfixOperator::Increment => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "PostfixOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Increment",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    PostfixOperator::Decrement => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "PostfixOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Decrement",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_PostfixOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for PostfixOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Increment" => _serde::export::Ok(__Field::__field0),
+                            "Decrement" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Increment" => _serde::export::Ok(__Field::__field0),
+                            b"Decrement" => _serde::export::Ok(__Field::__field1),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &["Increment", "Decrement"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<PostfixOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = PostfixOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "PostfixOperator",
+                                    "Increment",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(PostfixOperator::Increment)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "PostfixOperator",
+                                    "Decrement",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(PostfixOperator::Decrement)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<PostfixOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = PostfixOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum PostfixOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(PostfixOperator::Increment)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(PostfixOperator::Decrement)
+                                        }
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "PostfixOperator" , "Increment" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( PostfixOperator :: Increment ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "PostfixOperator" , "Decrement" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( PostfixOperator :: Decrement ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "PostfixOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<PostfixOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for PostfixOperator {
@@ -623,6 +3952,7 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum BinaryOperator {
         Add,
         Sub,
@@ -642,6 +3972,1159 @@ pub mod ast {
         Gte,
         Is,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_BinaryOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for BinaryOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    BinaryOperator::Add => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Add",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Sub => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Sub",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Mul => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Mul",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Div => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Div",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Mod => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Mod",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::BitwiseXor => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseXor",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::BitwiseAnd => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseAnd",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::BitwiseOr => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseOr",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::ShiftLeft => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "ShiftLeft",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::ShiftRight => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "ShiftRight",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Eq => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Eq",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Neq => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Neq",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Lt => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Lt",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Lte => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Lte",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Gt => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Gt",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Gte => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Gte",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    BinaryOperator::Is => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "BinaryOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Is",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_BinaryOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for BinaryOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                    __field6,
+                    __field7,
+                    __field8,
+                    __field9,
+                    __field10,
+                    __field11,
+                    __field12,
+                    __field13,
+                    __field14,
+                    __field15,
+                    __field16,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            6u64 => _serde::export::Ok(__Field::__field6),
+                            7u64 => _serde::export::Ok(__Field::__field7),
+                            8u64 => _serde::export::Ok(__Field::__field8),
+                            9u64 => _serde::export::Ok(__Field::__field9),
+                            10u64 => _serde::export::Ok(__Field::__field10),
+                            11u64 => _serde::export::Ok(__Field::__field11),
+                            12u64 => _serde::export::Ok(__Field::__field12),
+                            13u64 => _serde::export::Ok(__Field::__field13),
+                            14u64 => _serde::export::Ok(__Field::__field14),
+                            15u64 => _serde::export::Ok(__Field::__field15),
+                            16u64 => _serde::export::Ok(__Field::__field16),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 17",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Add" => _serde::export::Ok(__Field::__field0),
+                            "Sub" => _serde::export::Ok(__Field::__field1),
+                            "Mul" => _serde::export::Ok(__Field::__field2),
+                            "Div" => _serde::export::Ok(__Field::__field3),
+                            "Mod" => _serde::export::Ok(__Field::__field4),
+                            "BitwiseXor" => _serde::export::Ok(__Field::__field5),
+                            "BitwiseAnd" => _serde::export::Ok(__Field::__field6),
+                            "BitwiseOr" => _serde::export::Ok(__Field::__field7),
+                            "ShiftLeft" => _serde::export::Ok(__Field::__field8),
+                            "ShiftRight" => _serde::export::Ok(__Field::__field9),
+                            "Eq" => _serde::export::Ok(__Field::__field10),
+                            "Neq" => _serde::export::Ok(__Field::__field11),
+                            "Lt" => _serde::export::Ok(__Field::__field12),
+                            "Lte" => _serde::export::Ok(__Field::__field13),
+                            "Gt" => _serde::export::Ok(__Field::__field14),
+                            "Gte" => _serde::export::Ok(__Field::__field15),
+                            "Is" => _serde::export::Ok(__Field::__field16),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Add" => _serde::export::Ok(__Field::__field0),
+                            b"Sub" => _serde::export::Ok(__Field::__field1),
+                            b"Mul" => _serde::export::Ok(__Field::__field2),
+                            b"Div" => _serde::export::Ok(__Field::__field3),
+                            b"Mod" => _serde::export::Ok(__Field::__field4),
+                            b"BitwiseXor" => _serde::export::Ok(__Field::__field5),
+                            b"BitwiseAnd" => _serde::export::Ok(__Field::__field6),
+                            b"BitwiseOr" => _serde::export::Ok(__Field::__field7),
+                            b"ShiftLeft" => _serde::export::Ok(__Field::__field8),
+                            b"ShiftRight" => _serde::export::Ok(__Field::__field9),
+                            b"Eq" => _serde::export::Ok(__Field::__field10),
+                            b"Neq" => _serde::export::Ok(__Field::__field11),
+                            b"Lt" => _serde::export::Ok(__Field::__field12),
+                            b"Lte" => _serde::export::Ok(__Field::__field13),
+                            b"Gt" => _serde::export::Ok(__Field::__field14),
+                            b"Gte" => _serde::export::Ok(__Field::__field15),
+                            b"Is" => _serde::export::Ok(__Field::__field16),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &[
+                    "Add",
+                    "Sub",
+                    "Mul",
+                    "Div",
+                    "Mod",
+                    "BitwiseXor",
+                    "BitwiseAnd",
+                    "BitwiseOr",
+                    "ShiftLeft",
+                    "ShiftRight",
+                    "Eq",
+                    "Neq",
+                    "Lt",
+                    "Lte",
+                    "Gt",
+                    "Gte",
+                    "Is",
+                ];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<BinaryOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = BinaryOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Add",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Add),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Sub",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Sub),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field2 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Mul",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Mul),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field3 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Div",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Div),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field4 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Mod",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Mod),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field5 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "BitwiseXor",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(BinaryOperator::BitwiseXor)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field6 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "BitwiseAnd",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(BinaryOperator::BitwiseAnd)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field7 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "BitwiseOr",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(BinaryOperator::BitwiseOr)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field8 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "ShiftLeft",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(BinaryOperator::ShiftLeft)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field9 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "ShiftRight",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(BinaryOperator::ShiftRight)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field10 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Eq",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Eq),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field11 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Neq",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Neq),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field12 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Lt",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Lt),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field13 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Lte",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Lte),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field14 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Gt",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Gt),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field15 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Gte",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Gte),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field16 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "BinaryOperator",
+                                    "Is",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(BinaryOperator::Is),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<BinaryOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = BinaryOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum BinaryOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(BinaryOperator::Add)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(BinaryOperator::Sub)
+                                        }
+                                        __Field::__field2 => {
+                                            _serde::export::Ok(BinaryOperator::Mul)
+                                        }
+                                        __Field::__field3 => {
+                                            _serde::export::Ok(BinaryOperator::Div)
+                                        }
+                                        __Field::__field4 => {
+                                            _serde::export::Ok(BinaryOperator::Mod)
+                                        }
+                                        __Field::__field5 => {
+                                            _serde::export::Ok(BinaryOperator::BitwiseXor)
+                                        }
+                                        __Field::__field6 => {
+                                            _serde::export::Ok(BinaryOperator::BitwiseAnd)
+                                        }
+                                        __Field::__field7 => {
+                                            _serde::export::Ok(BinaryOperator::BitwiseOr)
+                                        }
+                                        __Field::__field8 => {
+                                            _serde::export::Ok(BinaryOperator::ShiftLeft)
+                                        }
+                                        __Field::__field9 => {
+                                            _serde::export::Ok(BinaryOperator::ShiftRight)
+                                        }
+                                        __Field::__field10 => {
+                                            _serde::export::Ok(BinaryOperator::Eq)
+                                        }
+                                        __Field::__field11 => {
+                                            _serde::export::Ok(BinaryOperator::Neq)
+                                        }
+                                        __Field::__field12 => {
+                                            _serde::export::Ok(BinaryOperator::Lt)
+                                        }
+                                        __Field::__field13 => {
+                                            _serde::export::Ok(BinaryOperator::Lte)
+                                        }
+                                        __Field::__field14 => {
+                                            _serde::export::Ok(BinaryOperator::Gt)
+                                        }
+                                        __Field::__field15 => {
+                                            _serde::export::Ok(BinaryOperator::Gte)
+                                        }
+                                        __Field::__field16 => {
+                                            _serde::export::Ok(BinaryOperator::Is)
+                                        }
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Add" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Add ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Sub" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Sub ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field2 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Mul" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Mul ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field3 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Div" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Div ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field4 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Mod" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Mod ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field5 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "BitwiseXor" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: BitwiseXor ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field6 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "BitwiseAnd" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: BitwiseAnd ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field7 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "BitwiseOr" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: BitwiseOr ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field8 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "ShiftLeft" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: ShiftLeft ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field9 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "ShiftRight" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: ShiftRight ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field10 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Eq" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Eq ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field11 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Neq" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Neq ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field12 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Lt" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Lt ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field13 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Lte" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Lte ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field14 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Gt" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Gt ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field15 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Gte" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Gte ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field16 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "BinaryOperator" , "Is" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( BinaryOperator :: Is ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "BinaryOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<BinaryOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for BinaryOperator {
@@ -762,6 +5245,7 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum ComparisonOperator {
         Eq,
         Neq,
@@ -770,6 +5254,703 @@ pub mod ast {
         Gt,
         Gte,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ComparisonOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ComparisonOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    ComparisonOperator::Eq => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Eq",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    ComparisonOperator::Neq => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Neq",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    ComparisonOperator::Lt => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Lt",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    ComparisonOperator::Lte => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Lte",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    ComparisonOperator::Gt => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Gt",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    ComparisonOperator::Gte => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "ComparisonOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Gte",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ComparisonOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ComparisonOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 6",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Eq" => _serde::export::Ok(__Field::__field0),
+                            "Neq" => _serde::export::Ok(__Field::__field1),
+                            "Lt" => _serde::export::Ok(__Field::__field2),
+                            "Lte" => _serde::export::Ok(__Field::__field3),
+                            "Gt" => _serde::export::Ok(__Field::__field4),
+                            "Gte" => _serde::export::Ok(__Field::__field5),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Eq" => _serde::export::Ok(__Field::__field0),
+                            b"Neq" => _serde::export::Ok(__Field::__field1),
+                            b"Lt" => _serde::export::Ok(__Field::__field2),
+                            b"Lte" => _serde::export::Ok(__Field::__field3),
+                            b"Gt" => _serde::export::Ok(__Field::__field4),
+                            b"Gte" => _serde::export::Ok(__Field::__field5),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &["Eq", "Neq", "Lt", "Lte", "Gt", "Gte"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<ComparisonOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = ComparisonOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Eq",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Eq)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Neq",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Neq)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field2 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Lt",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Lt)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field3 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Lte",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Lte)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field4 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Gt",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Gt)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field5 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "ComparisonOperator",
+                                    "Gte",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(ComparisonOperator::Gte)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ComparisonOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ComparisonOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum ComparisonOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(ComparisonOperator::Eq)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(ComparisonOperator::Neq)
+                                        }
+                                        __Field::__field2 => {
+                                            _serde::export::Ok(ComparisonOperator::Lt)
+                                        }
+                                        __Field::__field3 => {
+                                            _serde::export::Ok(ComparisonOperator::Lte)
+                                        }
+                                        __Field::__field4 => {
+                                            _serde::export::Ok(ComparisonOperator::Gt)
+                                        }
+                                        __Field::__field5 => {
+                                            _serde::export::Ok(ComparisonOperator::Gte)
+                                        }
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Eq" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Eq ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Neq" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Neq ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field2 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Lt" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Lt ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field3 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Lte" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Lte ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field4 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Gt" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Gt ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field5 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "ComparisonOperator" , "Gte" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( ComparisonOperator :: Gte ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ComparisonOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ComparisonOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ComparisonOperator {
@@ -835,10 +6016,536 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum LogicalOperator {
         And,
         Or,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_LogicalOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for LogicalOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    LogicalOperator::And => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "LogicalOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "And",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    LogicalOperator::Or => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "LogicalOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Or",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_LogicalOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for LogicalOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "And" => _serde::export::Ok(__Field::__field0),
+                            "Or" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"And" => _serde::export::Ok(__Field::__field0),
+                            b"Or" => _serde::export::Ok(__Field::__field1),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &["And", "Or"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<LogicalOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = LogicalOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "LogicalOperator",
+                                    "And",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(LogicalOperator::And),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "LogicalOperator",
+                                    "Or",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(LogicalOperator::Or),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<LogicalOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = LogicalOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum LogicalOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(LogicalOperator::And)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(LogicalOperator::Or)
+                                        }
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "LogicalOperator" , "And" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( LogicalOperator :: And ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "LogicalOperator" , "Or" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( LogicalOperator :: Or ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "LogicalOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<LogicalOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for LogicalOperator {
@@ -884,6 +6591,7 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum AssignmentOperator {
         Add,
         Sub,
@@ -897,6 +6605,925 @@ pub mod ast {
         BitwiseXor,
         Assign,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_AssignmentOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for AssignmentOperator {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    AssignmentOperator::Add => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Add",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::Sub => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Sub",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::Mul => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Mul",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::Div => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Div",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::Mod => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Mod",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::ShiftLeft => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "ShiftLeft",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::ShiftRight => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "ShiftRight",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::BitwiseAnd => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseAnd",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::BitwiseOr => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseOr",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::BitwiseXor => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "BitwiseXor",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    AssignmentOperator::Assign => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "AssignmentOperator",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Assign",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_AssignmentOperator: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for AssignmentOperator {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                    __field6,
+                    __field7,
+                    __field8,
+                    __field9,
+                    __field10,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            6u64 => _serde::export::Ok(__Field::__field6),
+                            7u64 => _serde::export::Ok(__Field::__field7),
+                            8u64 => _serde::export::Ok(__Field::__field8),
+                            9u64 => _serde::export::Ok(__Field::__field9),
+                            10u64 => _serde::export::Ok(__Field::__field10),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 11",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Add" => _serde::export::Ok(__Field::__field0),
+                            "Sub" => _serde::export::Ok(__Field::__field1),
+                            "Mul" => _serde::export::Ok(__Field::__field2),
+                            "Div" => _serde::export::Ok(__Field::__field3),
+                            "Mod" => _serde::export::Ok(__Field::__field4),
+                            "ShiftLeft" => _serde::export::Ok(__Field::__field5),
+                            "ShiftRight" => _serde::export::Ok(__Field::__field6),
+                            "BitwiseAnd" => _serde::export::Ok(__Field::__field7),
+                            "BitwiseOr" => _serde::export::Ok(__Field::__field8),
+                            "BitwiseXor" => _serde::export::Ok(__Field::__field9),
+                            "Assign" => _serde::export::Ok(__Field::__field10),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Add" => _serde::export::Ok(__Field::__field0),
+                            b"Sub" => _serde::export::Ok(__Field::__field1),
+                            b"Mul" => _serde::export::Ok(__Field::__field2),
+                            b"Div" => _serde::export::Ok(__Field::__field3),
+                            b"Mod" => _serde::export::Ok(__Field::__field4),
+                            b"ShiftLeft" => _serde::export::Ok(__Field::__field5),
+                            b"ShiftRight" => _serde::export::Ok(__Field::__field6),
+                            b"BitwiseAnd" => _serde::export::Ok(__Field::__field7),
+                            b"BitwiseOr" => _serde::export::Ok(__Field::__field8),
+                            b"BitwiseXor" => _serde::export::Ok(__Field::__field9),
+                            b"Assign" => _serde::export::Ok(__Field::__field10),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &[
+                    "Add",
+                    "Sub",
+                    "Mul",
+                    "Div",
+                    "Mod",
+                    "ShiftLeft",
+                    "ShiftRight",
+                    "BitwiseAnd",
+                    "BitwiseOr",
+                    "BitwiseXor",
+                    "Assign",
+                ];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<AssignmentOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = AssignmentOperator;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Add",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Add)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field1 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Sub",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Sub)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field2 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Mul",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Mul)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field3 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Div",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Div)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field4 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Mod",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Mod)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field5 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "ShiftLeft",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::ShiftLeft)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field6 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "ShiftRight",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::ShiftRight)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field7 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "BitwiseAnd",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::BitwiseAnd)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field8 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "BitwiseOr",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::BitwiseOr)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field9 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "BitwiseXor",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::BitwiseXor)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                            __Field::__field10 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new(
+                                    "AssignmentOperator",
+                                    "Assign",
+                                ),
+                            ) {
+                                _serde::export::Ok(()) => {
+                                    _serde::export::Ok(AssignmentOperator::Assign)
+                                }
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<AssignmentOperator>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = AssignmentOperator;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum AssignmentOperator",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field0 => {
+                                            _serde::export::Ok(AssignmentOperator::Add)
+                                        }
+                                        __Field::__field1 => {
+                                            _serde::export::Ok(AssignmentOperator::Sub)
+                                        }
+                                        __Field::__field2 => {
+                                            _serde::export::Ok(AssignmentOperator::Mul)
+                                        }
+                                        __Field::__field3 => {
+                                            _serde::export::Ok(AssignmentOperator::Div)
+                                        }
+                                        __Field::__field4 => {
+                                            _serde::export::Ok(AssignmentOperator::Mod)
+                                        }
+                                        __Field::__field5 => {
+                                            _serde::export::Ok(AssignmentOperator::ShiftLeft)
+                                        }
+                                        __Field::__field6 => {
+                                            _serde::export::Ok(AssignmentOperator::ShiftRight)
+                                        }
+                                        __Field::__field7 => {
+                                            _serde::export::Ok(AssignmentOperator::BitwiseAnd)
+                                        }
+                                        __Field::__field8 => {
+                                            _serde::export::Ok(AssignmentOperator::BitwiseOr)
+                                        }
+                                        __Field::__field9 => {
+                                            _serde::export::Ok(AssignmentOperator::BitwiseXor)
+                                        }
+                                        __Field::__field10 => {
+                                            _serde::export::Ok(AssignmentOperator::Assign)
+                                        }
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Add" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Add ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field1 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Sub" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Sub ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field2 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Mul" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Mul ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field3 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Div" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Div ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field4 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Mod" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Mod ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field5 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "ShiftLeft" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: ShiftLeft ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field6 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "ShiftRight" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: ShiftRight ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field7 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "BitwiseAnd" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: BitwiseAnd ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field8 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "BitwiseOr" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: BitwiseOr ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field9 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "BitwiseXor" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: BitwiseXor ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , __Field :: __field10 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "AssignmentOperator" , "Assign" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( AssignmentOperator :: Assign ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "AssignmentOperator",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<AssignmentOperator>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for AssignmentOperator {
@@ -987,87 +7614,7 @@ pub mod ast {
             }
         }
     }
-    pub enum Number {
-        Double(f64),
-        Integer(i64),
-    }
-    #[automatically_derived]
-    #[allow(unused_qualifications)]
-    impl ::std::fmt::Debug for Number {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-            match (&*self,) {
-                (&Number::Double(ref __self_0),) => {
-                    let mut debug_trait_builder = f.debug_tuple("Double");
-                    let _ = debug_trait_builder.field(&&(*__self_0));
-                    debug_trait_builder.finish()
-                }
-                (&Number::Integer(ref __self_0),) => {
-                    let mut debug_trait_builder = f.debug_tuple("Integer");
-                    let _ = debug_trait_builder.field(&&(*__self_0));
-                    debug_trait_builder.finish()
-                }
-            }
-        }
-    }
-    #[automatically_derived]
-    #[allow(unused_qualifications)]
-    impl ::std::clone::Clone for Number {
-        #[inline]
-        fn clone(&self) -> Number {
-            match (&*self,) {
-                (&Number::Double(ref __self_0),) => {
-                    Number::Double(::std::clone::Clone::clone(&(*__self_0)))
-                }
-                (&Number::Integer(ref __self_0),) => {
-                    Number::Integer(::std::clone::Clone::clone(&(*__self_0)))
-                }
-            }
-        }
-    }
-    #[automatically_derived]
-    #[allow(unused_qualifications)]
-    impl ::std::cmp::PartialEq for Number {
-        #[inline]
-        fn eq(&self, other: &Number) -> bool {
-            {
-                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
-                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
-                if true && __self_vi == __arg_1_vi {
-                    match (&*self, &*other) {
-                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
-                            (*__self_0) == (*__arg_1_0)
-                        }
-                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
-                            (*__self_0) == (*__arg_1_0)
-                        }
-                        _ => unsafe { ::std::intrinsics::unreachable() },
-                    }
-                } else {
-                    false
-                }
-            }
-        }
-        #[inline]
-        fn ne(&self, other: &Number) -> bool {
-            {
-                let __self_vi = unsafe { ::std::intrinsics::discriminant_value(&*self) } as isize;
-                let __arg_1_vi = unsafe { ::std::intrinsics::discriminant_value(&*other) } as isize;
-                if true && __self_vi == __arg_1_vi {
-                    match (&*self, &*other) {
-                        (&Number::Double(ref __self_0), &Number::Double(ref __arg_1_0)) => {
-                            (*__self_0) != (*__arg_1_0)
-                        }
-                        (&Number::Integer(ref __self_0), &Number::Integer(ref __arg_1_0)) => {
-                            (*__self_0) != (*__arg_1_0)
-                        }
-                        _ => unsafe { ::std::intrinsics::unreachable() },
-                    }
-                } else {
-                    true
-                }
-            }
-        }
-    }
+    #[serde(tag = "type", content = "value")]
     pub enum Literal {
         String(String),
         Number(Number),
@@ -1076,6 +7623,697 @@ pub mod ast {
         Object(Object),
         Null,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Literal: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Literal {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    Literal::String(ref __field0) => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            2,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "String",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Literal::Number(ref __field0) => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            2,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Number",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Literal::Boolean(ref __field0) => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            2,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Boolean",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Literal::Array(ref __field0) => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            2,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Array",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Literal::Object(ref __field0) => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            2,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Object",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Literal::Null => {
+                        let mut __struct = match _serde::Serializer::serialize_struct(
+                            __serializer,
+                            "Literal",
+                            1,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Null",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Literal: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Literal {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 6",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "String" => _serde::export::Ok(__Field::__field0),
+                            "Number" => _serde::export::Ok(__Field::__field1),
+                            "Boolean" => _serde::export::Ok(__Field::__field2),
+                            "Array" => _serde::export::Ok(__Field::__field3),
+                            "Object" => _serde::export::Ok(__Field::__field4),
+                            "Null" => _serde::export::Ok(__Field::__field5),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"String" => _serde::export::Ok(__Field::__field0),
+                            b"Number" => _serde::export::Ok(__Field::__field1),
+                            b"Boolean" => _serde::export::Ok(__Field::__field2),
+                            b"Array" => _serde::export::Ok(__Field::__field3),
+                            b"Object" => _serde::export::Ok(__Field::__field4),
+                            b"Null" => _serde::export::Ok(__Field::__field5),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] =
+                    &["String", "Number", "Boolean", "Array", "Object", "Null"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<Literal>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = Literal;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => _serde::export::Result::map(
+                                <String as _serde::Deserialize>::deserialize(__deserializer),
+                                Literal::String,
+                            ),
+                            __Field::__field1 => _serde::export::Result::map(
+                                <Number as _serde::Deserialize>::deserialize(__deserializer),
+                                Literal::Number,
+                            ),
+                            __Field::__field2 => _serde::export::Result::map(
+                                <bool as _serde::Deserialize>::deserialize(__deserializer),
+                                Literal::Boolean,
+                            ),
+                            __Field::__field3 => _serde::export::Result::map(
+                                <Vec<Expr> as _serde::Deserialize>::deserialize(__deserializer),
+                                Literal::Array,
+                            ),
+                            __Field::__field4 => _serde::export::Result::map(
+                                <Object as _serde::Deserialize>::deserialize(__deserializer),
+                                Literal::Object,
+                            ),
+                            __Field::__field5 => match _serde::Deserializer::deserialize_any(
+                                __deserializer,
+                                _serde::private::de::UntaggedUnitVisitor::new("Literal", "Null"),
+                            ) {
+                                _serde::export::Ok(()) => _serde::export::Ok(Literal::Null),
+                                _serde::export::Err(__err) => _serde::export::Err(__err),
+                            },
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Literal>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Literal;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum Literal",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => match __field {
+                                        __Field::__field5 => _serde::export::Ok(Literal::Null),
+                                        _ => _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::missing_field(
+                                                "value",
+                                            ),
+                                        ),
+                                    },
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret = match match match _serde :: de :: MapAccess :: next_value ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { __Field :: __field0 => _serde :: export :: Result :: map ( < String as _serde :: Deserialize > :: deserialize ( __deserializer ) , Literal :: String ) , __Field :: __field1 => _serde :: export :: Result :: map ( < Number as _serde :: Deserialize > :: deserialize ( __deserializer ) , Literal :: Number ) , __Field :: __field2 => _serde :: export :: Result :: map ( < bool as _serde :: Deserialize > :: deserialize ( __deserializer ) , Literal :: Boolean ) , __Field :: __field3 => _serde :: export :: Result :: map ( < Vec < Expr > as _serde :: Deserialize > :: deserialize ( __deserializer ) , Literal :: Array ) , __Field :: __field4 => _serde :: export :: Result :: map ( < Object as _serde :: Deserialize > :: deserialize ( __deserializer ) , Literal :: Object ) , __Field :: __field5 => match _serde :: Deserializer :: deserialize_any ( __deserializer , _serde :: private :: de :: UntaggedUnitVisitor :: new ( "Literal" , "Null" ) ) { _serde :: export :: Ok ( ( ) ) => _serde :: export :: Ok ( Literal :: Null ) , _serde :: export :: Err ( __err ) => _serde :: export :: Err ( __err ) , } , } { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ;
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "Literal",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Literal>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Literal {
@@ -1200,10 +8438,561 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type", content = "value")]
     pub enum Argument {
         Regular(String),
         Rest(String),
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Argument: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Argument {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    Argument::Regular(ref __field0) => {
+                        let mut __struct =
+                            match _serde::Serializer::serialize_struct(__serializer, "Argument", 2)
+                            {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Regular",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                    Argument::Rest(ref __field0) => {
+                        let mut __struct =
+                            match _serde::Serializer::serialize_struct(__serializer, "Argument", 2)
+                            {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "type",
+                            "Rest",
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        match _serde::ser::SerializeStruct::serialize_field(
+                            &mut __struct,
+                            "value",
+                            __field0,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        };
+                        _serde::ser::SerializeStruct::end(__struct)
+                    }
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Argument: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Argument {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Regular" => _serde::export::Ok(__Field::__field0),
+                            "Rest" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Regular" => _serde::export::Ok(__Field::__field0),
+                            b"Rest" => _serde::export::Ok(__Field::__field1),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &["Regular", "Rest"];
+                struct __Seed<'de> {
+                    field: __Field,
+                    marker: _serde::export::PhantomData<Argument>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::DeserializeSeed<'de> for __Seed<'de> {
+                    type Value = Argument;
+                    fn deserialize<__D>(
+                        self,
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self::Value, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        match self.field {
+                            __Field::__field0 => _serde::export::Result::map(
+                                <String as _serde::Deserialize>::deserialize(__deserializer),
+                                Argument::Regular,
+                            ),
+                            __Field::__field1 => _serde::export::Result::map(
+                                <String as _serde::Deserialize>::deserialize(__deserializer),
+                                Argument::Rest,
+                            ),
+                        }
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<Argument>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = Argument;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(
+                            __formatter,
+                            "adjacently tagged enum Argument",
+                        )
+                    }
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        match {
+                            let mut __rk: _serde::export::Option<
+                                _serde::private::de::TagOrContentField,
+                            > = _serde::export::None;
+                            while let _serde::export::Some(__k) =
+                                match _serde::de::MapAccess::next_key_seed(
+                                    &mut __map,
+                                    _serde::private::de::TagContentOtherFieldVisitor {
+                                        tag: "type",
+                                        content: "value",
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            {
+                                match __k {
+                                    _serde::private::de::TagContentOtherField::Other => {
+                                        match _serde::de::MapAccess::next_value::<
+                                            _serde::de::IgnoredAny,
+                                        >(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        continue;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Tag => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Tag,
+                                        );
+                                        break;
+                                    }
+                                    _serde::private::de::TagContentOtherField::Content => {
+                                        __rk = _serde::export::Some(
+                                            _serde::private::de::TagOrContentField::Content,
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                            __rk
+                        } {
+                            _serde::export::Some(_serde::private::de::TagOrContentField::Tag) => {
+                                let __field = match _serde::de::MapAccess::next_value(&mut __map) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("type"),
+                                    ),
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => {
+                                        let __ret = match _serde::de::MapAccess::next_value_seed(
+                                            &mut __map,
+                                            __Seed {
+                                                field: __field,
+                                                marker: _serde::export::PhantomData,
+                                                lifetime: _serde::export::PhantomData,
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("value"),
+                                    ),
+                                }
+                            }
+                            _serde::export::Some(
+                                _serde::private::de::TagOrContentField::Content,
+                            ) => {
+                                let __content = match _serde::de::MapAccess::next_value::<
+                                    _serde::private::de::Content,
+                                >(&mut __map)
+                                {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                };
+                                match {
+                                    let mut __rk: _serde::export::Option<
+                                        _serde::private::de::TagOrContentField,
+                                    > = _serde::export::None;
+                                    while let _serde::export::Some(__k) =
+                                        match _serde::de::MapAccess::next_key_seed(
+                                            &mut __map,
+                                            _serde::private::de::TagContentOtherFieldVisitor {
+                                                tag: "type",
+                                                content: "value",
+                                            },
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        }
+                                    {
+                                        match __k {
+                                            _serde::private::de::TagContentOtherField::Other => {
+                                                match _serde::de::MapAccess::next_value::<
+                                                    _serde::de::IgnoredAny,
+                                                >(
+                                                    &mut __map
+                                                ) {
+                                                    _serde::export::Ok(__val) => __val,
+                                                    _serde::export::Err(__err) => {
+                                                        return _serde::export::Err(__err);
+                                                    }
+                                                };
+                                                continue;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Tag => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Tag,
+                                                );
+                                                break;
+                                            }
+                                            _serde::private::de::TagContentOtherField::Content => {
+                                                __rk = _serde::export::Some(
+                                                    _serde::private::de::TagOrContentField::Content,
+                                                );
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    __rk
+                                } {
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Tag,
+                                    ) => {
+                                        let __deserializer = _serde :: private :: de :: ContentDeserializer :: < __A :: Error > :: new ( __content ) ;
+                                        let __ret =
+                                            match match match _serde::de::MapAccess::next_value(
+                                                &mut __map,
+                                            ) {
+                                                _serde::export::Ok(__val) => __val,
+                                                _serde::export::Err(__err) => {
+                                                    return _serde::export::Err(__err);
+                                                }
+                                            } {
+                                                __Field::__field0 => _serde::export::Result::map(
+                                                    <String as _serde::Deserialize>::deserialize(
+                                                        __deserializer,
+                                                    ),
+                                                    Argument::Regular,
+                                                ),
+                                                __Field::__field1 => _serde::export::Result::map(
+                                                    <String as _serde::Deserialize>::deserialize(
+                                                        __deserializer,
+                                                    ),
+                                                    Argument::Rest,
+                                                ),
+                                            } {
+                                                _serde::export::Ok(__val) => __val,
+                                                _serde::export::Err(__err) => {
+                                                    return _serde::export::Err(__err);
+                                                }
+                                            };
+                                        match {
+                                            let mut __rk: _serde::export::Option<
+                                                _serde::private::de::TagOrContentField,
+                                            > = _serde::export::None;
+                                            while let _serde :: export :: Some ( __k ) = match _serde :: de :: MapAccess :: next_key_seed ( & mut __map , _serde :: private :: de :: TagContentOtherFieldVisitor { tag : "type" , content : "value" , } ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } { match __k { _serde :: private :: de :: TagContentOtherField :: Other => { match _serde :: de :: MapAccess :: next_value :: < _serde :: de :: IgnoredAny > ( & mut __map ) { _serde :: export :: Ok ( __val ) => __val , _serde :: export :: Err ( __err ) => { return _serde :: export :: Err ( __err ) ; } } ; continue ; } _serde :: private :: de :: TagContentOtherField :: Tag => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Tag ) ; break ; } _serde :: private :: de :: TagContentOtherField :: Content => { __rk = _serde :: export :: Some ( _serde :: private :: de :: TagOrContentField :: Content ) ; break ; } } }
+                                            __rk
+                                        } {
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Tag,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "type",
+                                                ),
+                                            ),
+                                            _serde::export::Some(
+                                                _serde::private::de::TagOrContentField::Content,
+                                            ) => _serde::export::Err(
+                                                <__A::Error as _serde::de::Error>::duplicate_field(
+                                                    "value",
+                                                ),
+                                            ),
+                                            _serde::export::None => _serde::export::Ok(__ret),
+                                        }
+                                    }
+                                    _serde::export::Some(
+                                        _serde::private::de::TagOrContentField::Content,
+                                    ) => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::duplicate_field("value"),
+                                    ),
+                                    _serde::export::None => _serde::export::Err(
+                                        <__A::Error as _serde::de::Error>::missing_field("type"),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => _serde::export::Err(
+                                <__A::Error as _serde::de::Error>::missing_field("type"),
+                            ),
+                        }
+                    }
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        match match _serde::de::SeqAccess::next_element(&mut __seq) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__field) => {
+                                match match _serde::de::SeqAccess::next_element_seed(
+                                    &mut __seq,
+                                    __Seed {
+                                        field: __field,
+                                        marker: _serde::export::PhantomData,
+                                        lifetime: _serde::export::PhantomData,
+                                    },
+                                ) {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                } {
+                                    _serde::export::Some(__ret) => _serde::export::Ok(__ret),
+                                    _serde::export::None => _serde::export::Err(
+                                        _serde::de::Error::invalid_length(1, &self),
+                                    ),
+                                }
+                            }
+                            _serde::export::None => {
+                                _serde::export::Err(_serde::de::Error::invalid_length(0, &self))
+                            }
+                        }
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["type", "value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "Argument",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<Argument>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Argument {
@@ -1281,6 +9070,7 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type")]
     pub enum Stmt {
         Program(ProgramStmt),
         Var(VarStmt),
@@ -1296,6 +9086,394 @@ pub mod ast {
         Continue(ContinueStmt),
         Break(BreakStmt),
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Stmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Stmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    Stmt::Program(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Program",
+                        "type",
+                        "Program",
+                        __field0,
+                    ),
+                    Stmt::Var(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Var",
+                        "type",
+                        "Var",
+                        __field0,
+                    ),
+                    Stmt::VarList(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "VarList",
+                        "type",
+                        "VarList",
+                        __field0,
+                    ),
+                    Stmt::Expr(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Expr",
+                        "type",
+                        "Expr",
+                        __field0,
+                    ),
+                    Stmt::Func(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Func",
+                        "type",
+                        "Func",
+                        __field0,
+                    ),
+                    Stmt::Class(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Class",
+                        "type",
+                        "Class",
+                        __field0,
+                    ),
+                    Stmt::Interface(ref __field0) => {
+                        _serde::private::ser::serialize_tagged_newtype(
+                            __serializer,
+                            "Stmt",
+                            "Interface",
+                            "type",
+                            "Interface",
+                            __field0,
+                        )
+                    }
+                    Stmt::Block(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Block",
+                        "type",
+                        "Block",
+                        __field0,
+                    ),
+                    Stmt::If(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "If",
+                        "type",
+                        "If",
+                        __field0,
+                    ),
+                    Stmt::For(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "For",
+                        "type",
+                        "For",
+                        __field0,
+                    ),
+                    Stmt::Return(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Return",
+                        "type",
+                        "Return",
+                        __field0,
+                    ),
+                    Stmt::Continue(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Continue",
+                        "type",
+                        "Continue",
+                        __field0,
+                    ),
+                    Stmt::Break(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Stmt",
+                        "Break",
+                        "type",
+                        "Break",
+                        __field0,
+                    ),
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Stmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Stmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                    __field6,
+                    __field7,
+                    __field8,
+                    __field9,
+                    __field10,
+                    __field11,
+                    __field12,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            6u64 => _serde::export::Ok(__Field::__field6),
+                            7u64 => _serde::export::Ok(__Field::__field7),
+                            8u64 => _serde::export::Ok(__Field::__field8),
+                            9u64 => _serde::export::Ok(__Field::__field9),
+                            10u64 => _serde::export::Ok(__Field::__field10),
+                            11u64 => _serde::export::Ok(__Field::__field11),
+                            12u64 => _serde::export::Ok(__Field::__field12),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 13",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Program" => _serde::export::Ok(__Field::__field0),
+                            "Var" => _serde::export::Ok(__Field::__field1),
+                            "VarList" => _serde::export::Ok(__Field::__field2),
+                            "Expr" => _serde::export::Ok(__Field::__field3),
+                            "Func" => _serde::export::Ok(__Field::__field4),
+                            "Class" => _serde::export::Ok(__Field::__field5),
+                            "Interface" => _serde::export::Ok(__Field::__field6),
+                            "Block" => _serde::export::Ok(__Field::__field7),
+                            "If" => _serde::export::Ok(__Field::__field8),
+                            "For" => _serde::export::Ok(__Field::__field9),
+                            "Return" => _serde::export::Ok(__Field::__field10),
+                            "Continue" => _serde::export::Ok(__Field::__field11),
+                            "Break" => _serde::export::Ok(__Field::__field12),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Program" => _serde::export::Ok(__Field::__field0),
+                            b"Var" => _serde::export::Ok(__Field::__field1),
+                            b"VarList" => _serde::export::Ok(__Field::__field2),
+                            b"Expr" => _serde::export::Ok(__Field::__field3),
+                            b"Func" => _serde::export::Ok(__Field::__field4),
+                            b"Class" => _serde::export::Ok(__Field::__field5),
+                            b"Interface" => _serde::export::Ok(__Field::__field6),
+                            b"Block" => _serde::export::Ok(__Field::__field7),
+                            b"If" => _serde::export::Ok(__Field::__field8),
+                            b"For" => _serde::export::Ok(__Field::__field9),
+                            b"Return" => _serde::export::Ok(__Field::__field10),
+                            b"Continue" => _serde::export::Ok(__Field::__field11),
+                            b"Break" => _serde::export::Ok(__Field::__field12),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &[
+                    "Program",
+                    "Var",
+                    "VarList",
+                    "Expr",
+                    "Func",
+                    "Class",
+                    "Interface",
+                    "Block",
+                    "If",
+                    "For",
+                    "Return",
+                    "Continue",
+                    "Break",
+                ];
+                let __tagged = match _serde::Deserializer::deserialize_any(
+                    __deserializer,
+                    _serde::private::de::TaggedContentVisitor::<__Field>::new("type"),
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match __tagged.tag {
+                    __Field::__field0 => _serde::export::Result::map(
+                        <ProgramStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Program,
+                    ),
+                    __Field::__field1 => _serde::export::Result::map(
+                        <VarStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Var,
+                    ),
+                    __Field::__field2 => _serde::export::Result::map(
+                        <VarListStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::VarList,
+                    ),
+                    __Field::__field3 => _serde::export::Result::map(
+                        <ExprStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Expr,
+                    ),
+                    __Field::__field4 => _serde::export::Result::map(
+                        <FuncStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Func,
+                    ),
+                    __Field::__field5 => _serde::export::Result::map(
+                        <ClassStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Class,
+                    ),
+                    __Field::__field6 => _serde::export::Result::map(
+                        <InterfaceStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Interface,
+                    ),
+                    __Field::__field7 => _serde::export::Result::map(
+                        <BlockStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Block,
+                    ),
+                    __Field::__field8 => _serde::export::Result::map(
+                        <IfStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::If,
+                    ),
+                    __Field::__field9 => _serde::export::Result::map(
+                        <ForStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::For,
+                    ),
+                    __Field::__field10 => _serde::export::Result::map(
+                        <ReturnStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Return,
+                    ),
+                    __Field::__field11 => _serde::export::Result::map(
+                        <ContinueStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Continue,
+                    ),
+                    __Field::__field12 => _serde::export::Result::map(
+                        <BreakStmt as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Stmt::Break,
+                    ),
+                }
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Stmt {
@@ -1540,6 +9718,7 @@ pub mod ast {
             }
         }
     }
+    #[serde(tag = "type")]
     pub enum Expr {
         Assign(AssignExpr),
         Call(CallExpr),
@@ -1555,6 +9734,396 @@ pub mod ast {
         Unary(UnaryExpr),
         Postfix(PostfixExpr),
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_Expr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for Expr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                match *self {
+                    Expr::Assign(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Assign",
+                        "type",
+                        "Assign",
+                        __field0,
+                    ),
+                    Expr::Call(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Call",
+                        "type",
+                        "Call",
+                        __field0,
+                    ),
+                    Expr::Literal(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Literal",
+                        "type",
+                        "Literal",
+                        __field0,
+                    ),
+                    Expr::Binary(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Binary",
+                        "type",
+                        "Binary",
+                        __field0,
+                    ),
+                    Expr::Member(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Member",
+                        "type",
+                        "Member",
+                        __field0,
+                    ),
+                    Expr::Lookup(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Lookup",
+                        "type",
+                        "Lookup",
+                        __field0,
+                    ),
+                    Expr::Arguments(ref __field0) => {
+                        _serde::private::ser::serialize_tagged_newtype(
+                            __serializer,
+                            "Expr",
+                            "Arguments",
+                            "type",
+                            "Arguments",
+                            __field0,
+                        )
+                    }
+                    Expr::Logical(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Logical",
+                        "type",
+                        "Logical",
+                        __field0,
+                    ),
+                    Expr::This(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "This",
+                        "type",
+                        "This",
+                        __field0,
+                    ),
+                    Expr::Var(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Var",
+                        "type",
+                        "Var",
+                        __field0,
+                    ),
+                    Expr::Identifier(ref __field0) => {
+                        _serde::private::ser::serialize_tagged_newtype(
+                            __serializer,
+                            "Expr",
+                            "Identifier",
+                            "type",
+                            "Identifier",
+                            __field0,
+                        )
+                    }
+                    Expr::Unary(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Unary",
+                        "type",
+                        "Unary",
+                        __field0,
+                    ),
+                    Expr::Postfix(ref __field0) => _serde::private::ser::serialize_tagged_newtype(
+                        __serializer,
+                        "Expr",
+                        "Postfix",
+                        "type",
+                        "Postfix",
+                        __field0,
+                    ),
+                }
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_Expr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for Expr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __field4,
+                    __field5,
+                    __field6,
+                    __field7,
+                    __field8,
+                    __field9,
+                    __field10,
+                    __field11,
+                    __field12,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "variant identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            4u64 => _serde::export::Ok(__Field::__field4),
+                            5u64 => _serde::export::Ok(__Field::__field5),
+                            6u64 => _serde::export::Ok(__Field::__field6),
+                            7u64 => _serde::export::Ok(__Field::__field7),
+                            8u64 => _serde::export::Ok(__Field::__field8),
+                            9u64 => _serde::export::Ok(__Field::__field9),
+                            10u64 => _serde::export::Ok(__Field::__field10),
+                            11u64 => _serde::export::Ok(__Field::__field11),
+                            12u64 => _serde::export::Ok(__Field::__field12),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"variant index 0 <= i < 13",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "Assign" => _serde::export::Ok(__Field::__field0),
+                            "Call" => _serde::export::Ok(__Field::__field1),
+                            "Literal" => _serde::export::Ok(__Field::__field2),
+                            "Binary" => _serde::export::Ok(__Field::__field3),
+                            "Member" => _serde::export::Ok(__Field::__field4),
+                            "Lookup" => _serde::export::Ok(__Field::__field5),
+                            "Arguments" => _serde::export::Ok(__Field::__field6),
+                            "Logical" => _serde::export::Ok(__Field::__field7),
+                            "This" => _serde::export::Ok(__Field::__field8),
+                            "Var" => _serde::export::Ok(__Field::__field9),
+                            "Identifier" => _serde::export::Ok(__Field::__field10),
+                            "Unary" => _serde::export::Ok(__Field::__field11),
+                            "Postfix" => _serde::export::Ok(__Field::__field12),
+                            _ => _serde::export::Err(_serde::de::Error::unknown_variant(
+                                __value, VARIANTS,
+                            )),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"Assign" => _serde::export::Ok(__Field::__field0),
+                            b"Call" => _serde::export::Ok(__Field::__field1),
+                            b"Literal" => _serde::export::Ok(__Field::__field2),
+                            b"Binary" => _serde::export::Ok(__Field::__field3),
+                            b"Member" => _serde::export::Ok(__Field::__field4),
+                            b"Lookup" => _serde::export::Ok(__Field::__field5),
+                            b"Arguments" => _serde::export::Ok(__Field::__field6),
+                            b"Logical" => _serde::export::Ok(__Field::__field7),
+                            b"This" => _serde::export::Ok(__Field::__field8),
+                            b"Var" => _serde::export::Ok(__Field::__field9),
+                            b"Identifier" => _serde::export::Ok(__Field::__field10),
+                            b"Unary" => _serde::export::Ok(__Field::__field11),
+                            b"Postfix" => _serde::export::Ok(__Field::__field12),
+                            _ => {
+                                let __value = &_serde::export::from_utf8_lossy(__value);
+                                _serde::export::Err(_serde::de::Error::unknown_variant(
+                                    __value, VARIANTS,
+                                ))
+                            }
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                const VARIANTS: &'static [&'static str] = &[
+                    "Assign",
+                    "Call",
+                    "Literal",
+                    "Binary",
+                    "Member",
+                    "Lookup",
+                    "Arguments",
+                    "Logical",
+                    "This",
+                    "Var",
+                    "Identifier",
+                    "Unary",
+                    "Postfix",
+                ];
+                let __tagged = match _serde::Deserializer::deserialize_any(
+                    __deserializer,
+                    _serde::private::de::TaggedContentVisitor::<__Field>::new("type"),
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match __tagged.tag {
+                    __Field::__field0 => _serde::export::Result::map(
+                        <AssignExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Assign,
+                    ),
+                    __Field::__field1 => _serde::export::Result::map(
+                        <CallExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Call,
+                    ),
+                    __Field::__field2 => _serde::export::Result::map(
+                        <LiteralExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Literal,
+                    ),
+                    __Field::__field3 => _serde::export::Result::map(
+                        <BinaryExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Binary,
+                    ),
+                    __Field::__field4 => _serde::export::Result::map(
+                        <MemberExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Member,
+                    ),
+                    __Field::__field5 => _serde::export::Result::map(
+                        <LookupExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Lookup,
+                    ),
+                    __Field::__field6 => _serde::export::Result::map(
+                        <ArgumentsExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Arguments,
+                    ),
+                    __Field::__field7 => _serde::export::Result::map(
+                        <LogicalExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Logical,
+                    ),
+                    __Field::__field8 => _serde::export::Result::map(
+                        <ThisExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::This,
+                    ),
+                    __Field::__field9 => _serde::export::Result::map(
+                        <VarExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Var,
+                    ),
+                    __Field::__field10 => _serde::export::Result::map(
+                        <IdentifierExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Identifier,
+                    ),
+                    __Field::__field11 => _serde::export::Result::map(
+                        <UnaryExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Unary,
+                    ),
+                    __Field::__field12 => _serde::export::Result::map(
+                        <PostfixExpr as _serde::Deserialize>::deserialize(
+                            _serde::private::de::ContentDeserializer::<__D::Error>::new(
+                                __tagged.content,
+                            ),
+                        ),
+                        Expr::Postfix,
+                    ),
+                }
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for Expr {
@@ -1806,6 +10375,241 @@ pub mod ast {
     pub struct ProgramStmt {
         pub statements: Vec<Box<Stmt>>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ProgramStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ProgramStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ProgramStmt",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "statements",
+                    &self.statements,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ProgramStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ProgramStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "statements" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"statements" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ProgramStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ProgramStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ProgramStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Box<Stmt>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct ProgramStmt with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(ProgramStmt {
+                            statements: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Vec<Box<Stmt>>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "statements",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Box<Stmt>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("statements") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ProgramStmt {
+                            statements: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["statements"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ProgramStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ProgramStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ProgramStmt {
@@ -1872,6 +10676,302 @@ pub mod ast {
         pub name: String,
         pub initializer: Option<Expr>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_VarStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for VarStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "VarStmt",
+                    false as usize + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "name",
+                    &self.name,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "initializer",
+                    &self.initializer,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_VarStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for VarStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "name" => _serde::export::Ok(__Field::__field0),
+                            "initializer" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"name" => _serde::export::Ok(__Field::__field0),
+                            b"initializer" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<VarStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = VarStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct VarStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct VarStmt with 2 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Option<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct VarStmt with 2 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(VarStmt {
+                            name: __field0,
+                            initializer: __field1,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<String> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Option<Expr>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "name",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "initializer",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("name") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("initializer") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(VarStmt {
+                            name: __field0,
+                            initializer: __field1,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["name", "initializer"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "VarStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<VarStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for VarStmt {
@@ -1945,6 +11045,240 @@ pub mod ast {
     pub struct VarListStmt {
         pub variables: Vec<VarStmt>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_VarListStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for VarListStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "VarListStmt",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "variables",
+                    &self.variables,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_VarListStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for VarListStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "variables" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"variables" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<VarListStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = VarListStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct VarListStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Vec<VarStmt>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct VarListStmt with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(VarListStmt {
+                            variables: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Vec<VarStmt>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "variables",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<VarStmt>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("variables") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(VarListStmt {
+                            variables: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["variables"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "VarListStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<VarListStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for VarListStmt {
@@ -2010,6 +11344,237 @@ pub mod ast {
     pub struct ExprStmt {
         pub expression: Expr,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ExprStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ExprStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ExprStmt",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "expression",
+                    &self.expression,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ExprStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ExprStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "expression" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"expression" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ExprStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ExprStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ExprStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Expr>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct ExprStmt with 1 element",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(ExprStmt {
+                            expression: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Expr> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "expression",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Expr>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("expression") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ExprStmt {
+                            expression: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["expression"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ExprStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ExprStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ExprStmt {
@@ -2077,6 +11642,366 @@ pub mod ast {
         pub body: Box<Stmt>,
         pub parameters: Vec<Argument>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_FuncStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for FuncStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "FuncStmt",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "name",
+                    &self.name,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "body",
+                    &self.body,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "parameters",
+                    &self.parameters,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_FuncStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for FuncStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "name" => _serde::export::Ok(__Field::__field0),
+                            "body" => _serde::export::Ok(__Field::__field1),
+                            "parameters" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"name" => _serde::export::Ok(__Field::__field0),
+                            b"body" => _serde::export::Ok(__Field::__field1),
+                            b"parameters" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<FuncStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = FuncStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct FuncStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct FuncStmt with 3 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Stmt>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct FuncStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Argument>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct FuncStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(FuncStmt {
+                            name: __field0,
+                            body: __field1,
+                            parameters: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<String> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Stmt>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<Vec<Argument>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "name",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "body",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Stmt>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "parameters",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Argument>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("name") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("body") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("parameters") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(FuncStmt {
+                            name: __field0,
+                            body: __field1,
+                            parameters: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["name", "body", "parameters"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "FuncStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<FuncStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for FuncStmt {
@@ -2173,6 +12098,433 @@ pub mod ast {
         pub extends: Option<String>,
         pub implements: Vec<String>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ClassStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ClassStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ClassStmt",
+                    false as usize + 1 + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "name",
+                    &self.name,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "members",
+                    &self.members,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "extends",
+                    &self.extends,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "implements",
+                    &self.implements,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ClassStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ClassStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 4",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "name" => _serde::export::Ok(__Field::__field0),
+                            "members" => _serde::export::Ok(__Field::__field1),
+                            "extends" => _serde::export::Ok(__Field::__field2),
+                            "implements" => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"name" => _serde::export::Ok(__Field::__field0),
+                            b"members" => _serde::export::Ok(__Field::__field1),
+                            b"extends" => _serde::export::Ok(__Field::__field2),
+                            b"implements" => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ClassStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ClassStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ClassStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct ClassStmt with 4 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Box<Stmt>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct ClassStmt with 4 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            Option<String>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct ClassStmt with 4 elements",
+                                ));
+                            }
+                        };
+                        let __field3 = match match _serde::de::SeqAccess::next_element::<Vec<String>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    3usize,
+                                    &"struct ClassStmt with 4 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(ClassStmt {
+                            name: __field0,
+                            members: __field1,
+                            extends: __field2,
+                            implements: __field3,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<String> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Vec<Box<Stmt>>> =
+                            _serde::export::None;
+                        let mut __field2: _serde::export::Option<Option<String>> =
+                            _serde::export::None;
+                        let mut __field3: _serde::export::Option<Vec<String>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "name",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "members",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Box<Stmt>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "extends",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<String>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field3 => {
+                                    if _serde::export::Option::is_some(&__field3) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "implements",
+                                            ),
+                                        );
+                                    }
+                                    __field3 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<String>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("name") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("members") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("extends") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field3 = match __field3 {
+                            _serde::export::Some(__field3) => __field3,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("implements") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ClassStmt {
+                            name: __field0,
+                            members: __field1,
+                            extends: __field2,
+                            implements: __field3,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] =
+                    &["name", "members", "extends", "implements"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ClassStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ClassStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ClassStmt {
@@ -2284,6 +12636,368 @@ pub mod ast {
         pub extends: Option<String>,
         pub members: Vec<Box<Stmt>>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_InterfaceStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for InterfaceStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "InterfaceStmt",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "name",
+                    &self.name,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "extends",
+                    &self.extends,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "members",
+                    &self.members,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_InterfaceStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for InterfaceStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "name" => _serde::export::Ok(__Field::__field0),
+                            "extends" => _serde::export::Ok(__Field::__field1),
+                            "members" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"name" => _serde::export::Ok(__Field::__field0),
+                            b"extends" => _serde::export::Ok(__Field::__field1),
+                            b"members" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<InterfaceStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = InterfaceStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct InterfaceStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct InterfaceStmt with 3 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<
+                            Option<String>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct InterfaceStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Box<Stmt>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct InterfaceStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(InterfaceStmt {
+                            name: __field0,
+                            extends: __field1,
+                            members: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<String> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Option<String>> =
+                            _serde::export::None;
+                        let mut __field2: _serde::export::Option<Vec<Box<Stmt>>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "name",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "extends",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<String>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "members",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Box<Stmt>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("name") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("extends") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("members") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(InterfaceStmt {
+                            name: __field0,
+                            extends: __field1,
+                            members: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["name", "extends", "members"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "InterfaceStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<InterfaceStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for InterfaceStmt {
@@ -2381,6 +13095,241 @@ pub mod ast {
     pub struct BlockStmt {
         pub statements: Vec<Box<Stmt>>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_BlockStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for BlockStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "BlockStmt",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "statements",
+                    &self.statements,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_BlockStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for BlockStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "statements" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"statements" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<BlockStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = BlockStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct BlockStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Box<Stmt>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct BlockStmt with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(BlockStmt {
+                            statements: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Vec<Box<Stmt>>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "statements",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Box<Stmt>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("statements") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(BlockStmt {
+                            statements: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["statements"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "BlockStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<BlockStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for BlockStmt {
@@ -2448,6 +13397,365 @@ pub mod ast {
         pub consequent: Box<Stmt>,
         pub alternative: Option<Box<Stmt>>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_IfStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for IfStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "IfStmt",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "test",
+                    &self.test,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "consequent",
+                    &self.consequent,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "alternative",
+                    &self.alternative,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_IfStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for IfStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "test" => _serde::export::Ok(__Field::__field0),
+                            "consequent" => _serde::export::Ok(__Field::__field1),
+                            "alternative" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"test" => _serde::export::Ok(__Field::__field0),
+                            b"consequent" => _serde::export::Ok(__Field::__field1),
+                            b"alternative" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<IfStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = IfStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct IfStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Expr>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct IfStmt with 3 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Stmt>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct IfStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            Option<Box<Stmt>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct IfStmt with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(IfStmt {
+                            test: __field0,
+                            consequent: __field1,
+                            alternative: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Expr> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Stmt>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<Option<Box<Stmt>>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "test",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Expr>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "consequent",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Stmt>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "alternative",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<Box<Stmt>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("test") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("consequent") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("alternative") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(IfStmt {
+                            test: __field0,
+                            consequent: __field1,
+                            alternative: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["test", "consequent", "alternative"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "IfStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<IfStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for IfStmt {
@@ -2544,6 +13852,426 @@ pub mod ast {
         pub iterator: Expr,
         pub body: Box<Stmt>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ForStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ForStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ForStmt",
+                    false as usize + 1 + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "element",
+                    &self.element,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "index",
+                    &self.index,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "iterator",
+                    &self.iterator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "body",
+                    &self.body,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ForStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ForStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __field3,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            3u64 => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 4",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "element" => _serde::export::Ok(__Field::__field0),
+                            "index" => _serde::export::Ok(__Field::__field1),
+                            "iterator" => _serde::export::Ok(__Field::__field2),
+                            "body" => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"element" => _serde::export::Ok(__Field::__field0),
+                            b"index" => _serde::export::Ok(__Field::__field1),
+                            b"iterator" => _serde::export::Ok(__Field::__field2),
+                            b"body" => _serde::export::Ok(__Field::__field3),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ForStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ForStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ForStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Token>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct ForStmt with 4 elements",
+                                    ));
+                                }
+                            };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<
+                            Option<Token>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct ForStmt with 4 elements",
+                                ));
+                            }
+                        };
+                        let __field2 =
+                            match match _serde::de::SeqAccess::next_element::<Expr>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        2usize,
+                                        &"struct ForStmt with 4 elements",
+                                    ));
+                                }
+                            };
+                        let __field3 = match match _serde::de::SeqAccess::next_element::<Box<Stmt>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    3usize,
+                                    &"struct ForStmt with 4 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(ForStmt {
+                            element: __field0,
+                            index: __field1,
+                            iterator: __field2,
+                            body: __field3,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Token> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Option<Token>> =
+                            _serde::export::None;
+                        let mut __field2: _serde::export::Option<Expr> = _serde::export::None;
+                        let mut __field3: _serde::export::Option<Box<Stmt>> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "element",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Token>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "index",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<Token>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "iterator",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Expr>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field3 => {
+                                    if _serde::export::Option::is_some(&__field3) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "body",
+                                            ),
+                                        );
+                                    }
+                                    __field3 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Stmt>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("element") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("index") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("iterator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field3 = match __field3 {
+                            _serde::export::Some(__field3) => __field3,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("body") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ForStmt {
+                            element: __field0,
+                            index: __field1,
+                            iterator: __field2,
+                            body: __field3,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["element", "index", "iterator", "body"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ForStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ForStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ForStmt {
@@ -2653,6 +14381,240 @@ pub mod ast {
     pub struct ReturnStmt {
         pub expression: Option<Expr>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ReturnStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ReturnStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ReturnStmt",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "expression",
+                    &self.expression,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ReturnStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ReturnStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "expression" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"expression" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ReturnStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ReturnStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ReturnStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Option<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct ReturnStmt with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(ReturnStmt {
+                            expression: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Option<Expr>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "expression",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Option<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("expression") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ReturnStmt {
+                            expression: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["expression"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ReturnStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ReturnStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ReturnStmt {
@@ -2716,6 +14678,174 @@ pub mod ast {
         }
     }
     pub struct ContinueStmt {}
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ContinueStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ContinueStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ContinueStmt",
+                    false as usize,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ContinueStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ContinueStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 0",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ContinueStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ContinueStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ContinueStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        _: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        _serde::export::Ok(ContinueStmt {})
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        _serde::export::Ok(ContinueStmt {})
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &[];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ContinueStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ContinueStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ContinueStmt {
@@ -2756,6 +14886,174 @@ pub mod ast {
         }
     }
     pub struct BreakStmt {}
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_BreakStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for BreakStmt {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "BreakStmt",
+                    false as usize,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_BreakStmt: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for BreakStmt {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 0",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<BreakStmt>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = BreakStmt;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct BreakStmt")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        _: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        _serde::export::Ok(BreakStmt {})
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        _serde::export::Ok(BreakStmt {})
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &[];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "BreakStmt",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<BreakStmt>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for BreakStmt {
@@ -2800,6 +15098,367 @@ pub mod ast {
         pub value: Box<Expr>,
         pub operator: AssignmentOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_AssignExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for AssignExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "AssignExpr",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "destination",
+                    &self.destination,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "operator",
+                    &self.operator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_AssignExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for AssignExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "destination" => _serde::export::Ok(__Field::__field0),
+                            "value" => _serde::export::Ok(__Field::__field1),
+                            "operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"destination" => _serde::export::Ok(__Field::__field0),
+                            b"value" => _serde::export::Ok(__Field::__field1),
+                            b"operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<AssignExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = AssignExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct AssignExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct AssignExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct AssignExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            AssignmentOperator,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct AssignExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(AssignExpr {
+                            destination: __field0,
+                            value: __field1,
+                            operator: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<AssignmentOperator> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "destination",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "operator",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<AssignmentOperator>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("destination") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("operator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(AssignExpr {
+                            destination: __field0,
+                            value: __field1,
+                            operator: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["destination", "value", "operator"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "AssignExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<AssignExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for AssignExpr {
@@ -2898,6 +15557,302 @@ pub mod ast {
         pub member: Box<Expr>,
         pub arguments: Vec<Expr>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_CallExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for CallExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "CallExpr",
+                    false as usize + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "member",
+                    &self.member,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "arguments",
+                    &self.arguments,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_CallExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for CallExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "member" => _serde::export::Ok(__Field::__field0),
+                            "arguments" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"member" => _serde::export::Ok(__Field::__field0),
+                            b"arguments" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<CallExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = CallExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct CallExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct CallExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Vec<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct CallExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(CallExpr {
+                            member: __field0,
+                            arguments: __field1,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Vec<Expr>> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "member",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "arguments",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("member") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("arguments") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(CallExpr {
+                            member: __field0,
+                            arguments: __field1,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["member", "arguments"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "CallExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<CallExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for CallExpr {
@@ -2971,6 +15926,235 @@ pub mod ast {
     pub struct LiteralExpr {
         pub value: Literal,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_LiteralExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for LiteralExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "LiteralExpr",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_LiteralExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for LiteralExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "value" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"value" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<LiteralExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = LiteralExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct LiteralExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Literal>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct LiteralExpr with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(LiteralExpr { value: __field0 })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Literal> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Literal>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(LiteralExpr { value: __field0 })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "LiteralExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<LiteralExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for LiteralExpr {
@@ -3038,6 +16222,367 @@ pub mod ast {
         pub right: Box<Expr>,
         pub operator: BinaryOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_BinaryExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for BinaryExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "BinaryExpr",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "left",
+                    &self.left,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "right",
+                    &self.right,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "operator",
+                    &self.operator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_BinaryExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for BinaryExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "left" => _serde::export::Ok(__Field::__field0),
+                            "right" => _serde::export::Ok(__Field::__field1),
+                            "operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"left" => _serde::export::Ok(__Field::__field0),
+                            b"right" => _serde::export::Ok(__Field::__field1),
+                            b"operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<BinaryExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = BinaryExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct BinaryExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct BinaryExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct BinaryExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            BinaryOperator,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct BinaryExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(BinaryExpr {
+                            left: __field0,
+                            right: __field1,
+                            operator: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<BinaryOperator> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "left",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "right",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "operator",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<BinaryOperator>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("left") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("right") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("operator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(BinaryExpr {
+                            left: __field0,
+                            right: __field1,
+                            operator: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["left", "right", "operator"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "BinaryExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<BinaryExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for BinaryExpr {
@@ -3133,6 +16678,363 @@ pub mod ast {
         pub property: Box<Expr>,
         pub computed: bool,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_MemberExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for MemberExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "MemberExpr",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "object",
+                    &self.object,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "property",
+                    &self.property,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "computed",
+                    &self.computed,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_MemberExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for MemberExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "object" => _serde::export::Ok(__Field::__field0),
+                            "property" => _serde::export::Ok(__Field::__field1),
+                            "computed" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"object" => _serde::export::Ok(__Field::__field0),
+                            b"property" => _serde::export::Ok(__Field::__field1),
+                            b"computed" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<MemberExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = MemberExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct MemberExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct MemberExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct MemberExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 =
+                            match match _serde::de::SeqAccess::next_element::<bool>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        2usize,
+                                        &"struct MemberExpr with 3 elements",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(MemberExpr {
+                            object: __field0,
+                            property: __field1,
+                            computed: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<bool> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "object",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "property",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "computed",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<bool>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("object") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("property") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("computed") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(MemberExpr {
+                            object: __field0,
+                            property: __field1,
+                            computed: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["object", "property", "computed"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "MemberExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<MemberExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for MemberExpr {
@@ -3226,6 +17128,233 @@ pub mod ast {
     pub struct LookupExpr {
         pub token: Token,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_LookupExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for LookupExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "LookupExpr",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "token",
+                    &self.token,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_LookupExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for LookupExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "token" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"token" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<LookupExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = LookupExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct LookupExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Token>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct LookupExpr with 1 element",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(LookupExpr { token: __field0 })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Token> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "token",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Token>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("token") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(LookupExpr { token: __field0 })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["token"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "LookupExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<LookupExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for LookupExpr {
@@ -3291,6 +17420,241 @@ pub mod ast {
     pub struct ArgumentsExpr {
         pub expressions: Vec<Box<Expr>>,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ArgumentsExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ArgumentsExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ArgumentsExpr",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "expressions",
+                    &self.expressions,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ArgumentsExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ArgumentsExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "expressions" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"expressions" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ArgumentsExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ArgumentsExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ArgumentsExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<
+                            Vec<Box<Expr>>,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct ArgumentsExpr with 1 element",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(ArgumentsExpr {
+                            expressions: __field0,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Vec<Box<Expr>>> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "expressions",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Vec<Box<Expr>>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("expressions") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(ArgumentsExpr {
+                            expressions: __field0,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["expressions"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ArgumentsExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ArgumentsExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ArgumentsExpr {
@@ -3358,6 +17722,367 @@ pub mod ast {
         pub right: Box<Expr>,
         pub operator: LogicalOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_LogicalExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for LogicalExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "LogicalExpr",
+                    false as usize + 1 + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "left",
+                    &self.left,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "right",
+                    &self.right,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "operator",
+                    &self.operator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_LogicalExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for LogicalExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __field2,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            2u64 => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 3",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "left" => _serde::export::Ok(__Field::__field0),
+                            "right" => _serde::export::Ok(__Field::__field1),
+                            "operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"left" => _serde::export::Ok(__Field::__field0),
+                            b"right" => _serde::export::Ok(__Field::__field1),
+                            b"operator" => _serde::export::Ok(__Field::__field2),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<LogicalExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = LogicalExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct LogicalExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct LogicalExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct LogicalExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        let __field2 = match match _serde::de::SeqAccess::next_element::<
+                            LogicalOperator,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    2usize,
+                                    &"struct LogicalExpr with 3 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(LogicalExpr {
+                            left: __field0,
+                            right: __field1,
+                            operator: __field2,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field2: _serde::export::Option<LogicalOperator> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "left",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "right",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field2 => {
+                                    if _serde::export::Option::is_some(&__field2) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "operator",
+                                            ),
+                                        );
+                                    }
+                                    __field2 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<LogicalOperator>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("left") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("right") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field2 = match __field2 {
+                            _serde::export::Some(__field2) => __field2,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("operator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(LogicalExpr {
+                            left: __field0,
+                            right: __field1,
+                            operator: __field2,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["left", "right", "operator"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "LogicalExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<LogicalExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for LogicalExpr {
@@ -3449,6 +18174,174 @@ pub mod ast {
         }
     }
     pub struct ThisExpr {}
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_ThisExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for ThisExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "ThisExpr",
+                    false as usize,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_ThisExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for ThisExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 0",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<ThisExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = ThisExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct ThisExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        _: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        _serde::export::Ok(ThisExpr {})
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        _serde::export::Ok(ThisExpr {})
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &[];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "ThisExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<ThisExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for ThisExpr {
@@ -3491,6 +18384,233 @@ pub mod ast {
     pub struct VarExpr {
         pub name: Token,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_VarExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for VarExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "VarExpr",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "name",
+                    &self.name,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_VarExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for VarExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "name" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"name" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<VarExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = VarExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct VarExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<Token>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct VarExpr with 1 element",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(VarExpr { name: __field0 })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Token> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "name",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Token>(&mut __map)
+                                        {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("name") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(VarExpr { name: __field0 })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["name"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "VarExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<VarExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for VarExpr {
@@ -3556,6 +18676,234 @@ pub mod ast {
     pub struct IdentifierExpr {
         pub value: String,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_IdentifierExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for IdentifierExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "IdentifierExpr",
+                    false as usize + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_IdentifierExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for IdentifierExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 1",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "value" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"value" => _serde::export::Ok(__Field::__field0),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<IdentifierExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = IdentifierExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct IdentifierExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 =
+                            match match _serde::de::SeqAccess::next_element::<String>(&mut __seq) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            } {
+                                _serde::export::Some(__value) => __value,
+                                _serde::export::None => {
+                                    return _serde::export::Err(_serde::de::Error::invalid_length(
+                                        0usize,
+                                        &"struct IdentifierExpr with 1 element",
+                                    ));
+                                }
+                            };
+                        _serde::export::Ok(IdentifierExpr { value: __field0 })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<String> = _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<String>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(IdentifierExpr { value: __field0 })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["value"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "IdentifierExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<IdentifierExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for IdentifierExpr {
@@ -3622,6 +18970,304 @@ pub mod ast {
         pub value: Box<Expr>,
         pub operator: UnaryOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_UnaryExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for UnaryExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "UnaryExpr",
+                    false as usize + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "operator",
+                    &self.operator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_UnaryExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for UnaryExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "value" => _serde::export::Ok(__Field::__field0),
+                            "operator" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"value" => _serde::export::Ok(__Field::__field0),
+                            b"operator" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<UnaryExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = UnaryExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct UnaryExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct UnaryExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<
+                            UnaryOperator,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct UnaryExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(UnaryExpr {
+                            value: __field0,
+                            operator: __field1,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<UnaryOperator> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "operator",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<UnaryOperator>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("operator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(UnaryExpr {
+                            value: __field0,
+                            operator: __field1,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["value", "operator"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "UnaryExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<UnaryExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for UnaryExpr {
@@ -3696,6 +19342,304 @@ pub mod ast {
         pub value: Box<Expr>,
         pub operator: PostfixOperator,
     }
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_SERIALIZE_FOR_PostfixExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl _serde::Serialize for PostfixExpr {
+            fn serialize<__S>(
+                &self,
+                __serializer: __S,
+            ) -> _serde::export::Result<__S::Ok, __S::Error>
+            where
+                __S: _serde::Serializer,
+            {
+                let mut __serde_state = match _serde::Serializer::serialize_struct(
+                    __serializer,
+                    "PostfixExpr",
+                    false as usize + 1 + 1,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "value",
+                    &self.value,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                match _serde::ser::SerializeStruct::serialize_field(
+                    &mut __serde_state,
+                    "operator",
+                    &self.operator,
+                ) {
+                    _serde::export::Ok(__val) => __val,
+                    _serde::export::Err(__err) => {
+                        return _serde::export::Err(__err);
+                    }
+                };
+                _serde::ser::SerializeStruct::end(__serde_state)
+            }
+        }
+    };
+    #[allow(non_upper_case_globals, unused_attributes, unused_qualifications)]
+    const _IMPL_DESERIALIZE_FOR_PostfixExpr: () = {
+        #[allow(unknown_lints)]
+        #[allow(rust_2018_idioms)]
+        extern crate serde as _serde;
+        #[automatically_derived]
+        impl<'de> _serde::Deserialize<'de> for PostfixExpr {
+            fn deserialize<__D>(__deserializer: __D) -> _serde::export::Result<Self, __D::Error>
+            where
+                __D: _serde::Deserializer<'de>,
+            {
+                #[allow(non_camel_case_types)]
+                enum __Field {
+                    __field0,
+                    __field1,
+                    __ignore,
+                }
+                struct __FieldVisitor;
+                impl<'de> _serde::de::Visitor<'de> for __FieldVisitor {
+                    type Value = __Field;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "field identifier")
+                    }
+                    fn visit_u64<__E>(
+                        self,
+                        __value: u64,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            0u64 => _serde::export::Ok(__Field::__field0),
+                            1u64 => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Err(_serde::de::Error::invalid_value(
+                                _serde::de::Unexpected::Unsigned(__value),
+                                &"field index 0 <= i < 2",
+                            )),
+                        }
+                    }
+                    fn visit_str<__E>(
+                        self,
+                        __value: &str,
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            "value" => _serde::export::Ok(__Field::__field0),
+                            "operator" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                    fn visit_bytes<__E>(
+                        self,
+                        __value: &[u8],
+                    ) -> _serde::export::Result<Self::Value, __E>
+                    where
+                        __E: _serde::de::Error,
+                    {
+                        match __value {
+                            b"value" => _serde::export::Ok(__Field::__field0),
+                            b"operator" => _serde::export::Ok(__Field::__field1),
+                            _ => _serde::export::Ok(__Field::__ignore),
+                        }
+                    }
+                }
+                impl<'de> _serde::Deserialize<'de> for __Field {
+                    #[inline]
+                    fn deserialize<__D>(
+                        __deserializer: __D,
+                    ) -> _serde::export::Result<Self, __D::Error>
+                    where
+                        __D: _serde::Deserializer<'de>,
+                    {
+                        _serde::Deserializer::deserialize_identifier(__deserializer, __FieldVisitor)
+                    }
+                }
+                struct __Visitor<'de> {
+                    marker: _serde::export::PhantomData<PostfixExpr>,
+                    lifetime: _serde::export::PhantomData<&'de ()>,
+                }
+                impl<'de> _serde::de::Visitor<'de> for __Visitor<'de> {
+                    type Value = PostfixExpr;
+                    fn expecting(
+                        &self,
+                        __formatter: &mut _serde::export::Formatter,
+                    ) -> _serde::export::fmt::Result {
+                        _serde::export::Formatter::write_str(__formatter, "struct PostfixExpr")
+                    }
+                    #[inline]
+                    fn visit_seq<__A>(
+                        self,
+                        mut __seq: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::SeqAccess<'de>,
+                    {
+                        let __field0 = match match _serde::de::SeqAccess::next_element::<Box<Expr>>(
+                            &mut __seq,
+                        ) {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    0usize,
+                                    &"struct PostfixExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        let __field1 = match match _serde::de::SeqAccess::next_element::<
+                            PostfixOperator,
+                        >(&mut __seq)
+                        {
+                            _serde::export::Ok(__val) => __val,
+                            _serde::export::Err(__err) => {
+                                return _serde::export::Err(__err);
+                            }
+                        } {
+                            _serde::export::Some(__value) => __value,
+                            _serde::export::None => {
+                                return _serde::export::Err(_serde::de::Error::invalid_length(
+                                    1usize,
+                                    &"struct PostfixExpr with 2 elements",
+                                ));
+                            }
+                        };
+                        _serde::export::Ok(PostfixExpr {
+                            value: __field0,
+                            operator: __field1,
+                        })
+                    }
+                    #[inline]
+                    fn visit_map<__A>(
+                        self,
+                        mut __map: __A,
+                    ) -> _serde::export::Result<Self::Value, __A::Error>
+                    where
+                        __A: _serde::de::MapAccess<'de>,
+                    {
+                        let mut __field0: _serde::export::Option<Box<Expr>> = _serde::export::None;
+                        let mut __field1: _serde::export::Option<PostfixOperator> =
+                            _serde::export::None;
+                        while let _serde::export::Some(__key) =
+                            match _serde::de::MapAccess::next_key::<__Field>(&mut __map) {
+                                _serde::export::Ok(__val) => __val,
+                                _serde::export::Err(__err) => {
+                                    return _serde::export::Err(__err);
+                                }
+                            }
+                        {
+                            match __key {
+                                __Field::__field0 => {
+                                    if _serde::export::Option::is_some(&__field0) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "value",
+                                            ),
+                                        );
+                                    }
+                                    __field0 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<Box<Expr>>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                __Field::__field1 => {
+                                    if _serde::export::Option::is_some(&__field1) {
+                                        return _serde::export::Err(
+                                            <__A::Error as _serde::de::Error>::duplicate_field(
+                                                "operator",
+                                            ),
+                                        );
+                                    }
+                                    __field1 = _serde::export::Some(
+                                        match _serde::de::MapAccess::next_value::<PostfixOperator>(
+                                            &mut __map,
+                                        ) {
+                                            _serde::export::Ok(__val) => __val,
+                                            _serde::export::Err(__err) => {
+                                                return _serde::export::Err(__err);
+                                            }
+                                        },
+                                    );
+                                }
+                                _ => {
+                                    let _ = match _serde::de::MapAccess::next_value::<
+                                        _serde::de::IgnoredAny,
+                                    >(&mut __map)
+                                    {
+                                        _serde::export::Ok(__val) => __val,
+                                        _serde::export::Err(__err) => {
+                                            return _serde::export::Err(__err);
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        let __field0 = match __field0 {
+                            _serde::export::Some(__field0) => __field0,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("value") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        let __field1 = match __field1 {
+                            _serde::export::Some(__field1) => __field1,
+                            _serde::export::None => {
+                                match _serde::private::de::missing_field("operator") {
+                                    _serde::export::Ok(__val) => __val,
+                                    _serde::export::Err(__err) => {
+                                        return _serde::export::Err(__err);
+                                    }
+                                }
+                            }
+                        };
+                        _serde::export::Ok(PostfixExpr {
+                            value: __field0,
+                            operator: __field1,
+                        })
+                    }
+                }
+                const FIELDS: &'static [&'static str] = &["value", "operator"];
+                _serde::Deserializer::deserialize_struct(
+                    __deserializer,
+                    "PostfixExpr",
+                    FIELDS,
+                    __Visitor {
+                        marker: _serde::export::PhantomData::<PostfixExpr>,
+                        lifetime: _serde::export::PhantomData,
+                    },
+                )
+            }
+        }
+    };
     #[automatically_derived]
     #[allow(unused_qualifications)]
     impl ::std::fmt::Debug for PostfixExpr {
@@ -3767,23 +19711,190 @@ pub mod ast {
         }
     }
 }
+pub mod ast_ext {
+    use super::ast::{Literal, Number};
+    use core::fmt;
+    use core::ops::{Add, Div, Mul, Sub};
+    impl fmt::Display for Number {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            match self {
+                Number::Double(n) => f.write_fmt(::std::fmt::Arguments::new_v1(
+                    &[""],
+                    &match (&n,) {
+                        (arg0,) => [::std::fmt::ArgumentV1::new(arg0, ::std::fmt::Display::fmt)],
+                    },
+                )),
+                Number::Integer(n) => f.write_fmt(::std::fmt::Arguments::new_v1(
+                    &[""],
+                    &match (&n,) {
+                        (arg0,) => [::std::fmt::ArgumentV1::new(arg0, ::std::fmt::Display::fmt)],
+                    },
+                )),
+            }
+        }
+    }
+    impl Add for Number {
+        type Output = Number;
+        fn add(self, rhs: Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f + ff),
+                    Number::Integer(i) => Number::Double(f + (i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((i as f64) + f),
+                    Number::Integer(ii) => Number::Integer(i + ii),
+                },
+            }
+        }
+    }
+    impl Add for &Number {
+        type Output = Number;
+        fn add(self, rhs: &Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f + ff),
+                    Number::Integer(i) => Number::Double(f + (*i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((*i as f64) + f),
+                    Number::Integer(ii) => Number::Integer(i + ii),
+                },
+            }
+        }
+    }
+    impl Sub for Number {
+        type Output = Number;
+        fn sub(self, rhs: Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f - ff),
+                    Number::Integer(i) => Number::Double(f - (i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((i as f64) - f),
+                    Number::Integer(ii) => Number::Integer(i - ii),
+                },
+            }
+        }
+    }
+    impl Sub for &Number {
+        type Output = Number;
+        fn sub(self, rhs: &Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f - ff),
+                    Number::Integer(i) => Number::Double(f - (*i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((*i as f64) - f),
+                    Number::Integer(ii) => Number::Integer(i - ii),
+                },
+            }
+        }
+    }
+    impl Mul for Number {
+        type Output = Number;
+        fn mul(self, rhs: Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f * ff),
+                    Number::Integer(i) => Number::Double(f * (i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((i as f64) * f),
+                    Number::Integer(ii) => Number::Integer(i * ii),
+                },
+            }
+        }
+    }
+    impl Mul for &Number {
+        type Output = Number;
+        fn mul(self, rhs: &Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f * ff),
+                    Number::Integer(i) => Number::Double(f * (*i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((*i as f64) * f),
+                    Number::Integer(ii) => Number::Integer(i * ii),
+                },
+            }
+        }
+    }
+    impl Div for Number {
+        type Output = Number;
+        fn div(self, rhs: Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f / ff),
+                    Number::Integer(i) => Number::Double(f / (i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((i as f64) / f),
+                    Number::Integer(ii) => Number::Integer(i / ii),
+                },
+            }
+        }
+    }
+    impl Div for &Number {
+        type Output = Number;
+        fn div(self, rhs: &Number) -> Self::Output {
+            match self {
+                Number::Double(f) => match rhs {
+                    Number::Double(ff) => Number::Double(f / ff),
+                    Number::Integer(i) => Number::Double(f / (*i as f64)),
+                },
+                Number::Integer(i) => match rhs {
+                    Number::Double(f) => Number::Double((*i as f64) / f),
+                    Number::Integer(ii) => Number::Integer(i / ii),
+                },
+            }
+        }
+    }
+    impl fmt::Display for Literal {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            match &self {
+                Literal::String(n) => f.write_fmt(::std::fmt::Arguments::new_v1(
+                    &[""],
+                    &match (&n,) {
+                        (arg0,) => [::std::fmt::ArgumentV1::new(arg0, ::std::fmt::Display::fmt)],
+                    },
+                )),
+                Literal::Number(n) => <Number as fmt::Display>::fmt(n, f),
+                Literal::Boolean(b) => f.write_fmt(::std::fmt::Arguments::new_v1(
+                    &[""],
+                    &match (&b,) {
+                        (arg0,) => [::std::fmt::ArgumentV1::new(arg0, ::std::fmt::Display::fmt)],
+                    },
+                )),
+                _ => f.write_fmt(::std::fmt::Arguments::new_v1(
+                    &["invalid literal"],
+                    &match () {
+                        () => [],
+                    },
+                )),
+            }
+        }
+    }
+}
 #[inline]
-pub(crate) fn resolve_binary(
-    l: ast::Expr,
-    mut o: Vec<(ast::BinaryOperator, ast::Expr)>,
-) -> ast::Expr {
+pub(crate) fn resolve_binary(l: ast::Expr, o: Vec<(ast::BinaryOperator, ast::Expr)>) -> ast::Expr {
     if o.is_empty() {
         return l;
     }
-    let first = o.pop().unwrap();
+    let mut rev = o.into_iter().rev().collect::<Vec<_>>();
+    let first = rev.pop().unwrap();
     let left = ast::Expr::Binary(ast::BinaryExpr::new(
         Box::new(l),
         Box::new(first.1),
         first.0,
     ));
-    if o.is_empty() {
+    if rev.is_empty() {
         return left;
     }
+    let o = rev.into_iter().rev().collect::<Vec<_>>();
     resolve_binary(left, o)
 }
 #[inline]
@@ -4087,7 +20198,7 @@ pub mod parser {
         __input: &'input str,
         __state: &mut ParseState<'input>,
         __pos: usize,
-    ) -> RuleResult<Vec<Stmt>> {
+    ) -> RuleResult<ProgramStmt> {
         #![allow(non_snake_case, unused)]
         {
             let __seq_res = __parse___(__input, __state, __pos);
@@ -4098,7 +20209,9 @@ pub mod parser {
                         Matched(__pos, s) => {
                             let __seq_res = __parse___(__input, __state, __pos);
                             match __seq_res {
-                                Matched(__pos, _) => Matched(__pos, { s }),
+                                Matched(__pos, _) => Matched(__pos, {
+                                    ProgramStmt::new(s.into_iter().map(|m| Box::new(m)).collect())
+                                }),
                                 Failed => Failed,
                             }
                         }
@@ -7365,27 +23478,56 @@ pub mod parser {
                             match __choice_res {
                                 Matched(__pos, __value) => Matched(__pos, __value),
                                 Failed => {
-                                    let __seq_res = slice_eq(__input, __state, __pos, "-");
-                                    match __seq_res {
-                                        Matched(__pos, _) => {
-                                            let __seq_res = {
-                                                __state.suppress_fail += 1;
-                                                let __assert_res =
-                                                    slice_eq(__input, __state, __pos, "=");
-                                                __state.suppress_fail -= 1;
-                                                match __assert_res {
-                                                    Failed => Matched(__pos, ()),
-                                                    Matched(..) => Failed,
+                                    let __choice_res = {
+                                        let __seq_res = slice_eq(__input, __state, __pos, "-");
+                                        match __seq_res {
+                                            Matched(__pos, _) => {
+                                                let __seq_res = {
+                                                    __state.suppress_fail += 1;
+                                                    let __assert_res =
+                                                        slice_eq(__input, __state, __pos, "=");
+                                                    __state.suppress_fail -= 1;
+                                                    match __assert_res {
+                                                        Failed => Matched(__pos, ()),
+                                                        Matched(..) => Failed,
+                                                    }
+                                                };
+                                                match __seq_res {
+                                                    Matched(__pos, _) => {
+                                                        Matched(__pos, { UnaryOperator::Minus })
+                                                    }
+                                                    Failed => Failed,
                                                 }
-                                            };
+                                            }
+                                            Failed => Failed,
+                                        }
+                                    };
+                                    match __choice_res {
+                                        Matched(__pos, __value) => Matched(__pos, __value),
+                                        Failed => {
+                                            let __seq_res = slice_eq(__input, __state, __pos, "!");
                                             match __seq_res {
                                                 Matched(__pos, _) => {
-                                                    Matched(__pos, { UnaryOperator::Minus })
+                                                    let __seq_res = {
+                                                        __state.suppress_fail += 1;
+                                                        let __assert_res =
+                                                            slice_eq(__input, __state, __pos, "=");
+                                                        __state.suppress_fail -= 1;
+                                                        match __assert_res {
+                                                            Failed => Matched(__pos, ()),
+                                                            Matched(..) => Failed,
+                                                        }
+                                                    };
+                                                    match __seq_res {
+                                                        Matched(__pos, _) => {
+                                                            Matched(__pos, { UnaryOperator::Not })
+                                                        }
+                                                        Failed => Failed,
+                                                    }
                                                 }
                                                 Failed => Failed,
                                             }
                                         }
-                                        Failed => Failed,
                                     }
                                 }
                             }
@@ -8680,7 +24822,7 @@ pub mod parser {
             }
         }
     }
-    pub fn program<'input>(__input: &'input str) -> ParseResult<Vec<Stmt>> {
+    pub fn program<'input>(__input: &'input str) -> ParseResult<ProgramStmt> {
         #![allow(non_snake_case, unused)]
         let mut __state = ParseState::new();
         match __parse_program(__input, &mut __state, 0) {
