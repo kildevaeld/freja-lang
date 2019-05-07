@@ -61,6 +61,26 @@ impl Closure {
     }
 }
 
+pub enum CloseurePtr {
+    Stack(Rc<Closure>),
+    Ref(*const Closure),
+}
+
+impl AsRef<Closure> for CloseurePtr {
+    fn as_ref(&self) -> &Closure {
+        match self {
+            CloseurePtr::Ref(r) => unsafe { &**r },
+            CloseurePtr::Stack(r) => r.as_ref(),
+        }
+    }
+}
+
+impl fmt::Debug for CloseurePtr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        <Closure as fmt::Debug>::fmt(self.as_ref(), f)
+    }
+}
+
 pub struct Native {
     pub(crate) function: Box<Fn(&[Val])>,
 }

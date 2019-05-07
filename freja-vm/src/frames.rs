@@ -40,13 +40,13 @@ impl Frames {
 
 #[derive(Debug)]
 pub struct CallFrame {
-    pub(crate) closure: Rc<Closure>,
+    pub(crate) closure: CloseurePtr,
     pub(crate) ip: Cell<usize>,
     pub(crate) idx: usize,
 }
 
 impl CallFrame {
-    pub fn new(closure: Rc<Closure>, idx: usize) -> CallFrame {
+    pub fn new(closure: CloseurePtr, idx: usize) -> CallFrame {
         CallFrame {
             closure,
             ip: Cell::new(0),
@@ -56,21 +56,21 @@ impl CallFrame {
 
     pub fn read_byte(&self) -> u8 {
         let ip = self.ip.get();
-        let b = self.closure.function.chunk.code[ip];
+        let b = self.closure.as_ref().function.chunk.code[ip];
         self.ip.set(ip + 1);
         b
     }
 
     pub fn read_short(&self) -> u16 {
         let ip = self.ip.get();
-        let mut jump = (self.closure.function.chunk.code[ip] as u16) << 8;
-        jump |= self.closure.function.chunk.code[ip + 1] as u16;
+        let mut jump = (self.closure.as_ref().function.chunk.code[ip] as u16) << 8;
+        jump |= self.closure.as_ref().function.chunk.code[ip + 1] as u16;
         self.ip.set(ip + 2);
         jump
     }
 
     pub fn read_constant(&self) -> Option<&ValuePtr> {
         let b = self.read_byte();
-        self.closure.function.chunk.get_constant(b as usize)
+        self.closure.as_ref().function.chunk.get_constant(b as usize)
     }
 }

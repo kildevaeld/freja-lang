@@ -117,6 +117,7 @@ impl Value {
 pub enum Val {
     Heap(ValuePtr),
     Stack(Value),
+    Ref(*const Value),
 }
 
 impl Val {
@@ -124,6 +125,7 @@ impl Val {
         match self {
             Val::Heap(h) => h,
             Val::Stack(s) => Rc::new(s),
+            Val::Ref(r) => unsafe { Rc::new((&*r).clone()) },
         }
     }
 
@@ -136,6 +138,7 @@ impl Val {
             Val::Stack(s) => {
                 *self = Val::Heap(Rc::new(s));
             }
+            Val::Ref(r) => *self = unsafe { Val::Heap(Rc::new((&*r).clone())) },
         }
         self
     }
@@ -144,6 +147,7 @@ impl Val {
         match &self {
             Val::Heap(h) => h,
             Val::Stack(s) => s,
+            Val::Ref(r) => unsafe { &**r },
         }
     }
 
@@ -154,10 +158,12 @@ impl Val {
 
 impl fmt::Display for Val {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Val::Heap(h) => <Value as fmt::Display>::fmt(h, f),
-            Val::Stack(h) => <Value as fmt::Display>::fmt(h, f),
-        }
+        // match self {
+        //     Val::Heap(h) => <Value as fmt::Display>::fmt(h, f),
+        //     Val::Stack(h) => <Value as fmt::Display>::fmt(h, f),
+        //     Val::Ref(r) => <Value as fmt::Display>::fmt()
+        // }
+        <Value as fmt::Display>::fmt(self.as_value(), f)
     }
 }
 
@@ -251,17 +257,17 @@ macro_rules! value_binary {
 macro_rules! value_is_truthy {
     ($value: expr) => {
         match $value {
-                    Value::String(s) => !s.is_empty(),
-                    Value::Number(Number::Double(d)) => *d > 0.0,
-                    Value::Number(Number::Integer(d)) => *d > 0,
-                    Value::Boolean(b) => *b,
-                    Value::Class(_) => true,
-                    Value::Instance(_) => true,
-                    Value::Array(a) => !a.is_empty(),
-                    Value::Null => false,
-                    Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-                    //Value::Instance(_) => true,
-                }
+                                                    Value::String(s) => !s.is_empty(),
+                                                    Value::Number(Number::Double(d)) => *d > 0.0,
+                                                    Value::Number(Number::Integer(d)) => *d > 0,
+                                                    Value::Boolean(b) => *b,
+                                                    Value::Class(_) => true,
+                                                    Value::Instance(_) => true,
+                                                    Value::Array(a) => !a.is_empty(),
+                                                    Value::Null => false,
+                                                    Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
+                                                    //Value::Instance(_) => true,
+                                                }
     };
 }
 

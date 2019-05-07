@@ -10,6 +10,7 @@ pub mod objects;
 pub mod value;
 pub mod frames;
 pub mod vm;
+pub mod stack;
 
 #[cfg(test)]
 mod tests {
