@@ -13,11 +13,43 @@ use std::fmt;
 use std::rc::Rc;
 
 pub type Stack = HVec<Val, U256>;
-type Frames = HVec<CallFrame, U64>;
+//type Frames = HVec<CallFrame, U64>;
 pub type Globals = HashMap<String, ValuePtr>;
 
+pub struct Frames {
+    inner: std::cell::UnsafeCell<HVec<CallFrame, U64>>,
+}
+
+impl Frames {
+    pub fn new() -> Frames {
+        Frames {
+            inner: std::cell::UnsafeCell::new(HVec::default()),
+        }
+    }
+
+    pub fn push(&self, frame: CallFrame) -> RuntimeResult<()> {
+        unsafe {
+            (&mut *self.inner.get())
+                .push(frame)
+                .map_err(|_| RuntimeError::StackOverflow)
+        }
+    }
+
+    pub fn pop(&self) -> Option<CallFrame> {
+        unsafe { (&mut *self.inner.get()).pop() }
+    }
+
+    pub fn last(&self) -> Option<&CallFrame> {
+        unsafe { (&mut *self.inner.get()).last() }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        unsafe { (&*self.inner.get()).is_empty() }
+    }
+}
+
 #[derive(Debug)]
-struct CallFrame {
+pub struct CallFrame {
     closure: Rc<Closure>,
     ip: Cell<usize>,
     idx: usize,
@@ -94,8 +126,19 @@ impl VM {
         let cl = Closure::new(Rc::new(fu));
         // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
         // self.run();
-        call_value(&mut self.stack, &mut self.frames, &Value::Closure(Rc::new(cl)), 0)?;
-        run(&mut self.frames, &mut self.stack, &mut self.globals)?;
+        call_value(&mut self.stack, &self.frames, &Value::Closure(Rc::new(cl)), 0)?;
+        run(&self.frames, &mut self.stack, &mut self.globals)?;
+        Ok(())
+    }
+
+    pub fn interpret(&mut self, ast: &str) -> RuntimeResult<()> {
+        let ast = freja_parser::parser::program(ast)?;
+        let fu = Compiler::new().compile(&ast)?;
+        let cl = Closure::new(Rc::new(fu));
+        // self.call_value(&Value::Closure(Rc::new(cl)), 0)?;
+        // self.run();
+        call_value(&mut self.stack, &self.frames, &Value::Closure(Rc::new(cl)), 0)?;
+        run(&self.frames, &mut self.stack, &mut self.globals)?;
         Ok(())
     }
 }
@@ -137,27 +180,24 @@ macro_rules! dump_stack {
     };
 }
 
-fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResult<()> {
-    let mut frame = frames.len() - 1;
+fn run(frames: &Frames, stack: &mut Stack, globals: &mut Globals) -> RuntimeResult<()> {
+    let mut frame = frames.last().unwrap(); // frames.len() - 1;
 
-    'outer: while frames[frame].ip.get() < frames[frame].closure.function.chunk.code.len() {
-        let instruction = frames[frame].read_byte();
+    'outer: while frame.ip.get() < frame.closure.function.chunk.code.len() {
+        let instruction = frame.read_byte();
         let instruction = OpCode::from(instruction);
         match instruction {
-            OpCode::Constant => push!(
-                stack,
-                Val::Heap(frames[frame].read_constant().expect("constant").clone())
-            )?,
+            OpCode::Constant => push!(stack, Val::Heap(frame.read_constant().expect("constant").clone()))?,
             OpCode::Pop => {
                 pop!(stack);
             }
             OpCode::DefineGlobal => {
-                let name = frames[frame].read_constant().unwrap();
+                let name = frame.read_constant().unwrap();
                 let value = pop!(stack).unwrap();
                 globals.insert(name.as_string().unwrap().to_string(), value.into_value());
             }
             OpCode::GetGlobal => {
-                let name = frames[frame].read_constant().unwrap().as_string().unwrap();
+                let name = frame.read_constant().unwrap().as_string().unwrap();
 
                 let m = match globals.get(name) {
                     Some(m) => m.clone(),
@@ -166,37 +206,37 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
                 push!(stack, Val::Heap(m));
             }
             OpCode::GetLocal => {
-                let b = frames[frame].read_byte();
-                let idx = frames[frame].idx + b as usize;
+                let b = frame.read_byte();
+                let idx = frame.idx + b as usize;
                 stack[idx].into_heap();
                 push!(stack, stack[idx].clone())?;
                 //stack.push(stack[idx].clone())?;
             }
             OpCode::Return => {
                 let result = pop!(stack).unwrap();
-                stack.truncate(frames[frame].idx);
+                stack.truncate(frame.idx);
                 frames.pop();
                 push!(stack, result);
                 if frames.is_empty() {
                     break 'outer;
                 }
-                frame = frames.len() - 1;
+                frame = frames.last().unwrap();
             }
 
             OpCode::Call0 | OpCode::Call1 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
                 let callee = peek!(stack, count as usize).expect("expect callee").clone();
                 call_value(stack, frames, callee.as_value(), count).unwrap();
-                frame = frames.len() - 1
+                frame = frames.last().unwrap();
             }
             OpCode::Invoke0 | OpCode::Invoke1 | OpCode::Invoke2 => {
                 let count = (instruction as u8) - (OpCode::Invoke0 as u8);
-                let method = frames[frame].read_constant().unwrap().as_string().unwrap().clone();
+                let method = frame.read_constant().unwrap().as_string().unwrap(); //.clone();
                 invoke(stack, frames, method.as_str(), count).unwrap();
-                frame = frames.len() - 1;
+                frame = frames.last().unwrap();
             }
             OpCode::Closure => {
-                let fu = frames[frame].read_constant().unwrap().as_function().unwrap().clone();
+                let fu = frame.read_constant().unwrap().as_function().unwrap().clone();
                 let cl = Value::Closure(Rc::new(Closure::new(fu)));
                 push!(stack, Val::Stack(cl));
             }
@@ -213,7 +253,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
                 push!(stack, Val::Stack(ret));
             }
             OpCode::Array => {
-                let o = frames[frame].read_byte();
+                let o = frame.read_byte();
 
                 if o == 0 {
                     push!(stack, Val::Stack(Value::Array(Array::default())));
@@ -228,7 +268,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
                 }
             }
             OpCode::JumpIfFalse => {
-                let current = &frames[frame];
+                let current = &frame;
                 let offset = current.read_short();
                 let v = peek!(stack, 0).unwrap();
 
@@ -238,7 +278,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
                 }
             }
             OpCode::Jump => {
-                let current = &frames[frame];
+                let current = &frame;
                 let offset = current.read_short();
                 let ip = current.ip.get();
                 current.ip.set(ip + offset as usize);
@@ -255,12 +295,12 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
             //     println!("OBJECT {}, PROP {}", object, prop);
             // }
             OpCode::Class => {
-                let name = frames[frame].read_constant().unwrap().as_string().unwrap();
+                let name = frame.read_constant().unwrap().as_string().unwrap();
                 let class = Class::new(name.to_owned());
                 push!(stack, Val::Stack(Value::Class(Rc::new(class))));
             }
             OpCode::Method => {
-                let name = frames[frame].read_constant().unwrap().as_string().unwrap();
+                let name = frame.read_constant().unwrap().as_string().unwrap();
                 let method = pop!(stack).unwrap().as_closure().unwrap().clone();
                 let class = pop!(stack).unwrap().as_class().unwrap().clone();
                 class.add_method(name.to_owned(), method.clone());
@@ -284,7 +324,7 @@ fn run(frames: &mut Frames, stack: &mut Stack, globals: &mut Globals) -> Runtime
 }
 
 #[inline(always)]
-fn call_value(stack: &mut Stack, frames: &mut Frames, callee: &Value, count: u8) -> CompileResult<()> {
+fn call_value(stack: &mut Stack, frames: &Frames, callee: &Value, count: u8) -> CompileResult<()> {
     match callee {
         Value::Closure(cl) => {
             call(stack, frames, cl)?;
@@ -308,7 +348,7 @@ fn call_value(stack: &mut Stack, frames: &mut Frames, callee: &Value, count: u8)
 }
 
 #[inline(always)]
-fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileResult<()> {
+fn call(stack: &Stack, frames: &Frames, closure: &Rc<Closure>) -> CompileResult<()> {
     // TODO check aritity
     let a = closure.function.arity;
 
@@ -321,7 +361,7 @@ fn call(stack: &Stack, frames: &mut Frames, closure: &Rc<Closure>) -> CompileRes
 }
 
 #[inline(always)]
-fn invoke_from_class(stack: &Stack, frames: &mut Frames, class: &ClassInstance, name: &str) -> CompileResult<()> {
+fn invoke_from_class(stack: &Stack, frames: &Frames, class: &ClassInstance, name: &str) -> CompileResult<()> {
     let methods = class.class.methods.borrow();
     let method = match methods.get(name) {
         Some(m) => m,
@@ -334,7 +374,7 @@ fn invoke_from_class(stack: &Stack, frames: &mut Frames, class: &ClassInstance, 
 }
 
 #[inline(always)]
-fn invoke(stack: &Stack, frames: &mut Frames, name: &str, count: u8) -> CompileResult<()> {
+fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> CompileResult<()> {
     let receiver = peek!(stack, count).unwrap();
 
     let instance = match receiver.as_instance() {

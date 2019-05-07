@@ -1,3 +1,4 @@
+use freja_parser::parser::ParseError;
 use std::error::Error;
 use std::fmt;
 use std::result::Result;
@@ -9,6 +10,7 @@ pub enum CompileError {
     DuplicateVariable,
     ReturnTopLevel,
     InvalidReceiver,
+    Parse(ParseError),
 }
 
 impl fmt::Display for CompileError {
@@ -51,6 +53,12 @@ impl From<&str> for RuntimeError {
 impl From<CompileError> for RuntimeError {
     fn from(error: CompileError) -> RuntimeError {
         RuntimeError::Syntax(error)
+    }
+}
+
+impl From<ParseError> for RuntimeError {
+    fn from(error: ParseError) -> RuntimeError {
+        RuntimeError::Syntax(CompileError::Parse(error))
     }
 }
 

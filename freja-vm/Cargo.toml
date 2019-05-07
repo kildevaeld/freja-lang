@@ -9,6 +9,13 @@ freja-parser = { path = "../freja-parser" }
 heapless = "0.4"
 serde = { version = "1.0", features = ["derive", "rc"], optional = true }
 
+[dev-dependencies]
+criterion = "0.2"
+
 [features]
 default = []
 serde_support = ["serde", "freja-parser/serde"]
+
+[[bench]]
+name = "fib"
+harness = false
