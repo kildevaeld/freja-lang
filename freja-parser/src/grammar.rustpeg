@@ -1,5 +1,5 @@
 use super::ast::*;
-use super::{resolve_binary, resolve_logical};
+use super::{resolve_binary, resolve_logical, resolve_member};
 
 pub program -> ProgramStmt
     = __ s:statements __ { ProgramStmt::new(s.into_iter().map(|m| Box::new(m)).collect()) }
@@ -143,13 +143,21 @@ call_expr -> Expr
 arguments -> Vec<Expr>
     = "(" __  a:((logical_or_expr) ** (__","__))? __ ")" { if a.is_some() { a.unwrap() } else { Vec::new() } }
 
+// member_expr -> Expr
+//     //= ( primary_expr /*/ function_expr*/ ) ( "[" expression "]" / "." identifier_name )*
+//     = o:( primary_expr /*/ function_expr*/ ) p:( "[" e:expression "]" { e } / "." i:identifier { i } ) {
+//         Expr::Member(MemberExpr::new(Box::new(o), Box::new(p), false))
+//     }
+//     / primary_expr
+
+
 member_expr -> Expr
     //= ( primary_expr /*/ function_expr*/ ) ( "[" expression "]" / "." identifier_name )*
-    = o:( primary_expr /*/ function_expr*/ ) p:( "[" e:expression "]" { e } / "." i:identifier { i } ) {
-        Expr::Member(MemberExpr::new(Box::new(o), Box::new(p), false))
+    = o:( primary_expr /*/ function_expr*/ ) 
+      p:( "[" e:expression "]" { e } / "." c:call_expr { c } / "." i:identifier { i } )* {
+        resolve_member(o, p)
     }
-    / primary_expr
-
+    
 
 
 primary_expr -> Expr

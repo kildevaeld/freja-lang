@@ -13,7 +13,7 @@ macro_rules! byte_instruction {
 macro_rules! constant_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
-        let constant = $chunk.get_constant(code as usize).unwrap();
+        let constant = $chunk.get_constant(code as usize).expect("constant");
         write!($fmt, "{:24}{:4} '{}'", $name, code, constant)?;
         $offset + 2
     }};
@@ -22,7 +22,7 @@ macro_rules! constant_instruction {
 macro_rules! constant_instruction_n {
     ($name:expr, $chunk:expr, $offset: expr, $n:expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
-        let constant = $chunk.get_constant(code as usize).unwrap();
+        let constant = $chunk.get_constant(code as usize).expect("constant n");
         write!($fmt, "{:24}{:4} '{}'", format!("{}_{}", $name, $n), code, constant)?;
         $offset + 2
     }};
@@ -89,7 +89,7 @@ pub enum OpCode {
     Array,
     Class,
     Inherit,
-    Property,
+    GetProperty,
     Closure,
     Method,
     Call0,
@@ -209,7 +209,7 @@ impl Chunk {
             OpCode::Jump => jump_instruction!("OP_JUMP", self, offset, 1, f),
             OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
             OpCode::Array => byte_instruction!("OP_ARRAY", self, offset, f),
-            OpCode::Property => simple_instruction!("OP_PROPERTY", offset, f),
+            OpCode::GetProperty => constant_instruction!("OP_GET_PROPERTY",self, offset, f),
             OpCode::Method => constant_instruction!("OP_METHOD", self, offset, f),
             OpCode::Closure => {
                 let mut offset = offset + 1;

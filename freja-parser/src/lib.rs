@@ -39,6 +39,18 @@ pub(crate) fn resolve_logical(l: ast::Expr, mut o: Vec<(ast::LogicalOperator, as
     resolve_logical(left, o)
 }
 
+pub(crate) fn resolve_member(l: ast::Expr, mut o: Vec<ast::Expr>) -> ast::Expr {
+    if o.is_empty() {
+        return l;
+    }
+    let first = o.pop().unwrap();
+    let left = ast::Expr::Member(ast::MemberExpr::new(Box::new(l), Box::new(first), false));
+    if o.is_empty() {
+        return left;
+    }
+    resolve_member(left, o)
+}
+
 // pub mod grammar2;
 // pub use grammar2 as parser;
 

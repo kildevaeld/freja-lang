@@ -117,6 +117,7 @@ impl Value {
 pub enum Val {
     Heap(ValuePtr),
     Stack(Value),
+    #[cfg_attr(feature = "serde_support", serde(skip))]
     Ref(*const Value),
 }
 

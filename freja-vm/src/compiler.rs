@@ -28,6 +28,7 @@ pub struct CompilerState {
     scope_depth: i32,
     function: Function,
     function_type: FunctionType,
+    member_depth: i32,
 }
 
 type CompilerStatePtr = Rc<RefCell<CompilerState>>;
@@ -50,6 +51,7 @@ impl CompilerState {
             function_type,
             function: Function::new(),
             up_values: Vec::new(),
+            member_depth: 0,
         };
 
         Rc::new(RefCell::new(state))
@@ -645,12 +647,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
         e.object.accept(self)?;
 
-        // match &e.property {
-        //     Expr::Identifier(i) => {}
-        //     _ => unimplemented!("member lookup: {:?}", e.property),
-        // };
+        self.state_mut().member_depth += 1;
+
         e.property.accept(self)?;
-        self.emit(OpCode::Property);
+
+        self.state_mut().member_depth -= 1;
         //unimplemented!("member");
         Ok(())
     }
@@ -696,17 +697,23 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     }
 
     fn visit_identifier_expr(&mut self, e: &IdentifierExpr) -> CompileResult<()> {
-        //
-        let (a, get, _) = if let Some(a) = self.resolve_local(e.value.as_str()) {
-            (a, OpCode::GetLocal, OpCode::SetLocal)
-        } else if let Some(a) = self.resolve_upvalue(e.value.as_str()) {
-            (a, OpCode::GetUpValue, OpCode::SetUpValue)
+        if self.state().member_depth > 0 {
+            let global = self.make_constant(Value::String(e.value.to_string()));
+            self.emit_opcode_byte(OpCode::GetProperty, global as u8);
         } else {
-            let a = self.make_constant(Value::String(e.value.clone()));
-            (a, OpCode::GetGlobal, OpCode::SetGlobal)
-        };
-        //unimplemented!("idenfier");
-        self.emit_opcode_byte(get, a as u8);
+            self.variable(e.value.as_str());
+        }
+
+        // let (a, get, _set) = if let Some(a) = self.resolve_local(e.value.as_str()) {
+        //     (a, OpCode::GetLocal, OpCode::SetLocal)
+        // } else if let Some(a) = self.resolve_upvalue(e.value.as_str()) {
+        //     (a, OpCode::GetUpValue, OpCode::SetUpValue)
+        // } else {
+        //     let a = self.make_constant(Value::String(e.value.clone()));
+        //     (a, OpCode::GetGlobal, OpCode::SetGlobal)
+        // };
+
+        // self.emit_opcode_byte(get, a as u8);
 
         Ok(())
     }
