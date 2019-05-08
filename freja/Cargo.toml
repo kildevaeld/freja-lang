@@ -15,5 +15,5 @@ serde_json = { version = "~1.0", optional = true }
 serde_cbor = {  version = "~0.9" , optional = true }
 
 [features]
-default = []
+default = ["serializing"]
 serializing = ["freja-parser/serde_support", "serde", "serde_json", "serde_cbor", "freja-vm/serde_support"]

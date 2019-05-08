@@ -152,11 +152,22 @@ arguments -> Vec<Expr>
 
 
 member_expr -> Expr
-    //= ( primary_expr /*/ function_expr*/ ) ( "[" expression "]" / "." identifier_name )*
     = o:( primary_expr /*/ function_expr*/ ) 
-      p:( "[" e:expression "]" { e } / "." c:call_expr { c } / "." i:identifier { i } )* {
+      p:( "[" e:expression "]" { e } / "." i:identifier { i } )* {
         resolve_member(o, p)
     }
+    
+
+// member_expr -> Expr
+//     = o:( primary_expr /*/ function_expr*/ ) 
+//       p:( 
+//             "[" e:expression "]" { e }
+//             / "." ( i:identifier !"(" { i } / e:identifier a:arguments {
+//                 Expr::Call(CallExpr::new(Box::new(e), a))
+//             } 
+//         ) )* {
+//         resolve_member(o, p)
+//     }
     
 
 

@@ -560,6 +560,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_call_expr(&mut self, e: &CallExpr) -> CompileResult<()> {
         let c = e.arguments.len() as u8;
+
         match e.member.as_ref() {
             Expr::Member(mem) => {
                 mem.object.accept(self)?;

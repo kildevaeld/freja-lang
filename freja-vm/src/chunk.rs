@@ -233,7 +233,7 @@ impl Chunk {
                         )?;
                     }
 
-                    //writeln!(f, "{:}", fu.chunk)?;
+                    writeln!(f, "{:}", fu.chunk)?;
                 };
 
                 offset
