@@ -50,6 +50,12 @@ impl From<&str> for RuntimeError {
     }
 }
 
+impl From<String> for RuntimeError {
+    fn from(msg: String) -> RuntimeError {
+        RuntimeError::Error(msg.clone())
+    }
+}
+
 impl From<CompileError> for RuntimeError {
     fn from(error: CompileError) -> RuntimeError {
         RuntimeError::Syntax(error)
