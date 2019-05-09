@@ -153,6 +153,14 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let idx = frame.idx + b as usize;
                 stack.set(idx, val);
             }
+            OpCode::SetGlobal => {
+                let name = frame.read_constant().unwrap().as_string().unwrap();
+                if !globals.contains_key(name.as_str()) {
+                    return Err(RuntimeError::InvalidIndex);
+                }
+                let val = peek!(stack, 0).unwrap();
+                globals.insert(name.clone(), val.clone().into_value());
+            }
             OpCode::Return => {
                 let result = pop!(stack).unwrap();
                 stack.truncate(frame.idx);
