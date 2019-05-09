@@ -201,10 +201,18 @@ impl Chunk {
     }
 
     pub fn dissamble(&self, nested: bool) -> String {
+        
+        self.do_dissamble(nested, 0)
+    }
+
+    fn do_dissamble(&self, nested: bool, indent: i32) -> String {
         let mut i = 0;
         let mut out = String::new();
+        
         while i < self.code.len() {
-            i = self.disamble_offset(i, &mut out, 0, nested).expect("disamble offset");
+            i = self
+                .disamble_offset(i, &mut out, indent, nested)
+                .expect("disamble offset");
         }
         out
     }
@@ -213,12 +221,14 @@ impl Chunk {
         &self,
         offset: usize,
         f: &mut std::fmt::Write,
-        indent: i32,
+        oindent: i32,
         nested: bool,
     ) -> Result<usize, fmt::Error> {
-        write!(f, "{:04}    ", offset)?;
-        let indent = (0..indent).map(|_| " ").collect::<Vec<_>>().join("");
+        let indent = (0..oindent).map(|_| " ").collect::<Vec<_>>().join("");
         write!(f, "{}", indent)?;
+        write!(f, "{:04}   | ", offset)?;
+        
+        
 
         let opcode = OpCode::from(self.code[offset]);
         let m = match opcode {
@@ -256,7 +266,7 @@ impl Chunk {
                 let constant = self.code[offset];
                 offset += 1;
                 let value = &self.constants[constant as usize];
-                write!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
+                writeln!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
 
                 if let Some(fu) = value.as_function() {
                     for _u in 0..fu.up_value_count {
@@ -272,8 +282,14 @@ impl Chunk {
                             index
                         )?;
                     }
-
-                    writeln!(f, "{:}", fu.chunk)?;
+                    if nested {
+                        match &fu.name {
+                            Some(s) => writeln!(f, "== {} ==", s)?,
+                            None => writeln!(f, "== Function ==")?
+                        };
+                       writeln!(f, "{}", fu.chunk().do_dissamble(nested, oindent + 4))?;
+                    }
+                   
                 };
 
                 offset
