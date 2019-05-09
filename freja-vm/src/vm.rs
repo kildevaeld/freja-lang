@@ -34,13 +34,13 @@ macro_rules! peek {
     }};
 }
 
-/*macro_rules! peek_mut {
+macro_rules! peek_mut {
     ($stack: expr, $distance: expr) => {{
         let i = -1 - $distance as i32;
         let idx = ($stack.len() as i32) + i;
         $stack.get_mut(idx as usize)
     }};
-}*/
+}
 
 macro_rules! dump_stack {
     ($stack: expr) => {
@@ -173,8 +173,18 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 };
 
                 instance.set_field(name, value)?;
-
-                //unimplemented!("set property");
+            }
+            OpCode::GetProperty => {
+                let name = frame.read_constant().unwrap().as_string().unwrap();
+                let receiver = pop!(stack).expect("get property receiver");
+                let instance = match receiver.as_instance() {
+                    Some(i) => i,
+                    None => return Err("canget property on an instance".into()),
+                };
+                match instance.get_field(name) {
+                    Some(s) => push!(stack, s.clone()),
+                    None => push!(stack, Val::Stack(Value::Null)),
+                }?;
             }
             OpCode::Return => {
                 let mut result = pop!(stack).unwrap();
@@ -182,9 +192,13 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 stack.truncate(frame.idx);
 
                 frames.pop();
-                if result.is_ref() {
-                    result.into_heap();
-                }
+
+                match result.as_value() {
+                    Value::Instance(_) => {
+                        result.into_heap();
+                    }
+                    _ => {}
+                };
 
                 push!(stack, result)?;
 
@@ -336,7 +350,10 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
 
             stack.set(s as usize, Val::Stack(Value::Instance(ClassInstance::new(cl.clone()))));
             if let Some(initializer) = cl.find_method("init") {
-                //push!(stack, Val::Stack(Value::Closure(initializer.clone())));
+                // //push!(stack, Val::Stack(Value::Closure(initializer.clone())));
+                // dump_stack!(stack);
+                // println!("{:?}", peek_mut!(stack, 1));
+                // peek_mut!(stack, 1).as_mut().unwrap().into_heap();
                 call(stack, frames, CloseurePtr::Stack(initializer.clone()))?;
             }
         }
