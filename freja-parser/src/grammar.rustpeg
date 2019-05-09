@@ -357,7 +357,7 @@ token_continue = "continue"
 
 token_break = "break"
 
-token_in = "in"
+token_in = "in" !([a-zA-Z])
 
 // Operators
 
