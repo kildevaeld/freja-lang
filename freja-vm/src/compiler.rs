@@ -319,7 +319,7 @@ impl Compiler {
 
     fn emit_return(&mut self) {
         if self.state().function_type == FunctionType::Initializer {
-            self.emit_opcode_byte(OpCode::GetGlobal, 0);
+            self.emit_opcode_byte(OpCode::GetLocal, 0);
         } else {
             self.emit_opcode(OpCode::Nil);
         }
@@ -617,7 +617,6 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
 impl ExprVisitor<CompileResult<()>> for Compiler {
     fn visit_assign_expr(&mut self, e: &AssignExpr) -> CompileResult<()> {
-        self.state_mut().assign = true;
         match e.operator {
             AssignmentOperator::Assign => {}
             _ => unimplemented!("assigment operator: {:?}", e.operator),
@@ -627,12 +626,14 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
             Expr::Member(mem) => {
                 mem.object.accept(self)?;
                 e.value.accept(self)?;
+                self.state_mut().assign = true;
                 self.state_mut().member_depth += 1;
                 mem.property.accept(self)?;
                 self.state_mut().member_depth -= 1;
             }
             i => {
                 e.value.accept(self)?;
+                self.state_mut().assign = true;
                 i.accept(self);
                 //unimplemented!("assign to {:?}", e)
                 //e.accept(self)?;
