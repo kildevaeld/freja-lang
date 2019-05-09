@@ -201,7 +201,6 @@ impl Chunk {
     }
 
     pub fn dissamble(&self, nested: bool) -> String {
-        
         self.do_dissamble(nested, 0)
     }
 
@@ -287,7 +286,7 @@ impl Chunk {
                             Some(s) => writeln!(f, "== {} ==", s)?,
                             None => writeln!(f, "== Function ==")?
                         };
-                       writeln!(f, "{}", fu.chunk().do_dissamble(nested, oindent + 4))?;
+                       write!(f, "{}", fu.chunk().do_dissamble(nested, oindent + 4))?;
                     }
                    
                 };
