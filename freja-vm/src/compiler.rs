@@ -30,6 +30,7 @@ pub struct CompilerState {
     function: Function,
     function_type: FunctionType,
     member_depth: i32,
+    assign: bool,
 }
 
 type CompilerStatePtr = Rc<RefCell<CompilerState>>;
@@ -53,6 +54,7 @@ impl CompilerState {
             function: Function::new(),
             up_values: Vec::new(),
             member_depth: 0,
+            assign: false,
         };
 
         Rc::new(RefCell::new(state))
@@ -401,7 +403,7 @@ impl Compiler {
     }
 
     fn variable(&mut self, name: &str) {
-        let (a, get, _set) = if let Some(a) = self.resolve_local(name) {
+        let (a, get, set) = if let Some(a) = self.resolve_local(name) {
             (a, OpCode::GetLocal, OpCode::SetLocal)
         } else if let Some(a) = self.resolve_upvalue(name) {
             (a, OpCode::GetUpValue, OpCode::SetUpValue)
@@ -410,7 +412,11 @@ impl Compiler {
             (a, OpCode::GetGlobal, OpCode::SetGlobal)
         };
 
-        self.emit_opcode_byte(get, a as u8);
+        if self.state().assign {
+            self.emit_opcode_byte(set, a as u8)
+        } else {
+            self.emit_opcode_byte(get, a as u8);
+        }
     }
 }
 
@@ -610,9 +616,37 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 }
 
 impl ExprVisitor<CompileResult<()>> for Compiler {
-    fn visit_assign_expr(&mut self, _e: &AssignExpr) -> CompileResult<()> {
-        //
-        unimplemented!("assign");
+    fn visit_assign_expr(&mut self, e: &AssignExpr) -> CompileResult<()> {
+        self.state_mut().assign = true;
+        match e.operator {
+            AssignmentOperator::Assign => {}
+            _ => unimplemented!("assigment operator: {:?}", e.operator),
+        }
+
+        match e.destination.as_ref() {
+            Expr::Member(mem) => {
+                mem.object.accept(self)?;
+                e.value.accept(self)?;
+                self.state_mut().member_depth += 1;
+                mem.property.accept(self)?;
+                self.state_mut().member_depth -= 1;
+            }
+            i => {
+                e.value.accept(self)?;
+                i.accept(self);
+                //unimplemented!("assign to {:?}", e)
+                //e.accept(self)?;
+            }
+        };
+
+        self.state_mut().assign = false;
+
+        // println!("{:?}", e.destination);
+        // unimplemented!("assign");
+
+        //e.destination.accept(self)?;
+
+        Ok(())
     }
 
     fn visit_call_expr(&mut self, e: &CallExpr) -> CompileResult<()> {
@@ -757,7 +791,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     fn visit_identifier_expr(&mut self, e: &IdentifierExpr) -> CompileResult<()> {
         if self.state().member_depth > 0 {
             let global = self.make_constant(Value::String(e.value.to_string()));
-            self.emit_opcode_byte(OpCode::GetProperty, global as u8);
+            if self.state().assign {
+                self.emit_opcode_byte(OpCode::SetProperty, global as u8);
+            } else {
+                self.emit_opcode_byte(OpCode::GetProperty, global as u8);
+            }
         } else {
             self.variable(e.value.as_str());
         }
