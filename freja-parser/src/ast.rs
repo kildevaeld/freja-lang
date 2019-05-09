@@ -1,6 +1,6 @@
 /*! WARNING: AUTO GENERATED  - DO NOT EDIT **/
 
-use core::fmt;
+use std::fmt;
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -427,18 +427,23 @@ impl IfStmt {
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct ForStmt {
-    pub element: Token,
-    pub index: Option<Token>,
-    pub iterator: Expr,
+    pub initializer: Option<Box<Stmt>>,
+    pub condition: Option<Expr>,
+    pub increment: Option<Expr>,
     pub body: Box<Stmt>,
 }
 
 impl ForStmt {
-    pub fn new(element: Token, index: Option<Token>, iterator: Expr, body: Box<Stmt>) -> ForStmt {
+    pub fn new(
+        initializer: Option<Box<Stmt>>,
+        condition: Option<Expr>,
+        increment: Option<Expr>,
+        body: Box<Stmt>,
+    ) -> ForStmt {
         ForStmt {
-            element,
-            index,
-            iterator,
+            initializer,
+            condition,
+            increment,
             body,
         }
     }

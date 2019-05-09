@@ -27,7 +27,7 @@ exports.statements = [
     ["Interface", ["name: String", "extends: ?String", "members: *Stmt"]],
     ["Block", ["statements: *Stmt"]],
     ["If", ["test: Expr", "consequent: Stmt", "alternative: ?Stmt"]],
-    ["For", ["element: Token", "index: ?Token", "iterator: Expr", "body: Stmt"]],
+    ["For", ["initializer: ?Stmt", "condition: ?Expr", "increment: ?Expr", "body: Stmt"]],
     ["Return", ["expression: ?Expr"]],
     ["Continue", []],
     ["Break", []]

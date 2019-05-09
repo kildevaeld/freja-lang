@@ -1,4 +1,4 @@
-use super::chunk::OpCode;
+use super::chunk::{Chunk, OpCode};
 use super::error::{CompileError, CompileResult};
 use super::objects::Function;
 use super::value::Value;
@@ -14,6 +14,7 @@ pub enum FunctionType {
     TopLevel,
 }
 
+#[derive(Debug)]
 pub struct Local(i32, String, bool);
 
 struct UpValue {
@@ -35,7 +36,7 @@ type CompilerStatePtr = Rc<RefCell<CompilerState>>;
 
 impl CompilerState {
     pub fn new(enclosing: Option<CompilerStatePtr>, scope_depth: i32, function_type: FunctionType) -> CompilerStatePtr {
-        let local = if function_type != FunctionType::Function {
+        let local = if function_type != FunctionType::Function && function_type != FunctionType::TopLevel {
             // In a method, it holds the receiver, "this".
             Local(scope_depth, "this".to_string(), false)
         } else {
@@ -55,6 +56,14 @@ impl CompilerState {
         };
 
         Rc::new(RefCell::new(state))
+    }
+
+    pub fn chunk(&self) -> &Chunk {
+        &self.function.chunk()
+    }
+
+    pub fn chunk_mut(&mut self) -> &mut Chunk {
+        &mut self.function.chunk
     }
 }
 
@@ -315,6 +324,14 @@ impl Compiler {
         self.emit(OpCode::Return);
     }
 
+    fn emit_loop(&mut self, start: usize) {
+        self.emit(OpCode::Loop);
+        let offset = self.state().chunk().len() - start + 2;
+        //println!("loop {} {}", offset, start);
+        self.emit(((offset >> 8) & 0xff) as u8);
+        self.emit((offset & 0xff) as u8);
+    }
+
     //#[allow(exceeding_bitshifts)]
     fn patch_jump(&mut self, offset: usize) {
         let jump = (self.state().function.chunk.len() - offset - 2) as u16;
@@ -524,9 +541,49 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
         Ok(())
     }
-    fn visit_for_stmt(&mut self, _e: &ForStmt) -> CompileResult<()> {
-        unimplemented!("for loop");
+    fn visit_for_stmt(&mut self, e: &ForStmt) -> CompileResult<()> {
+        self.begin_scope();
+
+        if let Some(i) = e.initializer.as_ref() {
+            i.accept(self)?;
+        }
+
+        let mut loop_start = self.state().chunk().len();
+        let mut exit_jump = None;
+        if let Some(i) = &e.condition {
+            i.accept(self)?;
+            exit_jump = Some(self.emit_jump(OpCode::JumpIfFalse));
+            self.emit(OpCode::Pop);
+        }
+
+        if let Some(i) = &e.increment {
+            let jump_body = self.emit_jump(OpCode::Jump);
+            let increment_start = self.state().chunk().len();
+
+            i.accept(self)?;
+            self.emit(OpCode::Pop);
+
+            self.emit_loop(loop_start);
+
+            loop_start = increment_start;
+
+            self.patch_jump(jump_body);
+        }
+
+        e.body.accept(self)?;
+
+        self.emit_loop(loop_start);
+
+        if let Some(exit_jump) = exit_jump {
+            self.patch_jump(exit_jump);
+            self.emit(OpCode::Pop);
+        }
+
+        self.end_scope();
+
+        Ok(())
     }
+
     fn visit_return_stmt(&mut self, e: &ReturnStmt) -> CompileResult<()> {
         if self.state().function_type == FunctionType::TopLevel {
             return Err(CompileError::ReturnTopLevel);
@@ -653,7 +710,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         e.property.accept(self)?;
 
         self.state_mut().member_depth -= 1;
-        //unimplemented!("member");
+
         Ok(())
     }
 
@@ -730,8 +787,28 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
 
-    fn visit_postfix_expr(&mut self, _e: &PostfixExpr) -> CompileResult<()> {
-        //
-        unimplemented!("postfix");
+    fn visit_postfix_expr(&mut self, e: &PostfixExpr) -> CompileResult<()> {
+        let is_local = match e.value.as_ref() {
+            Expr::Identifier(_) => true,
+            _ => false,
+        };
+        e.value.accept(self)?;
+
+        self.emit_constant(Value::Number(Number::Integer(1)));
+        self.emit(OpCode::Add);
+        if is_local {
+            let op = self.state().chunk().len() - 5;
+            let idx = self.state().chunk().len() - 4;
+            let local_code = self.state().chunk().get_code(op);
+            let idx = self.state().chunk().get(idx);
+
+            match local_code {
+                OpCode::GetGlobal => self.emit_opcode_byte(OpCode::SetGlobal, idx),
+                OpCode::GetLocal => self.emit_opcode_byte(OpCode::SetLocal, idx),
+                _ => {}
+            };
+        }
+
+        Ok(())
     }
 }

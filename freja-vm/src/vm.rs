@@ -14,6 +14,48 @@ use std::rc::Rc;
 // pub type Stack = HVec<Val, U256>;
 pub type Globals = HashMap<String, ValuePtr>;
 
+macro_rules! push {
+    ($stack: expr, $val: expr) => {
+        $stack.push($val).map_err(|_| RuntimeError::StackOverflow)
+    };
+}
+
+macro_rules! pop {
+    ($stack: expr) => {
+        $stack.pop()
+    };
+}
+
+macro_rules! peek {
+    ($stack: expr, $distance: expr) => {{
+        let i = -1 - $distance as i32;
+        let idx = ($stack.len() as i32) + i;
+        $stack.get(idx as usize)
+    }};
+}
+
+/*macro_rules! peek_mut {
+    ($stack: expr, $distance: expr) => {{
+        let i = -1 - $distance as i32;
+        let idx = ($stack.len() as i32) + i;
+        $stack.get_mut(idx as usize)
+    }};
+}*/
+
+macro_rules! dump_stack {
+    ($stack: expr) => {
+        println!(
+            "{}",
+            $stack
+                .as_ref()
+                .iter()
+                .map(|m| m.to_string())
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    };
+}
+
 pub struct VM {
     stack: Stack,
     globals: HashMap<String, ValuePtr>,
@@ -56,8 +98,9 @@ impl VM {
 
     pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
-        let cl = Closure::new(Rc::new(fu));
-        call(&self.stack, &self.frames, CloseurePtr::Stack(Rc::new(cl)))?;
+        let cl = Rc::new(Closure::new(Rc::new(fu)));
+        call(&self.stack, &self.frames, CloseurePtr::Stack(cl))?;
+
         run(&self.frames, &mut self.stack, &mut self.globals)?;
         Ok(())
     }
@@ -67,43 +110,6 @@ impl VM {
         self.interpret_ast(&ast)
     }
 }
-
-macro_rules! push {
-    ($stack: expr, $val: expr) => {
-        $stack.push($val).map_err(|_| RuntimeError::StackOverflow)
-    };
-}
-
-macro_rules! pop {
-    ($stack: expr) => {
-        $stack.pop()
-    };
-}
-
-macro_rules! peek {
-    ($stack: expr, $distance: expr) => {{
-        let i = -1 - $distance as i32;
-        let idx = ($stack.len() as i32) + i;
-        $stack.get(idx as usize)
-    }};
-}
-
-/*macro_rules! peek_mut {
-    ($stack: expr, $distance: expr) => {{
-        let i = -1 - $distance as i32;
-        let idx = ($stack.len() as i32) + i;
-        $stack.get_mut(idx as usize)
-    }};
-}
-
-macro_rules! dump_stack {
-    ($stack: expr) => {
-        println!(
-            "{}",
-            $stack.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ")
-        )
-    };
-}*/
 
 fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<()> {
     let mut frame = frames.last().unwrap(); // frames.len() - 1;
@@ -137,8 +143,15 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::GetLocal => {
                 let b = frame.read_byte();
                 let idx = frame.idx + b as usize;
-                let val = stack.get(idx).unwrap().as_ref() as *const Value;
+
+                let val = stack.get(idx).expect("get local").as_ref() as *const Value;
                 push!(stack, Val::Ref(val));
+            }
+            OpCode::SetLocal => {
+                let b = frame.read_byte();
+                let val = pop!(stack).unwrap();
+                let idx = frame.idx + b as usize;
+                stack.set(idx, val);
             }
             OpCode::Return => {
                 let result = pop!(stack).unwrap();
@@ -232,6 +245,11 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
                 push!(stack, Val::Stack(v))?;
             }
+            OpCode::Loop => {
+                let offset = frame.read_short();
+                let ip = frame.ip.get();
+                frame.ip.set(ip - offset as usize);
+            }
             // OpCode::Property => {
             //     let prop = pop!(stack).unwrap();
             //     let object = pop!(stack).unwrap();
@@ -278,7 +296,12 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Comp
         }
         Value::Class(cl) => {
             //
-            let s = if count == 0 { 0 } else { count - 1 };
+            let len = stack.len();
+            let s = if count == 0 {
+                len - 1
+            } else {
+                len - (count as usize) - 1
+            };
             stack.set(s as usize, Val::Stack(Value::Instance(ClassInstance::new(cl.clone()))));
             if let Some(initializer) = cl.methods.borrow().get("init") {
                 call(stack, frames, CloseurePtr::Stack(initializer.clone()))?;
@@ -298,7 +321,12 @@ fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> CompileResult<(
     // TODO check aritity
     let a = closure.as_ref().function.arity;
 
-    let count = if stack.len() == 0 { 0 } else { a + 1 };
+    let count = if stack.len() == 0 {
+        stack.push(Val::Stack(Value::Null));
+        1
+    } else {
+        a + 1
+    };
     let idx = stack.len() - (count as usize);
     let frame = CallFrame::new(closure, idx); // { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
     frames.push(frame).expect("too many frames");

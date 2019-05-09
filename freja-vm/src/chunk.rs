@@ -5,7 +5,7 @@ use std::rc::Rc;
 macro_rules! byte_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1);
-        write!($fmt, "{:24}{:4}", $name, code as u8)?;
+        writeln!($fmt, "{:24}{:4}", $name, code as u8)?;
         $offset + 2
     }};
 }
@@ -14,7 +14,7 @@ macro_rules! constant_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).expect("constant");
-        write!($fmt, "{:24}{:4} '{}'", $name, code, constant)?;
+        writeln!($fmt, "{:24}{:4} '{}'", $name, code, constant)?;
         $offset + 2
     }};
 }
@@ -23,17 +23,17 @@ macro_rules! constant_instruction_n {
     ($name:expr, $chunk:expr, $offset: expr, $n:expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).expect("constant n");
-        write!($fmt, "{:24}{:4} '{}'", format!("{}_{}", $name, $n), code, constant)?;
+        writeln!($fmt, "{:24}{:4} '{}'", format!("{}_{}", $name, $n), code, constant)?;
         $offset + 2
     }};
 }
 
 macro_rules! jump_instruction {
     ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
-        let mut jump = ($chunk.code[$offset + 1] as u16) << 8;
-        jump |= $chunk.code[$offset + 2] as u16;
+        let mut jump = ($chunk.code[$offset + 1] as i16) << 8;
+        jump |= $chunk.code[$offset + 2] as i16;
 
-        write!(
+        writeln!(
             $fmt,
             "{:24}{:4} -> {}",
             $name,
@@ -44,16 +44,32 @@ macro_rules! jump_instruction {
     }};
 }
 
+macro_rules! jump_instruction_neg {
+    ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
+        let mut jump = ($chunk.code[$offset + 1] as i16) << 8;
+        jump |= $chunk.code[$offset + 2] as i16;
+
+        writeln!(
+            $fmt,
+            "{:24}{:4} -> {}",
+            $name,
+            $offset,
+            ($offset as isize) + 3 + -1 * (jump as isize)
+        )?;
+        $offset + 3
+    }};
+}
+
 macro_rules! simple_instruction {
     ($name:expr, $offset: expr, $fmt:expr) => {{
-        write!($fmt, "{}", $name)?;
+        writeln!($fmt, "{}", $name)?;
         $offset + 1
     }};
 }
 
 macro_rules! simple_instruction_n {
     ($name:expr, $offset: expr, $n: expr, $fmt:expr) => {{
-        write!($fmt, "{}_{}", $name, $n)?;
+        writeln!($fmt, "{}_{}", $name, $n)?;
         $offset + 1
     }};
 }
@@ -92,6 +108,7 @@ pub enum OpCode {
     GetProperty,
     Closure,
     Method,
+    Loop,
     Call0,
     Call1,
     Call2,
@@ -156,6 +173,9 @@ impl Chunk {
         self.constants.get(constant)
     }
 
+    pub fn get(&self, offset: usize) -> u8 {
+        self.code[offset]
+    }
     // pub fn get_line(&self, line: usize) -> Option<&i32> {
     //     self.lines.get(line)
     // }
@@ -179,8 +199,25 @@ impl Chunk {
         self.constants.len() - 1
     }
 
-    fn disamble(&self, offset: usize, f: &mut fmt::Formatter) -> Result<usize, fmt::Error> {
+    pub fn dissamble(&self, nested: bool) -> String {
+        let mut i = 0;
+        let mut out = String::new();
+        while i < self.code.len() {
+            i = self.disamble_offset(i, &mut out, 0, nested).expect("disamble offset");
+        }
+        out
+    }
+
+    fn disamble_offset(
+        &self,
+        offset: usize,
+        f: &mut std::fmt::Write,
+        indent: i32,
+        nested: bool,
+    ) -> Result<usize, fmt::Error> {
         write!(f, "{:04}    ", offset)?;
+        let indent = (0..indent).map(|_| " ").collect::<Vec<_>>().join("");
+        write!(f, "{}", indent)?;
 
         let opcode = OpCode::from(self.code[offset]);
         let m = match opcode {
@@ -207,6 +244,7 @@ impl Chunk {
             OpCode::Negate => simple_instruction!("OP_NEGATE", offset, f),
             OpCode::Return => simple_instruction!("OP_RETURN", offset, f),
             OpCode::Jump => jump_instruction!("OP_JUMP", self, offset, 1, f),
+            OpCode::Loop => jump_instruction_neg!("OP_LOOP", self, offset, 1, f),
             OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
             OpCode::Array => byte_instruction!("OP_ARRAY", self, offset, f),
             OpCode::GetProperty => constant_instruction!("OP_GET_PROPERTY",self, offset, f),
@@ -216,7 +254,7 @@ impl Chunk {
                 let constant = self.code[offset];
                 offset += 1;
                 let value = &self.constants[constant as usize];
-                writeln!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
+                write!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
 
                 if let Some(fu) = value.as_function() {
                     for _u in 0..fu.up_value_count {
@@ -269,12 +307,9 @@ impl Chunk {
 impl fmt::Display for Chunk {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut i = 0;
-
         while i < self.code.len() {
-            i = self.disamble(i, f)?;
-            write!(f, "\n")?;
+            i = self.disamble_offset(i, f, 0, false).expect("disamble offset");
         }
-
         Ok(())
     }
 }

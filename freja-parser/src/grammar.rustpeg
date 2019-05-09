@@ -14,6 +14,7 @@ statement -> Stmt
     / return_stmt
     / var_statement
     / if_stmt
+    / for_stmt
     / expression_statement
 
 // Declarations
@@ -119,6 +120,10 @@ else_stmt -> Box<Stmt>
     }
 
 
+for_stmt -> Stmt 
+    = token_for __ i:var_statement? __  c:(";" __  c:expression { c } )? __ o:(";" __   o:expression { o })? __ b:block {
+        Stmt::For(ForStmt::new(i.map(|i| Box::new(i)),c,o,Box::new(b)))
+    }
 
 // Expressions
 
