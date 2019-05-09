@@ -106,6 +106,7 @@ pub enum OpCode {
     Class,
     Inherit,
     GetProperty,
+    SetProperty,
     Closure,
     Method,
     Loop,
@@ -248,6 +249,7 @@ impl Chunk {
             OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", self, offset, 1, f),
             OpCode::Array => byte_instruction!("OP_ARRAY", self, offset, f),
             OpCode::GetProperty => constant_instruction!("OP_GET_PROPERTY",self, offset, f),
+            OpCode::SetProperty => constant_instruction!("OP_SET_PROPERTY", self, offset, f),
             OpCode::Method => constant_instruction!("OP_METHOD", self, offset, f),
             OpCode::Closure => {
                 let mut offset = offset + 1;
