@@ -186,10 +186,12 @@ macro_rules! value_add {
         match $lhs {
             Value::Number(n) => match $rhs {
                 Value::Number(nn) => Ok(Value::Number(n + nn)),
+                Value::String(s) => Ok(Value::String(format!("{}{}", n, s))),
                 _ => Err("nan".into()),
             },
             Value::String(s) => match $rhs {
                 Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
+                Value::Number(n) => Ok(Value::String(format!("{},{}", s, n))),
                 _ => Err("nan".into()),
             },
             _ => {
