@@ -1,1 +1,2 @@
-test.mig.one().test //.rapper()
+test.mig.one()
+test.mig = "Her"

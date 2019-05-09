@@ -9,8 +9,8 @@ pub mod objects;
 #[macro_use]
 pub mod value;
 pub mod frames;
-pub mod vm;
 pub mod stack;
+pub mod vm;
 
 #[cfg(test)]
 mod tests {

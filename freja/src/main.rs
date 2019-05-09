@@ -41,7 +41,7 @@ fn print_bytecode(input: &str) {
     let data = fs::read_to_string(input).unwrap();
     let ast = parser::program(&data).expect("could not parse");
     let ret = Compiler::new().compile(&ast).expect("compile");
-    println!("{}", ret);
+    println!("{}", ret.chunk().dissamble(true));
     //println!("{}", vm.dump());
     //println!("{}", vm.dump_global());
 }

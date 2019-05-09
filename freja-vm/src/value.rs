@@ -1,3 +1,4 @@
+use super::objects::Instance;
 use super::objects::*;
 use freja_parser::ast::Number;
 use std::fmt;
@@ -66,9 +67,11 @@ impl Value {
         }
     }
 
-    pub fn as_instance(&self) -> Option<&ClassInstance> {
+    pub fn as_instance(&self) -> Option<&Instance> {
         match self {
-            Value::Instance(f) => Some(f),
+            Value::Instance(i) => Some(i),
+            Value::Number(n) => Some(n),
+            Value::String(s) => Some(s),
             _ => None,
         }
     }
@@ -107,8 +110,7 @@ impl Value {
             Value::Instance(_) => true,
             Value::Array(a) => !a.is_empty(),
             Value::Null => false,
-            Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-            //Value::Instance(_) => true,
+            Value::Function(_) | Value::Closure(_) | Value::Native(_) => true,
         }
     }
 }
@@ -155,15 +157,17 @@ impl Val {
     pub fn is_truthy(&self) -> bool {
         self.as_value().is_truthy()
     }
+
+    pub fn is_ref(&self) -> bool {
+        match &self {
+            Val::Ref(_) => true,
+            _ => false,
+        }
+    }
 }
 
 impl fmt::Display for Val {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // match self {
-        //     Val::Heap(h) => <Value as fmt::Display>::fmt(h, f),
-        //     Val::Stack(h) => <Value as fmt::Display>::fmt(h, f),
-        //     Val::Ref(r) => <Value as fmt::Display>::fmt()
-        // }
         <Value as fmt::Display>::fmt(self.as_value(), f)
     }
 }

@@ -1,5 +1,5 @@
-use super::chunk::Chunk;
-use super::value::Val;
+use super::super::chunk::Chunk;
+use super::super::value::Val;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -59,6 +59,10 @@ impl Closure {
     pub fn chunk(&self) -> &Chunk {
         &self.function.chunk
     }
+
+    pub fn name(&self) -> Option<&str> {
+        self.function.name.as_ref().map(|s| s.as_str())
+    }
 }
 
 pub enum CloseurePtr {
@@ -88,45 +92,6 @@ pub struct Native {
 impl PartialEq for Native {
     fn eq(&self, _other: &Native) -> bool {
         false
-    }
-}
-
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
-#[derive(Debug, PartialEq)]
-pub struct Class {
-    pub(crate) name: String,
-    pub(crate) methods: RefCell<HashMap<String, Rc<Closure>>>,
-}
-
-impl Class {
-    pub fn new(name: String) -> Class {
-        Class {
-            name,
-            methods: RefCell::new(HashMap::new()),
-        }
-    }
-
-    pub fn add_method(&self, name: String, method: Rc<Closure>) {
-        self.methods.borrow_mut().insert(name, method);
-    }
-
-    pub fn inherit(&self, class: &Class) {
-        let mut b = self.methods.borrow_mut();
-        for m in class.methods.borrow().iter() {
-            b.insert(m.0.clone(), m.1.clone());
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
-#[derive(Debug, PartialEq, Clone)]
-pub struct ClassInstance {
-    pub(crate) class: Rc<Class>,
-}
-
-impl ClassInstance {
-    pub fn new(class: Rc<Class>) -> ClassInstance {
-        ClassInstance { class }
     }
 }
 

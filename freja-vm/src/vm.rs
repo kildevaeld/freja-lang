@@ -161,14 +161,37 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let val = peek!(stack, 0).unwrap();
                 globals.insert(name.clone(), val.clone().into_value());
             }
+            OpCode::SetProperty => {
+                let name = frame.read_constant().unwrap().as_string().unwrap();
+
+                let value = pop!(stack).expect("property expected property");
+                let receiver = peek!(stack, 0).expect("property expected receiver");
+
+                let instance = match receiver.as_instance() {
+                    Some(i) => i,
+                    None => return Err("can only set property on an instance".into()),
+                };
+
+                instance.set_field(name, value)?;
+
+                //unimplemented!("set property");
+            }
             OpCode::Return => {
-                let result = pop!(stack).unwrap();
+                let mut result = pop!(stack).unwrap();
+
                 stack.truncate(frame.idx);
+
                 frames.pop();
+                if result.is_ref() {
+                    result.into_heap();
+                }
+
                 push!(stack, result)?;
+
                 if frames.is_empty() {
                     break 'outer;
                 }
+
                 frame = frames.last().unwrap();
             }
 
@@ -297,7 +320,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
 }
 
 #[inline(always)]
-fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> CompileResult<()> {
+fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> RuntimeResult<()> {
     match callee {
         Value::Closure(cl) => {
             call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure))?;
@@ -310,8 +333,10 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Comp
             } else {
                 len - (count as usize) - 1
             };
+
             stack.set(s as usize, Val::Stack(Value::Instance(ClassInstance::new(cl.clone()))));
-            if let Some(initializer) = cl.methods.borrow().get("init") {
+            if let Some(initializer) = cl.find_method("init") {
+                //push!(stack, Val::Stack(Value::Closure(initializer.clone())));
                 call(stack, frames, CloseurePtr::Stack(initializer.clone()))?;
             }
         }
@@ -325,12 +350,12 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Comp
 }
 
 #[inline(always)]
-fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> CompileResult<()> {
+fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> RuntimeResult<()> {
     // TODO check aritity
     let a = closure.as_ref().function.arity;
 
     let count = if stack.len() == 0 {
-        stack.push(Val::Stack(Value::Null));
+        stack.push(Val::Stack(Value::Null))?;
         1
     } else {
         a + 1
@@ -343,11 +368,10 @@ fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> CompileResult<(
 }
 
 #[inline(always)]
-fn invoke_from_class(stack: &Stack, frames: &Frames, class: &ClassInstance, name: &str) -> CompileResult<()> {
-    let methods = class.class.methods.borrow();
-    let method = match methods.get(name) {
+fn invoke_from_class(stack: &Stack, frames: &Frames, instance: &Instance, name: &str) -> RuntimeResult<()> {
+    let method = match instance.find_method(name) {
         Some(m) => m,
-        None => return Err(CompileError::InvalidReceiver),
+        None => return Err(format!("could not find method: '{}', on receiver: {:?}", name, instance).into()),
     };
 
     call(stack, frames, CloseurePtr::Stack(method.clone()))?;
@@ -356,12 +380,12 @@ fn invoke_from_class(stack: &Stack, frames: &Frames, class: &ClassInstance, name
 }
 
 #[inline(always)]
-fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> CompileResult<()> {
+fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> RuntimeResult<()> {
     let receiver = peek!(stack, count).unwrap();
 
     let instance = match receiver.as_instance() {
         Some(s) => s,
-        None => return Err(CompileError::InvalidReceiver),
+        None => return Err(format!("receiver was null for call: {}", name).into()),
     };
 
     invoke_from_class(stack, frames, instance, name)

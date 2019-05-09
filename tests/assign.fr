@@ -1,2 +1,6 @@
 let test = "rapper"
 let a = 2, b = 3, c = 2020, d = "test string"
+let h = ""
+a = 100
+print(b * a + c)
+h.c = "Hello"
