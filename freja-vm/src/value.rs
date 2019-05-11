@@ -213,7 +213,7 @@ macro_rules! value_arithmetic {
                 Value::Number(nn) => Ok(Value::Number(n $op nn)),
                 _ => Err("nan".into()),
             },
-            _ => Err("could not sub".into()),
+            _ => Err(format!("could not sub {:?}", $lhs).into()),
         }
     };
 }
@@ -225,7 +225,7 @@ macro_rules! value_comparison {
                 Value::Number(nn) => Ok(Value::Boolean(n $op nn)),
                 _ => Err("nan".into()),
             },
-            _ => Err("could not sub".into()),
+            _ => Err(format!("could not equal {:?}", $lhs).into()),
         }
     };
 }

@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Rasmus Kildevaeld <rasmuskildevaeld@gmail.com>"]
 edition = "2018"
 
+[build]
+rustflags = ["-C", "target-cpu=native"]
+
+
 [dependencies]
 freja-vm = { path = "../freja-vm"}
 freja-parser = { path = "../freja-parser" }
@@ -17,3 +21,5 @@ serde_cbor = {  version = "~0.9" , optional = true }
 [features]
 default = ["serializing"]
 serializing = ["freja-parser/serde_support", "serde", "serde_json", "serde_cbor", "freja-vm/serde_support"]
+
+

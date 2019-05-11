@@ -24,3 +24,8 @@ watch-ast:
 
 watch-grammer:
 	@echo freja-parser/src/grammar.rustpeg | entr make peg
+
+
+release:
+	cargo build --release
+	strip target/release/freja

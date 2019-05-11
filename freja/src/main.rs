@@ -1,5 +1,10 @@
+use std::alloc::System;
+#[global_allocator]
+static ALLOCATOR: System = System;
+
 use freja_parser::*;
 use freja_vm::compiler::*;
+use freja_vm::value::Value;
 use freja_vm::vm::VM;
 use getopts::Options;
 #[cfg(feature = "serializing")]
@@ -8,6 +13,7 @@ use serde_cbor;
 use serde_json;
 use std::env;
 use std::fs;
+use std::io::BufRead;
 
 #[cfg(feature = "serializing")]
 fn print_ast(input: &str) {
@@ -42,8 +48,6 @@ fn print_bytecode(input: &str) {
     let ast = parser::program(&data).expect("could not parse");
     let ret = Compiler::new().compile(&ast).expect("compile");
     println!("{}", ret.chunk().dissamble(true));
-    //println!("{}", vm.dump());
-    //println!("{}", vm.dump_global());
 }
 
 fn print_usage(program: &str, opts: Options) {
@@ -58,7 +62,18 @@ fn run(input: &str) {
     let mut vm = VM::new();
     vm.push_native("print", |vals| {
         let v = vals.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ");
+        print!("{}", v);
+        Ok(Value::Null)
+    });
+    vm.push_native("println", |vals| {
+        let v = vals.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ");
         println!("{}", v);
+        Ok(Value::Null)
+    });
+    vm.push_native("readinput", |vals| {
+        let mut out = String::new();
+        std::io::stdin().lock().read_line(&mut out).unwrap();
+        Ok(Value::Null)
     });
     vm.interpret_ast(&ast).unwrap();
 

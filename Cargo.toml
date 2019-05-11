@@ -10,3 +10,7 @@ members = [
     "freja",
     #"freja-parser2"
 ]
+
+[profile.release]
+lto = true
+panic = 'abort'

@@ -10,6 +10,11 @@ pub trait Instance: fmt::Debug {
     fn find_method(&self, name: &str) -> Option<Rc<Closure>>;
 }
 
+pub trait Callable: fmt::Debug {
+    fn arity(&self) -> i32;
+    fn call(&self, args: &[&Val]) -> RuntimeResult<Val>;
+}
+
 pub trait IntoHeap {
     fn make_heap(&mut self);
 }

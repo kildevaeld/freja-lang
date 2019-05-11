@@ -73,7 +73,7 @@ impl VM {
 
     pub fn push_native<F: 'static>(&mut self, name: &str, fu: F)
     where
-        F: Fn(&[Val]),
+        F: Fn(&[Val]) -> RuntimeResult<Value>,
     {
         let value = Value::Native(Rc::new(Native { function: Box::new(fu) }));
         self.globals.insert(name.to_string(), Rc::new(value));
@@ -295,12 +295,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let ip = frame.ip.get();
                 frame.ip.set(ip - offset as usize);
             }
-            // OpCode::Property => {
-            //     let prop = pop!(stack).unwrap();
-            //     let object = pop!(stack).unwrap();
 
-            //     println!("OBJECT {}, PROP {}", object, prop);
-            // }
             OpCode::Class => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
                 let class = Class::new(name.to_owned());
@@ -350,16 +345,22 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
 
             stack.set(s as usize, Val::Stack(Value::Instance(ClassInstance::new(cl.clone()))));
             if let Some(initializer) = cl.find_method("init") {
-                // //push!(stack, Val::Stack(Value::Closure(initializer.clone())));
-                // dump_stack!(stack);
-                // println!("{:?}", peek_mut!(stack, 1));
-                // peek_mut!(stack, 1).as_mut().unwrap().into_heap();
+
                 call(stack, frames, CloseurePtr::Stack(initializer.clone()))?;
             }
         }
         Value::Native(native) => {
             let len = stack.len();
-            (native.function)(&stack.as_ref()[len - (count as usize)..len])
+            let idx = len - (count as usize);
+            match (native.function)(&stack.as_ref()[len - (count as usize)..len]) {
+                Err(e) => {
+                    return Err(e);
+                }
+                Ok(s) => {
+                    push!(stack, Val::Stack(s));
+                }
+            }
+            //stack.truncate(idx);
         }
         _ => unimplemented!("call on {} not implemented", callee),
     }

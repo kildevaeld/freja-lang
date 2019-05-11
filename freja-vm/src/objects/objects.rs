@@ -1,5 +1,6 @@
 use super::super::chunk::Chunk;
-use super::super::value::Val;
+use super::super::error::RuntimeResult;
+use super::super::value::{Val, Value};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -86,7 +87,7 @@ impl fmt::Debug for CloseurePtr {
 }
 
 pub struct Native {
-    pub(crate) function: Box<Fn(&[Val])>,
+    pub(crate) function: Box<Fn(&[Val]) -> RuntimeResult<Value>>,
 }
 
 impl PartialEq for Native {

@@ -15,6 +15,9 @@ impl Instance for String {
     }
 
     fn find_method(&self, name: &str) -> Option<Rc<Closure>> {
+        // match name {
+        //     "len" => Rc::new(Closure::new(function: Rc<Function>))
+        // }
         None
     }
 }
