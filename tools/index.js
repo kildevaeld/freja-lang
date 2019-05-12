@@ -25,7 +25,7 @@ function generateStucture(list, base, ref = false) {
                 let isMulti = value[0] == '*';
                 if (isMulti)
                     value = value.substr(1);
-                let isBox = value == base;
+                let isBox = value == base || (base == "Expr" && value == 'Stmt');
                 value = (() => {
                     switch (value) {
                         case "Expr":

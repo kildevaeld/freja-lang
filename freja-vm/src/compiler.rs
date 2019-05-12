@@ -261,6 +261,9 @@ impl Compiler {
         while !self.state().locals.is_empty()
             && self.state().locals.last().map(|n| n.0).unwrap_or(0) > self.state().scope_depth
         {
+            // if self.state().locals[self.state().locals.len() - 1].is_up_value() {
+            //     self.emit(OpCode::)
+            // }
             self.emit(OpCode::Pop);
             self.state_mut().locals.pop();
         }
@@ -385,6 +388,58 @@ impl Compiler {
                 }
             }
             _ => unimplemented!("should be block"),
+        };
+
+        self.end_scope();
+
+        let function = self.end_compile();
+
+        let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
+        self.emit_opcode_byte(OpCode::Closure, constant);
+
+        for i in state.borrow().up_values.iter() {
+            self.emit(if i.is_local { 1 } else { 0 });
+            self.emit(i.index);
+        }
+
+        Ok(())
+    }
+
+    fn function2(
+        &mut self,
+        params: &[Argument],
+        body: &Stmt,
+        name: Option<&str>,
+        type_: FunctionType,
+    ) -> CompileResult<()> {
+        let state = CompilerState::new(Some(self.state.clone()), 1, type_);
+        {
+            let mut s = state.borrow_mut();
+            s.function.arity = params.len() as i32;
+            s.function.name = name.map(|m| m.to_string());
+        }
+        self.state = state.clone();
+
+        for p in params {
+            match p {
+                Argument::Regular(m) => {
+                    let global = self.parse_var(m.as_str());
+                    self.define_variable(global);
+                }
+                Argument::Rest(_) => unimplemented!("rest not implemented"),
+            };
+        }
+
+        match body {
+            Stmt::Block(b) => {
+                for bb in &b.statements {
+                    bb.accept(self)?;
+                }
+            }
+            Stmt::Expr(e) => {
+                self.visit_expr_stmt(e)?;
+            }
+            _ => unimplemented!("should be block or expression statement, was: {:?}", body),
         };
 
         self.end_scope();
@@ -810,17 +865,6 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
             self.variable(e.value.as_str());
         }
 
-        // let (a, get, _set) = if let Some(a) = self.resolve_local(e.value.as_str()) {
-        //     (a, OpCode::GetLocal, OpCode::SetLocal)
-        // } else if let Some(a) = self.resolve_upvalue(e.value.as_str()) {
-        //     (a, OpCode::GetUpValue, OpCode::SetUpValue)
-        // } else {
-        //     let a = self.make_constant(Value::String(e.value.clone()));
-        //     (a, OpCode::GetGlobal, OpCode::SetGlobal)
-        // };
-
-        // self.emit_opcode_byte(get, a as u8);
-
         Ok(())
     }
 
@@ -858,5 +902,10 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         }
 
         Ok(())
+    }
+
+    fn visit_closure_expr(&mut self, e: &ClosureExpr) -> CompileResult<()> {
+        //unimplemented!("closure");
+        self.function2(e.arguments.as_slice(), e.body.as_ref(), None, FunctionType::Function)
     }
 }

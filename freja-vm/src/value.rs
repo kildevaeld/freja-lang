@@ -18,6 +18,8 @@ pub enum Value {
     Boolean(bool),
     #[cfg_attr(feature = "serde_support", serde(rename = "A"))]
     Array(Array),
+    #[cfg_attr(feature = "serde_support", serde(rename = "M"))]
+    Map(Map),
     #[cfg_attr(feature = "serde_support", serde(rename = "F"))]
     Function(Rc<Function>),
     #[cfg_attr(feature = "serde_support", serde(rename = "C"))]
@@ -97,6 +99,7 @@ impl fmt::Display for Value {
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
             Value::Array(a) => write!(f, "{}", a),
+            Value::Map(a) => write!(f, "{}", a),
             Value::Class(c) => write!(f, "<class {}>", c.name),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class.name),
             Value::Native(_) => write!(f, "<fn native>"),
@@ -120,6 +123,7 @@ impl Value {
             Value::Class(_) => true,
             Value::ClassInstance(_) => true,
             Value::Array(a) => !a.is_empty(),
+            Value::Map(a) => !a.is_empty(),
             Value::Null => false,
             Value::Function(_) | Value::Closure(_) | Value::Native(_) => true,
         }
@@ -282,6 +286,7 @@ macro_rules! value_is_truthy {
                                                     Value::Class(_) => true,
                                                     Value::ClassInstance(_) => true,
                                                     Value::Array(a) => !a.is_empty(),
+                                                    Value::Map(a) => !a.is_empty(),
                                                     Value::Null => false,
                                                     Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
                                                     //ValueClass::Instance(_) => true,

@@ -259,7 +259,6 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             }
             OpCode::Array => {
                 let o = frame.read_byte();
-
                 if o == 0 {
                     push!(stack, Val::Stack(Value::Array(Array::default())))?;
                 } else {
@@ -272,6 +271,20 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                     push!(stack, Val::Stack(Value::Array(Array::new(v))))?;
                 }
             }
+            // OpCode::Map => {
+            //     let o = frame.read_byte();
+            //     if o == 0 {
+            //         push!(stack, Val::Stack(Value::Array(Array::default())))?;
+            //     } else {
+            //         let mut v = HashMap::new();
+            //         let idx = stack.len() - o as usize;
+            //         for i in stack.iter_mut().skip(idx) {
+            //             v.push(i.into_heap().clone());
+            //         }
+            //         stack.truncate(idx);
+            //         push!(stack, Val::Stack(Value::Array(Array::new(v))))?;
+            //     }
+            // }
             OpCode::JumpIfFalse => {
                 let current = &frame;
                 let offset = current.read_short();

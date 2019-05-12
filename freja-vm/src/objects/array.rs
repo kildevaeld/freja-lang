@@ -22,7 +22,7 @@ impl Array {
         }
     }
     pub fn is_empty(&self) -> bool {
-        true
+        self.inner.borrow_mut().is_empty()
     }
 }
 

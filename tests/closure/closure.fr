@@ -1,0 +1,11 @@
+let var = "World"
+let func = (greet, test) => print(greet + ", " + var + "!")
+
+
+func("Hello")
+
+fn Hello(a) {
+
+    let tet = () => print(a)
+
+}

@@ -114,6 +114,7 @@ pub trait ExprVisitor<R> {
     fn visit_identifier_expr(&mut self, e: &IdentifierExpr) -> R;
     fn visit_unary_expr(&mut self, e: &UnaryExpr) -> R;
     fn visit_postfix_expr(&mut self, e: &PostfixExpr) -> R;
+    fn visit_closure_expr(&mut self, e: &ClosureExpr) -> R;
 }
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
@@ -279,6 +280,7 @@ pub enum Expr {
     Identifier(IdentifierExpr),
     Unary(UnaryExpr),
     Postfix(PostfixExpr),
+    Closure(ClosureExpr),
 }
 
 impl Expr {
@@ -297,6 +299,7 @@ impl Expr {
             Expr::Identifier(s) => visitor.visit_identifier_expr(&s),
             Expr::Unary(s) => visitor.visit_unary_expr(&s),
             Expr::Postfix(s) => visitor.visit_postfix_expr(&s),
+            Expr::Closure(s) => visitor.visit_closure_expr(&s),
         }
     }
 }
@@ -655,5 +658,18 @@ pub struct PostfixExpr {
 impl PostfixExpr {
     pub fn new(value: Box<Expr>, operator: PostfixOperator) -> PostfixExpr {
         PostfixExpr { value, operator }
+    }
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClosureExpr {
+    pub arguments: Vec<Argument>,
+    pub body: Box<Stmt>,
+}
+
+impl ClosureExpr {
+    pub fn new(arguments: Vec<Argument>, body: Box<Stmt>) -> ClosureExpr {
+        ClosureExpr { arguments, body }
     }
 }

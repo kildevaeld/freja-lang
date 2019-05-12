@@ -9,6 +9,11 @@ use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
+// pub enum MapKey {
+//     String(String),
+
+// }
+
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug, Clone, Default)]
 pub struct Map {
@@ -22,7 +27,7 @@ impl Map {
         }
     }
     pub fn is_empty(&self) -> bool {
-        true
+        self.inner.borrow().is_empty()
     }
 }
 

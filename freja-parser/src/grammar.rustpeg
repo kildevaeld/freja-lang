@@ -155,9 +155,13 @@ arguments -> Vec<Expr>
 //     }
 //     / primary_expr
 
+function_expr -> Expr
+    =  "(" __ a:formal_parameter_list? __  ")" __ "=>" __ b:( expression_statement / block ) { 
+        Expr::Closure(ClosureExpr::new(a.unwrap_or(Vec::new()), Box::new(b)))
+    }
 
 member_expr -> Expr
-    = o:( primary_expr /*/ function_expr*/ ) 
+    = o:( primary_expr / function_expr ) 
       p:( "." i:identifier { i } )* {
         resolve_member(o, p)
     }

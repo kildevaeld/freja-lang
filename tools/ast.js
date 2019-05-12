@@ -14,7 +14,8 @@ exports.expressions = [
     ["Var", ["name: Token"]],
     ["Identifier", ["value: String"]],
     ["Unary", ["value: Expr", "operator: UnaryOperator"]],
-    ["Postfix", ["value: Expr", "operator: PostfixOperator"]]
+    ["Postfix", ["value: Expr", "operator: PostfixOperator"]],
+    ["Closure", ["arguments: *Argument", "body: Stmt"]]
 ];
 
 exports.statements = [
