@@ -90,6 +90,14 @@ pub struct Native {
     pub(crate) function: Box<Fn(&[Val]) -> RuntimeResult<Value>>,
 }
 
+impl Native {
+    pub fn new<F: 'static + Fn(&[Val]) -> RuntimeResult<Value>>(inner: F) -> Native {
+        Native {
+            function: Box::new(inner),
+        }
+    }
+}
+
 impl PartialEq for Native {
     fn eq(&self, _other: &Native) -> bool {
         false
@@ -99,27 +107,5 @@ impl PartialEq for Native {
 impl fmt::Debug for Native {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Native")
-    }
-}
-
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
-#[derive(PartialEq, Debug, Clone, Default)]
-pub struct Array {
-    inner: Vec<Val>,
-}
-
-impl Array {
-    pub fn new(inner: Vec<Val>) -> Array {
-        Array { inner }
-    }
-    pub fn is_empty(&self) -> bool {
-        true
-    }
-}
-
-impl fmt::Display for Array {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = self.inner.iter().map(|m| m.to_string()).collect::<Vec<_>>().join(", ");
-        write!(f, "[{}]", s)
     }
 }

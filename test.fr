@@ -13,4 +13,6 @@ for let i = 0; i < 10; i++ {
     println(fib(i))
 }
 
-println("string length", string.len())
+let string = "Hello, World!"
+
+println(string + " " + string.len())

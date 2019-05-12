@@ -1,5 +1,5 @@
 use super::super::error::RuntimeResult;
-use super::super::value::Val;
+use super::super::value::{Val, Value};
 use super::objects::Closure;
 use super::types::Instance;
 use std::cell::{RefCell, UnsafeCell};
@@ -10,7 +10,7 @@ use std::rc::Rc;
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, PartialEq)]
 pub struct ClassInner {
-    pub(crate) methods: HashMap<String, Rc<Closure>>,
+    pub(crate) methods: HashMap<String, Rc<Value>>,
     pub(crate) super_class: Option<Rc<Class>>,
 }
 
@@ -36,11 +36,11 @@ impl Class {
         &self.name
     }
 
-    pub fn add_method(&self, name: String, method: Rc<Closure>) {
+    pub fn add_method(&self, name: String, method: Rc<Value>) {
         self.inner.borrow_mut().methods.insert(name, method);
     }
 
-    pub fn find_method(&self, name: &str) -> Option<Rc<Closure>> {
+    pub fn find_method(&self, name: &str) -> Option<Rc<Value>> {
         match self.inner.borrow().methods.iter().find(|m| m.0 == name) {
             Some(s) => Some(s.1.clone()),
             None => match self.inner.borrow().super_class {
@@ -114,7 +114,7 @@ impl Instance for ClassInstance {
         self.fields().get(name)
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Closure>> {
+    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
         self.class.find_method(name)
     }
 }

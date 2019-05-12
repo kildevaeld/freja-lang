@@ -1,9 +1,11 @@
+mod array;
 mod class;
 mod number;
 mod objects;
 mod string;
 mod types;
 
+pub use self::array::*;
 pub use self::class::*;
 pub use self::number::*;
 pub use self::objects::*;

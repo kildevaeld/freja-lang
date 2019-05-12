@@ -1,5 +1,14 @@
-[]
-let rapper = 200, a = ["Hello, World", 200, 200 + rapper]
-print(a)
 
-print(a[0])
+let rapper = 200 
+let a = ["Hello, World", 200, 200 + rapper]
+//println(a.len())
+
+let len = a.len()
+//print("Helloe")
+
+a.push("Make some jazz noise!")
+
+for let i = 0; i < a.len(); i++ {
+    println(a.get(i))
+    
+}

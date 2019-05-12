@@ -1,5 +1,5 @@
 use super::super::error::RuntimeResult;
-use super::super::value::Val;
+use super::super::value::{Val, Value};
 use super::objects::Closure;
 use super::types::Instance;
 use freja_parser::ast::Number;
@@ -14,7 +14,7 @@ impl Instance for Number {
         None
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Closure>> {
+    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
         None
     }
 }

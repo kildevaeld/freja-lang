@@ -72,6 +72,17 @@ impl Value {
             Value::Instance(i) => Some(i),
             Value::Number(n) => Some(n),
             Value::String(s) => Some(s),
+            Value::Array(a) => Some(a),
+            _ => None,
+        }
+    }
+
+    pub fn as_instance_mut(&mut self) -> Option<&mut Instance> {
+        match self {
+            Value::Instance(i) => Some(i),
+            Value::Number(n) => Some(n),
+            Value::String(s) => Some(s),
+            Value::Array(a) => Some(a),
             _ => None,
         }
     }
@@ -195,7 +206,7 @@ macro_rules! value_add {
             },
             Value::String(s) => match $rhs {
                 Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
-                Value::Number(n) => Ok(Value::String(format!("{},{}", s, n))),
+                Value::Number(n) => Ok(Value::String(format!("{}{}", s, n))),
                 _ => Err("nan".into()),
             },
             _ => {
@@ -225,7 +236,7 @@ macro_rules! value_comparison {
                 Value::Number(nn) => Ok(Value::Boolean(n $op nn)),
                 _ => Err("nan".into()),
             },
-            _ => Err(format!("could not equal {:?}", $lhs).into()),
+            _ => Err(format!("could not equal {:?} {} {:?}", $lhs,stringify!($op), $rhs).into()),
         }
     };
 }
