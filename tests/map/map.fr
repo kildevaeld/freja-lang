@@ -1,0 +1,5 @@
+{
+    prop: "string",
+    prop_two: 200,
+    "literal_String": true
+}
