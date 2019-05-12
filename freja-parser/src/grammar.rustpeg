@@ -158,7 +158,7 @@ arguments -> Vec<Expr>
 
 member_expr -> Expr
     = o:( primary_expr /*/ function_expr*/ ) 
-      p:( "[" e:expression "]" { e } / "." i:identifier { i } )* {
+      p:( "." i:identifier { i } )* {
         resolve_member(o, p)
     }
     
