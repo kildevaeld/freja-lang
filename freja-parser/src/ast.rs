@@ -56,6 +56,10 @@ impl Object {
     pub fn new(entries: Vec<ObjectEntry>) -> Object {
         Object { entries }
     }
+
+    pub fn entries(&self) -> &[ObjectEntry] {
+        &self.entries
+    }
 }
 
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]

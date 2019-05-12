@@ -27,7 +27,7 @@ pub enum Value {
     #[cfg_attr(feature = "serde_support", serde(rename = "CC"))]
     Class(Rc<Class>),
     #[cfg_attr(feature = "serde_support", serde(rename = "I"))]
-    Instance(ClassInstance),
+    ClassInstance(ClassInstance),
     #[cfg_attr(feature = "serde_support", serde(rename = "nil"))]
     Null,
 }
@@ -69,7 +69,7 @@ impl Value {
 
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
-            Value::Instance(i) => Some(i),
+            Value::ClassInstance(i) => Some(i),
             Value::Number(n) => Some(n),
             Value::String(s) => Some(s),
             Value::Array(a) => Some(a),
@@ -79,7 +79,7 @@ impl Value {
 
     pub fn as_instance_mut(&mut self) -> Option<&mut Instance> {
         match self {
-            Value::Instance(i) => Some(i),
+            Value::ClassInstance(i) => Some(i),
             Value::Number(n) => Some(n),
             Value::String(s) => Some(s),
             Value::Array(a) => Some(a),
@@ -98,7 +98,7 @@ impl fmt::Display for Value {
             Value::Null => write!(f, "nil"),
             Value::Array(a) => write!(f, "{}", a),
             Value::Class(c) => write!(f, "<class {}>", c.name),
-            Value::Instance(i) => write!(f, "<instance {}>", i.class.name),
+            Value::ClassInstance(i) => write!(f, "<instance {}>", i.class.name),
             Value::Native(_) => write!(f, "<fn native>"),
             Value::Closure(cl) => write!(
                 f,
@@ -118,7 +118,7 @@ impl Value {
             Value::Number(Number::Integer(d)) => *d > 0,
             Value::Boolean(b) => *b,
             Value::Class(_) => true,
-            Value::Instance(_) => true,
+            Value::ClassInstance(_) => true,
             Value::Array(a) => !a.is_empty(),
             Value::Null => false,
             Value::Function(_) | Value::Closure(_) | Value::Native(_) => true,
@@ -280,11 +280,11 @@ macro_rules! value_is_truthy {
                                                     Value::Number(Number::Integer(d)) => *d > 0,
                                                     Value::Boolean(b) => *b,
                                                     Value::Class(_) => true,
-                                                    Value::Instance(_) => true,
+                                                    Value::ClassInstance(_) => true,
                                                     Value::Array(a) => !a.is_empty(),
                                                     Value::Null => false,
                                                     Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-                                                    //Value::Instance(_) => true,
+                                                    //ValueClass::Instance(_) => true,
                                                 }
     };
 }

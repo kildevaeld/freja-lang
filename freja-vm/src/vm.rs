@@ -197,7 +197,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 frames.pop();
 
                 match result.as_value() {
-                    Value::Instance(_) => {
+                    Value::ClassInstance(_) => {
                         result.into_heap();
                     }
                     _ => {}
@@ -346,7 +346,10 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
                 len - (count as usize) - 1
             };
 
-            stack.set(s as usize, Val::Stack(Value::Instance(ClassInstance::new(cl.clone()))));
+            stack.set(
+                s as usize,
+                Val::Stack(Value::ClassInstance(ClassInstance::new(cl.clone()))),
+            );
             if let Some(initializer) = cl.find_method("init") {
                 call(
                     stack,

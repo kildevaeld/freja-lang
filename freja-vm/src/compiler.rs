@@ -695,6 +695,15 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                 self.emit_opcode_byte(OpCode::Array, arr.len() as u8);
                 return Ok(());
             }
+            Literal::Object(obj) => {
+                for kv in obj.entries().iter() {
+                    kv.key.accept(self)?;
+                    kv.value.accept(self)?;
+                }
+
+                self.emit_opcode_byte(OpCode::Map, obj.entries().len() as u8);
+                return Ok(());
+            }
             _ => unimplemented!("literal"),
         };
         self.emit_constant(val);
