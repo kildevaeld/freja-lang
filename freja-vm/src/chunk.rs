@@ -3,40 +3,39 @@ use std::fmt;
 use std::rc::Rc;
 
 macro_rules! byte_instruction {
-    ($ident:expr, $name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
+    ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1);
-        writeln!($fmt, "{}{:24}{:4}",$ident, $name, code as u8)?;
+        writeln!($fmt, "{:24}{:4}", $name, code as u8)?;
         $offset + 2
     }};
 }
 
 macro_rules! constant_instruction {
-    ($ident:expr, $name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
+    ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).expect("constant");
-        writeln!($fmt, "{}{:24}{:4} '{}'",$ident, $name, code, constant)?;
+        writeln!($fmt, "{:24}{:4} '{}'", $name, code, constant)?;
         $offset + 2
     }};
 }
 
 macro_rules! constant_instruction_n {
-    ($ident:expr, $name:expr, $chunk:expr, $offset: expr, $n:expr, $fmt:expr) => {{
+    ($name:expr, $chunk:expr, $offset: expr, $n:expr, $fmt:expr) => {{
         let code = $chunk.get_code($offset + 1) as u8;
         let constant = $chunk.get_constant(code as usize).expect("constant n");
-        writeln!($fmt, "{}{:24}{:4} '{}'", $ident,format!("{}_{}", $name, $n), code, constant)?;
+        writeln!($fmt, "{:24}{:4} '{}'", format!("{}_{}", $name, $n), code, constant)?;
         $offset + 2
     }};
 }
 
 macro_rules! jump_instruction {
-    ($ident:expr, $name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
+    ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
         let mut jump = ($chunk.code[$offset + 1] as i16) << 8;
         jump |= $chunk.code[$offset + 2] as i16;
 
         writeln!(
             $fmt,
-            "{}{:24}{:4} -> {}",
-            $ident,
+            "{:24}{:4} -> {}",
             $name,
             $offset,
             $offset + 3 + $sign * (jump as usize)
@@ -46,14 +45,14 @@ macro_rules! jump_instruction {
 }
 
 macro_rules! jump_instruction_neg {
-    ($ident:expr, $name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
+    ($name:expr, $chunk:expr,$offset: expr, $sign:expr, $fmt:expr) => {{
         let mut jump = ($chunk.code[$offset + 1] as i16) << 8;
         jump |= $chunk.code[$offset + 2] as i16;
 
         writeln!(
             $fmt,
-            "{}{:24}{:4} -> {}",
-            $ident,
+            "{:24}{:4} -> {}",
+
             $name,
             $offset,
             ($offset as isize) + 3 + -1 * (jump as isize)
@@ -63,15 +62,15 @@ macro_rules! jump_instruction_neg {
 }
 
 macro_rules! simple_instruction {
-    ($ident:expr, $name:expr, $offset: expr, $fmt:expr) => {{
-        writeln!($fmt, "{}{}",$ident, $name)?;
+    ($name:expr, $offset: expr, $fmt:expr) => {{
+        writeln!($fmt, "{}", $name)?;
         $offset + 1
     }};
 }
 
 macro_rules! simple_instruction_n {
-    ($ident:expr, $name:expr, $offset: expr, $n: expr, $fmt:expr) => {{
-        writeln!($fmt, "{}{}_{}",$ident, $name, $n)?;
+    ($name:expr, $offset: expr, $n: expr, $fmt:expr) => {{
+        writeln!($fmt, "{}_{}", $name, $n)?;
         $offset + 1
     }};
 }
@@ -235,43 +234,43 @@ impl Chunk {
 
         let opcode = OpCode::from(self.code[offset]);
         let m = match opcode {
-            OpCode::Constant => constant_instruction!("OP_CONSTANT", indent,  self, offset, f),
-            OpCode::Nil => simple_instruction!("OP_NIL", indent,  offset, f),
-            OpCode::True => simple_instruction!("OP_TRUE", indent,  offset, f),
-            OpCode::False => simple_instruction!("OP_FALSE", indent,  offset, f),
-            OpCode::Pop => simple_instruction!("OP_POP", indent,  offset, f),
-            OpCode::GetUpValue => byte_instruction!("OP_GET_UPVALUE", indent,  self, offset, f),
-            OpCode::SetUpValue => byte_instruction!("OP_SET_UPVALUE", indent,  self, offset, f),
-            OpCode::GetLocal => byte_instruction!("OP_GET_LOCAL", indent,  self, offset, f),
-            OpCode::GetGlobal => constant_instruction!("OP_GET_GLOBAL", indent,  self, offset, f),
-            OpCode::DefineGlobal => constant_instruction!("OP_DEFINE_GLOBAL", indent,  self, offset, f),
-            OpCode::SetLocal => byte_instruction!("OP_SET_LOCAL", indent,  self, offset, f),
-            OpCode::SetGlobal => constant_instruction!("OP_SET_GLOBAL", indent,  self, offset, f),
-            OpCode::Equal => simple_instruction!("OP_EQUAL", indent,  offset, f),
-            OpCode::Greater => simple_instruction!("OP_GREATER", indent,  offset, f),
-            OpCode::Less => simple_instruction!("OP_LESS", indent,  offset, f),
-            OpCode::Add => simple_instruction!("OP_ADD", indent,  offset, f),
-            OpCode::Substract => simple_instruction!("OP_SUBTRACT", indent,  offset, f),
-            OpCode::Multiply => simple_instruction!("OP_MULTIPLY", indent,  offset, f),
-            OpCode::Divide => simple_instruction!("OP_DIVIDE", indent,  offset, f),
-            OpCode::Not => simple_instruction!("OP_NOT", indent,  offset, f),
-            OpCode::Negate => simple_instruction!("OP_NEGATE", indent,  offset, f),
-            OpCode::Return => simple_instruction!("OP_RETURN", indent,  offset, f),
-            OpCode::Jump => jump_instruction!("OP_JUMP", indent,  self, offset, 1, f),
-            OpCode::Loop => jump_instruction_neg!("OP_LOOP", indent,  self, offset, 1, f),
-            OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE", indent,  self, offset, 1, f),
-            OpCode::Array => byte_instruction!("OP_ARRAY", indent,  self, offset, f),
-            OpCode::Map => byte_instruction!("OP_MAP", indent,  self, offset, f),
-            OpCode::GetProperty => constant_instruction!("OP_GET_PROPERTY", indent, self, offset, f),
-            OpCode::SetProperty => constant_instruction!("OP_SET_PROPERTY", indent,  self, offset, f),
-            OpCode::Method => constant_instruction!("OP_METHOD", indent,  self, offset, f),
-            OpCode::CloseUpValue => simple_instruction!("OP_CLOSE_UPVALUE", indent,  offset,f),
+            OpCode::Constant => constant_instruction!("OP_CONSTANT",  self, offset, f),
+            OpCode::Nil => simple_instruction!("OP_NIL",  offset, f),
+            OpCode::True => simple_instruction!("OP_TRUE",  offset, f),
+            OpCode::False => simple_instruction!("OP_FALSE",  offset, f),
+            OpCode::Pop => simple_instruction!("OP_POP",  offset, f),
+            OpCode::GetUpValue => byte_instruction!("OP_GET_UPVALUE",  self, offset, f),
+            OpCode::SetUpValue => byte_instruction!("OP_SET_UPVALUE",  self, offset, f),
+            OpCode::GetLocal => byte_instruction!("OP_GET_LOCAL",  self, offset, f),
+            OpCode::GetGlobal => constant_instruction!("OP_GET_GLOBAL",  self, offset, f),
+            OpCode::DefineGlobal => constant_instruction!("OP_DEFINE_GLOBAL",  self, offset, f),
+            OpCode::SetLocal => byte_instruction!("OP_SET_LOCAL",  self, offset, f),
+            OpCode::SetGlobal => constant_instruction!("OP_SET_GLOBAL",  self, offset, f),
+            OpCode::Equal => simple_instruction!("OP_EQUAL",  offset, f),
+            OpCode::Greater => simple_instruction!("OP_GREATER",  offset, f),
+            OpCode::Less => simple_instruction!("OP_LESS",  offset, f),
+            OpCode::Add => simple_instruction!("OP_ADD",  offset, f),
+            OpCode::Substract => simple_instruction!("OP_SUBTRACT",  offset, f),
+            OpCode::Multiply => simple_instruction!("OP_MULTIPLY",  offset, f),
+            OpCode::Divide => simple_instruction!("OP_DIVIDE",  offset, f),
+            OpCode::Not => simple_instruction!("OP_NOT",  offset, f),
+            OpCode::Negate => simple_instruction!("OP_NEGATE",  offset, f),
+            OpCode::Return => simple_instruction!("OP_RETURN",  offset, f),
+            OpCode::Jump => jump_instruction!("OP_JUMP",  self, offset, 1, f),
+            OpCode::Loop => jump_instruction_neg!("OP_LOOP",  self, offset, 1, f),
+            OpCode::JumpIfFalse => jump_instruction!("OP_JUMP_iF_FALSE",  self, offset, 1, f),
+            OpCode::Array => byte_instruction!("OP_ARRAY",  self, offset, f),
+            OpCode::Map => byte_instruction!("OP_MAP",  self, offset, f),
+            OpCode::GetProperty => constant_instruction!("OP_GET_PROPERTY", self, offset, f),
+            OpCode::SetProperty => constant_instruction!("OP_SET_PROPERTY",  self, offset, f),
+            OpCode::Method => constant_instruction!("OP_METHOD",  self, offset, f),
+            OpCode::CloseUpValue => simple_instruction!("OP_CLOSE_UPVALUE",  offset,f),
             OpCode::Closure => {
                 let mut offset = offset + 1;
                 let constant = self.code[offset];
                 offset += 1;
                 let value = &self.constants[constant as usize];
-                writeln!(f, "{}{:24} {:4} {}", "OP_CLOSURE",indent, constant, value)?;
+                writeln!(f, "{:24} {:4} {}", "OP_CLOSURE", constant, value)?;
 
                 if let Some(fu) = value.as_function() {
                     for _u in 0..fu.up_value_count {
@@ -281,8 +280,8 @@ impl Chunk {
                         offset += 1;
                         writeln!(
                             f,
-                            "{}{:04}   | {:24} {}",
-                            indent,
+                            "{:04}   | {:24} {}",
+                            
                             offset - 2,
                             if *local.unwrap() == 1 { "local" } else { "upvalue" },
                             index
@@ -300,8 +299,8 @@ impl Chunk {
 
                 offset
             }
-            OpCode::Class => constant_instruction!("OP_CLASS", indent, self, offset, f),
-            OpCode::Inherit => simple_instruction!("OP_INHERIT", indent, offset, f),
+            OpCode::Class => constant_instruction!("OP_CLASS", self, offset, f),
+            OpCode::Inherit => simple_instruction!("OP_INHERIT", offset, f),
             OpCode::Call0
             | OpCode::Call1
             | OpCode::Call2
@@ -310,7 +309,7 @@ impl Chunk {
             | OpCode::Call5
             | OpCode::Call6
             | OpCode::Call7
-            | OpCode::Call8 => simple_instruction_n!("OP_CALL", indent, offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
+            | OpCode::Call8 => simple_instruction_n!("OP_CALL", offset, ((opcode as u8) - (OpCode::Call0 as u8)), f),
             OpCode::Invoke0
             | OpCode::Invoke1
             | OpCode::Invoke2
@@ -320,7 +319,7 @@ impl Chunk {
             | OpCode::Invoke6
             | OpCode::Invoke7
             | OpCode::Invoke8 => {
-                constant_instruction_n!("OP_INVOKE", indent, self, offset, ((opcode as u8) - (OpCode::Invoke0 as u8)), f)
+                constant_instruction_n!("OP_INVOKE", self, offset, ((opcode as u8) - (OpCode::Invoke0 as u8)), f)
             }
             //_ => unimplemented!("unknown code {:?}", opcode),
         };
