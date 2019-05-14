@@ -50,11 +50,12 @@ impl Function {
 #[derive(PartialEq, Debug)]
 pub struct Closure {
     pub(crate) function: Rc<Function>,
+    upvalues: Vec<Val>,
 }
 
 impl Closure {
-    pub fn new(function: Rc<Function>) -> Closure {
-        Closure { function }
+    pub fn new(function: Rc<Function>, upvalues: Vec<Val>) -> Closure {
+        Closure { function, upvalues }
     }
 
     pub fn chunk(&self) -> &Chunk {
@@ -63,6 +64,10 @@ impl Closure {
 
     pub fn name(&self) -> Option<&str> {
         self.function.name.as_ref().map(|s| s.as_str())
+    }
+
+    pub fn upvalues(&self) -> &[Val] {
+        &self.upvalues
     }
 }
 
