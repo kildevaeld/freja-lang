@@ -98,7 +98,7 @@ impl VM {
 
     pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
-        let cl = Rc::new(Closure::new(Rc::new(fu)));
+        let cl = Rc::new(Closure::new(Rc::new(fu), Vec::new()));
         call(&self.stack, &self.frames, CloseurePtr::Stack(cl))?;
 
         run(&self.frames, &mut self.stack, &mut self.globals)?;
@@ -121,7 +121,8 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::Constant => {
                 let val = frame.read_constant().expect("constant").as_ref() as *const Value;
                 // push!(stack, Val::Heap(frame.read_constant().expect("constant").clone()))?
-                push!(stack, Val::Ref(val))?
+
+                push!(stack, Val::Ref(val))?;
             }
             OpCode::Pop => {
                 pop!(stack);
@@ -164,6 +165,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let val = peek!(stack, 0).unwrap();
                 globals.insert(name.clone(), val.clone().into_value());
             }
+
             OpCode::SetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
 
@@ -192,16 +194,20 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::Return => {
                 let mut result = pop!(stack).unwrap();
 
-                stack.truncate(frame.idx);
-
-                frames.pop();
-
+                // Move to heap, before popping the stack
                 match result.as_value() {
                     Value::ClassInstance(_) => {
                         result.into_heap();
                     }
+                    Value::Closure(_) => {
+                        result.into_heap();
+                    }
                     _ => {}
                 };
+
+                stack.truncate(frame.idx);
+
+                frames.pop();
 
                 push!(stack, result)?;
 
@@ -223,6 +229,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             | OpCode::Call8 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
                 let callee = peek!(stack, count as usize).expect("expect callee");
+
                 call_value(stack, frames, callee.as_value(), count)?;
                 frame = frames.last().unwrap();
             }
@@ -242,7 +249,28 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             }
             OpCode::Closure => {
                 let fu = frame.read_constant().unwrap().as_function().unwrap().clone();
-                let cl = Value::Closure(Rc::new(Closure::new(fu)));
+
+                let mut values = Vec::new();
+
+                for i in 0..fu.up_value_count {
+                    //println!("has some");
+                    let local = if frame.read_byte() == 0 { false } else { true };
+                    let index = frame.read_byte();
+                    if local {
+                        // FIXME: Local upvalue
+                        //values.push(value: T)
+                        let value = stack.get(frame.idx + 1).unwrap();
+
+                        values.push(capture_upvalue(value));
+                    } else {
+                        values.push(Val::Ref(
+                            frame.closure.as_ref().upvalues()[index as usize].as_value() as *const Value
+                        ));
+                    };
+                }
+
+                let cl = Value::Closure(Rc::new(Closure::new(fu, values)));
+
                 push!(stack, Val::Stack(cl))?;
             }
             OpCode::Divide
@@ -337,6 +365,11 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 pop!(stack);
             }
             OpCode::Nil => push!(stack, Val::Stack(Value::Null))?,
+            OpCode::GetUpValue => {
+                let idx = frame.read_byte();
+                let value = &frame.closure.as_ref().upvalues()[idx as usize];
+                push!(stack, Val::Ref(value.as_ref() as *const Value));
+            }
             _ => unimplemented!("instruction {:?}", instruction),
         };
     }
@@ -347,9 +380,13 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
 #[inline(always)]
 fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> RuntimeResult<()> {
     match callee {
+        // Value::Closure(cl) => {
+        //     call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure))?;
+        // }
         Value::Closure(cl) => {
-            call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure))?;
+            call(stack, frames, CloseurePtr::Stack(cl.clone()))?;
         }
+
         Value::Class(cl) => {
             //
             let len = stack.len();
@@ -386,7 +423,7 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
             //stack.truncate(idx);
         }
 
-        _ => unimplemented!("call on {} not implemented", callee),
+        _ => unimplemented!("call on {:?} not implemented", callee),
     }
     Ok(())
 }
@@ -445,4 +482,8 @@ fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> RuntimeResul
     }
 
     invoke_from_class(stack, frames, instance, name)
+}
+
+fn capture_upvalue(local: &Val) -> Val {
+    local.clone()
 }
