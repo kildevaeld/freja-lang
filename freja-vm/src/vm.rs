@@ -144,7 +144,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::GetLocal => {
                 let b = frame.read_byte();
                 let idx = frame.idx + b as usize;
-
+                dump_stack!(stack);
                 let val = stack
                     .get(idx)
                     .expect(format!("get local at idx {}", idx).as_str())
