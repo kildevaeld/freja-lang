@@ -1,9 +1,9 @@
 
 class Greeter implements Greet {
-    // fn init(name) {
-    //    this.name = name
-    //    print("initializer")
-    // }
+    fn init(name) {
+        this.name = name
+    }
+
     fn greet(msg) {
         return this.fmt(msg, this.name)
     }

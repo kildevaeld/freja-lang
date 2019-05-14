@@ -1,0 +1,2 @@
+let test = () => "Hello"
+println(test())

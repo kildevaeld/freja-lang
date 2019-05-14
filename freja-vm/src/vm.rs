@@ -99,7 +99,8 @@ impl VM {
     pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
         let cl = Rc::new(Closure::new(Rc::new(fu), Vec::new()));
-        call(&self.stack, &self.frames, CloseurePtr::Stack(cl))?;
+        push!(self.stack, Val::Stack(Value::Closure(cl.clone())));
+        call(&self.stack, &self.frames, CloseurePtr::Stack(cl), 0)?;
 
         run(&self.frames, &mut self.stack, &mut self.globals)?;
         Ok(())
@@ -144,7 +145,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::GetLocal => {
                 let b = frame.read_byte();
                 let idx = frame.idx + b as usize;
-                dump_stack!(stack);
+
                 let val = stack
                     .get(idx)
                     .expect(format!("get local at idx {}", idx).as_str())
@@ -169,15 +170,20 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::SetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
 
-                let value = pop!(stack).expect("property expected property");
-                let receiver = peek!(stack, 0).expect("property expected receiver");
+                // let value = pop!(stack).expect("property expected property");
+                // let receiver = peek!(stack, 0).expect("property expected receiver");
+                let value = peek!(stack, 0).expect("property expected property");
+                let receiver = peek!(stack, 1).expect("property expected receiver");
 
                 let instance = match receiver.as_instance() {
                     Some(i) => i,
-                    None => return Err("can only set property on an instance".into()),
+                    None => return Err(format!("can only set property on an instance, got: {}", receiver).into()),
                 };
 
-                instance.set_field(name, value)?;
+                pop!(stack);
+                pop!(stack);
+
+                instance.set_field(name, value.clone())?;
             }
             OpCode::GetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -384,11 +390,10 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
         //     call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure))?;
         // }
         Value::Closure(cl) => {
-            call(stack, frames, CloseurePtr::Stack(cl.clone()))?;
+            call(stack, frames, CloseurePtr::Stack(cl.clone()), count)?;
         }
 
         Value::Class(cl) => {
-            //
             let len = stack.len();
             let s = if count == 0 {
                 len - 1
@@ -401,11 +406,13 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
                 Val::Stack(Value::ClassInstance(ClassInstance::new(cl.clone()))),
             );
             if let Some(initializer) = cl.find_method("init") {
-                call(
-                    stack,
-                    frames,
-                    CloseurePtr::Stack(initializer.as_closure().unwrap().clone()),
-                )?;
+                let closure = initializer.as_closure().unwrap().clone();
+                if closure.function.arity != count as i32 {
+                    return Err("invalid numbers of parameters".into());
+                }
+                call(stack, frames, CloseurePtr::Stack(closure), count)?;
+            } else if count != 0 {
+                return Err("invalid numbers of parameters".into());
             }
         }
         Value::Native(native) => {
@@ -429,12 +436,15 @@ fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> Runt
 }
 
 #[inline(always)]
-fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> RuntimeResult<()> {
+fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr, count: u8) -> RuntimeResult<()> {
     // TODO check aritity
     let a = closure.as_ref().function.arity;
+    if a != count as i32 {
+        return Err("Invalid parameter count".into());
+    }
 
     let count = if stack.len() == 0 {
-        stack.push(Val::Stack(Value::Null))?;
+        //stack.push(Val::Stack(Value::Null))?;
         1
     } else {
         a + 1
@@ -447,13 +457,18 @@ fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr) -> RuntimeResult<(
 }
 
 #[inline(always)]
-fn invoke_from_class(stack: &Stack, frames: &Frames, instance: &Instance, name: &str) -> RuntimeResult<()> {
+fn invoke_from_class(stack: &Stack, frames: &Frames, instance: &Instance, name: &str, count: u8) -> RuntimeResult<()> {
     let method = match instance.find_method(name) {
         Some(m) => m,
         None => return Err(format!("could not find method: '{}', on receiver: {:?}", name, instance).into()),
     };
 
-    call(stack, frames, CloseurePtr::Stack(method.as_closure().unwrap().clone()))?;
+    call(
+        stack,
+        frames,
+        CloseurePtr::Stack(method.as_closure().unwrap().clone()),
+        count,
+    )?;
 
     Ok(())
 }
@@ -481,7 +496,7 @@ fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> RuntimeResul
         }
     }
 
-    invoke_from_class(stack, frames, instance, name)
+    invoke_from_class(stack, frames, instance, name, count)
 }
 
 fn capture_upvalue(local: &Val) -> Val {

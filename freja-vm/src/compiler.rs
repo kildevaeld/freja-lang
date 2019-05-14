@@ -281,9 +281,15 @@ impl Compiler {
         self.state_mut().scope_depth += 1;
     }
 
-    pub fn pope(&mut self) {
+    pub fn end_scope(&mut self, pop_locals: bool) {
         self.state_mut().scope_depth -= 1;
 
+        if pop_locals {
+            self.pop_locals();
+        }
+    }
+
+    fn pop_locals(&mut self) {
         while !self.state().locals.is_empty()
             && self.state().locals.last().map(|n| n.depth).unwrap_or(0) > self.state().scope_depth
         {
@@ -378,6 +384,7 @@ impl Compiler {
 
     fn end_compile(&mut self) -> Function {
         self.emit_return();
+        self.pop_locals();
         let function = std::mem::replace(&mut self.state_mut().function, Function::new());
         let state = self.state.clone();
 
@@ -391,46 +398,6 @@ impl Compiler {
 
     fn function(&mut self, e: &FuncStmt, type_: FunctionType) -> CompileResult<()> {
         self.function2(&e.parameters, &e.body, Some(e.name.as_str()), type_)
-        // let state = CompilerState::new(Some(self.state.clone()), 1, type_);
-        // {
-        //     let mut s = state.borrow_mut();
-        //     s.function.arity = e.parameters.len() as i32;
-        //     s.function.name = Some(e.name.clone());
-        // }
-        // self.state = state.clone();
-
-        // for p in &e.parameters {
-        //     match p {
-        //         Argument::Regular(m) => {
-        //             let global = self.parse_var(m.as_str());
-        //             self.define_variable(global);
-        //         }
-        //         Argument::Rest(_) => unimplemented!("rest not implemented"),
-        //     };
-        // }
-
-        // match e.body.as_ref() {
-        //     Stmt::Block(b) => {
-        //         for bb in &b.statements {
-        //             bb.accept(self)?;
-        //         }
-        //     }
-        //     _ => unimplemented!("should be block"),
-        // };
-
-        // self.pope();
-
-        // let function = self.end_compile();
-
-        // let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
-        // self.emit_opcode_byte(OpCode::Closure, constant);
-
-        // for i in state.borrow().up_values.iter() {
-        //     self.emit(if i.is_local { 1 } else { 0 });
-        //     self.emit(i.index);
-        // }
-
-        // Ok(())
     }
 
     fn function2(
@@ -470,7 +437,7 @@ impl Compiler {
             _ => unimplemented!("should be block or expression statement, was: {:?}", body),
         };
 
-        self.pope();
+        self.end_scope(false);
 
         let function = self.end_compile();
 
@@ -588,7 +555,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         }
 
         if e.extends.is_some() {
-            self.pope();
+            self.end_scope(true);
         }
 
         let enc = self.class.as_ref().unwrap().borrow().enclosing.clone();
@@ -605,7 +572,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         for b in &e.statements {
             b.accept(self)?;
         }
-        self.pope();
+        self.end_scope(true);
         Ok(())
     }
     fn visit_if_stmt(&mut self, e: &IfStmt) -> CompileResult<()> {
@@ -666,7 +633,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
             self.emit(OpCode::Pop);
         }
 
-        self.pope();
+        self.end_scope(true);
 
         Ok(())
     }

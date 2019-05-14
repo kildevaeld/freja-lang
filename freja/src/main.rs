@@ -75,6 +75,7 @@ fn run(input: &str) {
         std::io::stdin().lock().read_line(&mut out).unwrap();
         Ok(Value::Null)
     });
+
     vm.interpret_ast(&ast).unwrap();
 
     //println!("{}", vm.dump());

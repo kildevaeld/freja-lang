@@ -1,14 +1,21 @@
 class Test {
     fn greet(msg) {
-        return this.fmt("Hello", msg)
+        return this.fmt(this.name||"Hello", msg)
     }
 
     fn fmt(greet, msg) {
         return greet + ", " + msg + "!"
     }
+
+    fn self() {
+        return this
+    }
 }
 
 let test = Test()
 
-let msg = test.greet("World")
-println(msg)
+println(test.greet("World"))
+test.name = "Sisi" 
+println(test.greet("World"))
+
+println(test.self())

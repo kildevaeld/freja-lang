@@ -1,8 +1,9 @@
 class Test {
-    fn init() {
-        this.name = ""
+    fn init(name) {
+        this.name = name
     }
 }
 
-let test = Test()
+let test = Test("Hello, Kitty")
 
+println("Class " + test.name)
