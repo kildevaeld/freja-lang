@@ -1,11 +1,10 @@
-let var = "World"
-let func = (greet, test) => print(greet + ", " + var + "!")
-
-
-func("Hello")
-
-fn Hello(a) {
-
-    let tet = () => print(a)
-
+let a = "World"
+let func = () => {
+    let b = "Hello"
+    let f = () => { return b + " " + a }
+    return f //() => { return b }
 }
+
+let out = func()
+print("out")
+print(out())

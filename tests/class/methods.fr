@@ -1,0 +1,14 @@
+class Test {
+    fn greet(msg) {
+        return this.fmt("Hello", msg)
+    }
+
+    fn fmt(greet, msg) {
+        return greet + ", " + msg + "!"
+    }
+}
+
+let test = Test()
+
+let msg = test.greet("World")
+println(msg)
