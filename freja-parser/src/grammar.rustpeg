@@ -60,7 +60,7 @@ func_statement -> Stmt
 
 formal_parameter_list -> Vec<Argument>
     = a:formal_parameter_item_vaargs { vec![a] }
-    / args:(formal_parameter_item ++ (__"," __)) __ rest:formal_parameter_item_vaargs? {
+    / args:(formal_parameter_item ** (__"," __)) __ rest:formal_parameter_item_vaargs? {
         let mut a = args;
         if rest.is_some() {
             a.push(rest.unwrap());
@@ -156,7 +156,7 @@ arguments -> Vec<Expr>
 //     / primary_expr
 
 function_expr -> Expr
-    =  "(" __ a:formal_parameter_list? __  ")" __ "=>" __ b:( expression_statement / block ) { 
+    =  "(" __ a:formal_parameter_list? __  ")"__ "=>" __ b:( expression_statement / block ) { 
         Expr::Closure(ClosureExpr::new(a.unwrap_or(Vec::new()), Box::new(b)))
     }
 
