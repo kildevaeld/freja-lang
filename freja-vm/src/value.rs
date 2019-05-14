@@ -105,7 +105,7 @@ impl fmt::Display for Value {
             Value::Native(_) => write!(f, "<fn native>"),
             Value::Closure(cl) => write!(
                 f,
-                "<fn {}>",
+                "<closure {}>",
                 cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")
             ),
             //_ => write!(f, "Unknown"),
