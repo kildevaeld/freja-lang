@@ -15,7 +15,21 @@ pub enum FunctionType {
 }
 
 #[derive(Debug)]
-pub struct Local(i32, String, bool);
+pub struct Local {
+    depth: i32,
+    name: String,
+    is_upvalue: bool,
+}
+
+impl Local {
+    pub fn new(depth: i32, name: String, is_upvalue: bool) -> Local {
+        Local {
+            depth,
+            name,
+            is_upvalue,
+        }
+    }
+}
 
 struct UpValue {
     index: u8,
@@ -39,11 +53,11 @@ impl CompilerState {
     pub fn new(enclosing: Option<CompilerStatePtr>, scope_depth: i32, function_type: FunctionType) -> CompilerStatePtr {
         let local = if function_type != FunctionType::Function && function_type != FunctionType::TopLevel {
             // In a method, it holds the receiver, "this".
-            Local(scope_depth, "this".to_string(), false)
+            Local::new(scope_depth, "this".to_string(), false)
         } else {
             // In a function, it holds the function, but cannot be referenced,
             // so has no name.
-            Local(scope_depth, "".to_string(), false)
+            Local::new(scope_depth, "".to_string(), false)
         };
 
         let state = CompilerState {
@@ -123,32 +137,36 @@ impl Compiler {
 
     pub fn add_local(&mut self, name: &str) {
         if self.state().locals.len() > 256 {}
-        self.state_mut().locals.push(Local(-1, name.to_string(), false))
+        self.state_mut().locals.push(Local::new(-1, name.to_string(), false))
     }
 
     pub fn add_upvalue(&mut self, index: usize, is_local: bool) -> usize {
-        for kv in self.state().up_values.iter().enumerate() {
-            if kv.1.index == (index as u8) && kv.1.is_local == is_local {
-                return kv.0;
-            }
-        }
+        // for kv in self.state().up_values.iter().enumerate() {
+        //     if kv.1.index == (index as u8) && kv.1.is_local == is_local {
+        //         return kv.0;
+        //     }
+        // }
 
-        self.state().up_values.len()
+        // self.state().up_values.len()
+        let mut state = self.state_mut();
+        self._add_upvalue(&mut state, index, is_local)
     }
 
-    fn _add_upvalue(&self, state: &CompilerStatePtr, index: usize, is_local: bool) -> usize {
-        for kv in state.borrow().up_values.iter().enumerate() {
+    fn _add_upvalue(&self, state: &mut CompilerState, index: usize, is_local: bool) -> usize {
+        for kv in state.up_values.iter().enumerate() {
             if kv.1.index == (index as u8) && kv.1.is_local == is_local {
                 return kv.0;
             }
         }
 
-        state.borrow_mut().up_values.push(UpValue {
+        state.up_values.push(UpValue {
             index: index as u8,
             is_local,
         });
 
-        state.borrow().up_values.len()
+        state.function.up_value_count += 1;
+
+        state.up_values.len() - 1
     }
 
     pub fn declare_variable(&mut self, name: &str) -> CompileResult<()> {
@@ -156,10 +174,10 @@ impl Compiler {
             return Ok(());
         }
         for i in (0..self.state().locals.len()).into_iter().rev() {
-            if self.state().locals[i].0 == -1 && self.state().locals[i].0 < self.state().scope_depth {
+            if self.state().locals[i].depth == -1 && self.state().locals[i].depth < self.state().scope_depth {
                 break;
             }
-            if self.state().locals[i].1.as_str() == name {
+            if self.state().locals[i].name.as_str() == name {
                 return Err(CompileError::DuplicateVariable);
             }
         }
@@ -180,7 +198,7 @@ impl Compiler {
     pub fn mark_initialized(&mut self) {
         let scope = self.state().scope_depth;
         if let Some(last) = self.state_mut().locals.last_mut() {
-            last.0 = scope;
+            last.depth = scope;
         }
     }
 
@@ -190,7 +208,7 @@ impl Compiler {
             .locals
             .iter()
             .enumerate()
-            .find(|m| (m.1).1.as_str() == name)
+            .find(|m| (m.1).name.as_str() == name)
         {
             Some(m) => Some(m.0),
             None => None,
@@ -203,25 +221,32 @@ impl Compiler {
             .locals
             .iter()
             .enumerate()
-            .find(|m| (m.1).1.as_str() == name)
+            .find(|m| (m.1).name.as_str() == name)
         {
             Some(m) => Some(m.0),
             None => None,
         }
     }
 
-    fn _resolve_upvalue(&self, state: &CompilerStatePtr, name: &str) -> Option<usize> {
-        match &state.borrow().enclosing {
+    fn _resolve_upvalue(&self, state: &mut CompilerState, name: &str) -> Option<usize> {
+        match &state.enclosing {
             Some(s) => {
                 if let Some(local) = self._resolve_local(&s, name) {
                     {
-                        s.borrow_mut().locals[local].2 = true;
+                        s.borrow_mut().locals[local].is_upvalue = true;
                     }
-                    return None;
-                    //return Some(self._add_upvalue(&s, local, true));
+
+                    return Some(self._add_upvalue(state, local, true));
                 }
 
-                return self._resolve_upvalue(&s, name);
+                let mut ret = {
+                    let mut s = s.borrow_mut();
+                    self._resolve_upvalue(&mut s, name)
+                };
+
+                if let Some(upvalue) = ret.take() {
+                    return Some(self._add_upvalue(state, upvalue, false));
+                }
             }
             None => {}
         };
@@ -230,7 +255,8 @@ impl Compiler {
     }
 
     pub fn resolve_upvalue(&self, name: &str) -> Option<usize> {
-        self._resolve_upvalue(&self.state, name)
+        let mut b = self.state_mut();
+        self._resolve_upvalue(&mut b, name)
         // if self.state().enclosing.is_none() {
         //     return None;
         // }
@@ -255,16 +281,17 @@ impl Compiler {
         self.state_mut().scope_depth += 1;
     }
 
-    pub fn end_scope(&mut self) {
+    pub fn pope(&mut self) {
         self.state_mut().scope_depth -= 1;
 
         while !self.state().locals.is_empty()
-            && self.state().locals.last().map(|n| n.0).unwrap_or(0) > self.state().scope_depth
+            && self.state().locals.last().map(|n| n.depth).unwrap_or(0) > self.state().scope_depth
         {
-            // if self.state().locals[self.state().locals.len() - 1].is_up_value() {
-            //     self.emit(OpCode::)
-            // }
-            self.emit(OpCode::Pop);
+            if self.state().locals[self.state().locals.len() - 1].is_upvalue {
+                self.emit(OpCode::CloseUpValue);
+            } else {
+                self.emit(OpCode::Pop);
+            }
             self.state_mut().locals.pop();
         }
     }
@@ -324,7 +351,7 @@ impl Compiler {
         if self.state().function_type == FunctionType::Initializer {
             self.emit_opcode_byte(OpCode::GetLocal, 0);
         } else {
-            self.emit_opcode(OpCode::Nil);
+            self.emit(OpCode::Nil);
         }
         self.emit(OpCode::Return);
     }
@@ -363,46 +390,47 @@ impl Compiler {
     }
 
     fn function(&mut self, e: &FuncStmt, type_: FunctionType) -> CompileResult<()> {
-        let state = CompilerState::new(Some(self.state.clone()), 1, type_);
-        {
-            let mut s = state.borrow_mut();
-            s.function.arity = e.parameters.len() as i32;
-            s.function.name = Some(e.name.clone());
-        }
-        self.state = state.clone();
+        self.function2(&e.parameters, &e.body, Some(e.name.as_str()), type_)
+        // let state = CompilerState::new(Some(self.state.clone()), 1, type_);
+        // {
+        //     let mut s = state.borrow_mut();
+        //     s.function.arity = e.parameters.len() as i32;
+        //     s.function.name = Some(e.name.clone());
+        // }
+        // self.state = state.clone();
 
-        for p in &e.parameters {
-            match p {
-                Argument::Regular(m) => {
-                    let global = self.parse_var(m.as_str());
-                    self.define_variable(global);
-                }
-                Argument::Rest(_) => unimplemented!("rest not implemented"),
-            };
-        }
+        // for p in &e.parameters {
+        //     match p {
+        //         Argument::Regular(m) => {
+        //             let global = self.parse_var(m.as_str());
+        //             self.define_variable(global);
+        //         }
+        //         Argument::Rest(_) => unimplemented!("rest not implemented"),
+        //     };
+        // }
 
-        match e.body.as_ref() {
-            Stmt::Block(b) => {
-                for bb in &b.statements {
-                    bb.accept(self)?;
-                }
-            }
-            _ => unimplemented!("should be block"),
-        };
+        // match e.body.as_ref() {
+        //     Stmt::Block(b) => {
+        //         for bb in &b.statements {
+        //             bb.accept(self)?;
+        //         }
+        //     }
+        //     _ => unimplemented!("should be block"),
+        // };
 
-        self.end_scope();
+        // self.pope();
 
-        let function = self.end_compile();
+        // let function = self.end_compile();
 
-        let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
-        self.emit_opcode_byte(OpCode::Closure, constant);
+        // let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
+        // self.emit_opcode_byte(OpCode::Closure, constant);
 
-        for i in state.borrow().up_values.iter() {
-            self.emit(if i.is_local { 1 } else { 0 });
-            self.emit(i.index);
-        }
+        // for i in state.borrow().up_values.iter() {
+        //     self.emit(if i.is_local { 1 } else { 0 });
+        //     self.emit(i.index);
+        // }
 
-        Ok(())
+        // Ok(())
     }
 
     fn function2(
@@ -442,7 +470,7 @@ impl Compiler {
             _ => unimplemented!("should be block or expression statement, was: {:?}", body),
         };
 
-        self.end_scope();
+        self.pope();
 
         let function = self.end_compile();
 
@@ -516,8 +544,6 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
         self.define_variable(global as usize);
 
-        // TODO: Upvalues
-
         Ok(())
     }
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> CompileResult<()> {
@@ -562,7 +588,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         }
 
         if e.extends.is_some() {
-            self.end_scope();
+            self.pope();
         }
 
         let enc = self.class.as_ref().unwrap().borrow().enclosing.clone();
@@ -579,7 +605,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         for b in &e.statements {
             b.accept(self)?;
         }
-        self.end_scope();
+        self.pope();
         Ok(())
     }
     fn visit_if_stmt(&mut self, e: &IfStmt) -> CompileResult<()> {
@@ -640,7 +666,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
             self.emit(OpCode::Pop);
         }
 
-        self.end_scope();
+        self.pope();
 
         Ok(())
     }
