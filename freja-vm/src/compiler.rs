@@ -141,13 +141,6 @@ impl Compiler {
     }
 
     pub fn add_upvalue(&mut self, index: usize, is_local: bool) -> usize {
-        // for kv in self.state().up_values.iter().enumerate() {
-        //     if kv.1.index == (index as u8) && kv.1.is_local == is_local {
-        //         return kv.0;
-        //     }
-        // }
-
-        // self.state().up_values.len()
         let mut state = self.state_mut();
         self._add_upvalue(&mut state, index, is_local)
     }
@@ -165,7 +158,6 @@ impl Compiler {
         });
 
         state.function.up_value_count += 1;
-
         state.up_values.len() - 1
     }
 
@@ -192,7 +184,7 @@ impl Compiler {
             return;
         }
 
-        self.emit_opcode_byte(OpCode::DefineGlobal, global as u8);
+        self.emit_bytes(OpCode::DefineGlobal, global as u8);
     }
 
     pub fn mark_initialized(&mut self) {
@@ -257,24 +249,6 @@ impl Compiler {
     pub fn resolve_upvalue(&self, name: &str) -> Option<usize> {
         let mut b = self.state_mut();
         self._resolve_upvalue(&mut b, name)
-        // if self.state().enclosing.is_none() {
-        //     return None;
-        // }
-        // match &mut self.state_mut().enclosing {
-        //     Some(s) => {
-        //         if let Some(local) = self._resolve_local(s, name) {
-        //             s.borrow_mut().locals[local].2 = true;
-        //             return Some(self._add_upvalue(&s, local, true));
-        //         }
-        //     }
-        //     None => {}
-        // };
-
-        // self._re
-        // // let b = &self.state().enclosing.unwrap();
-        // // let state = b.borrow();
-        // // let local = self._resolve(&state, name);
-        // None
     }
 
     pub fn begin_scope(&mut self) {
@@ -306,23 +280,6 @@ impl Compiler {
         self.state().scope_depth > 0
     }
 
-    // fn chunk(&self) -> &Chunk {
-    //     &self.state().function.chunk
-    // }
-
-    // fn chunk_mut(&mut self) -> &mut Chunk {
-    //     &mut self.state_mut().function.chunk
-    // }
-
-    fn emit_opcode(&mut self, code: OpCode) {
-        self.emit(code);
-    }
-
-    fn emit_opcode_byte(&mut self, code: OpCode, byte: u8) {
-        self.emit(code);
-        self.emit(byte);
-    }
-
     fn make_constant(&mut self, value: Value) -> usize {
         let constant = self.state_mut().function.chunk.add_constant(value);
         constant
@@ -339,11 +296,16 @@ impl Compiler {
 
     fn emit_constant(&mut self, value: Value) {
         let constant = self.make_constant(value);
-        self.emit_opcode_byte(OpCode::Constant, constant as u8)
+        self.emit_bytes(OpCode::Constant, constant as u8)
     }
 
     fn emit<BS: Into<u8>>(&mut self, code: BS) {
         self.state_mut().function.chunk.write_byte(code.into());
+    }
+
+    fn emit_bytes<BS: Into<u8>, BS2: Into<u8>>(&mut self, code: BS, byte: BS2) {
+        self.emit(code);
+        self.emit(byte);
     }
 
     fn emit_jump<BS: Into<u8>>(&mut self, code: BS) -> usize {
@@ -355,7 +317,7 @@ impl Compiler {
 
     fn emit_return(&mut self) {
         if self.state().function_type == FunctionType::Initializer {
-            self.emit_opcode_byte(OpCode::GetLocal, 0);
+            self.emit_bytes(OpCode::GetLocal, 0);
         } else {
             self.emit(OpCode::Nil);
         }
@@ -365,18 +327,12 @@ impl Compiler {
     fn emit_loop(&mut self, start: usize) {
         self.emit(OpCode::Loop);
         let offset = self.state().chunk().len() - start + 2;
-        //println!("loop {} {}", offset, start);
         self.emit(((offset >> 8) & 0xff) as u8);
         self.emit((offset & 0xff) as u8);
     }
 
-    //#[allow(exceeding_bitshifts)]
     fn patch_jump(&mut self, offset: usize) {
         let jump = (self.state().function.chunk.len() - offset - 2) as u16;
-
-        //   if (jump > UINT16_MAX) {
-        //     error("Too much code to jump over.");
-        //   }
 
         self.state_mut().function.chunk.code[offset] = ((jump >> 8) & 0xff) as u8;
         self.state_mut().function.chunk.code[offset + 1] = (jump & 0xff) as u8;
@@ -442,7 +398,7 @@ impl Compiler {
         let function = self.end_compile();
 
         let constant = self.make_constant(Value::Function(Rc::new(function))) as u8;
-        self.emit_opcode_byte(OpCode::Closure, constant);
+        self.emit_bytes(OpCode::Closure, constant);
 
         for i in state.borrow().up_values.iter() {
             self.emit(if i.is_local { 1 } else { 0 });
@@ -463,9 +419,9 @@ impl Compiler {
         };
 
         if self.state().assign {
-            self.emit_opcode_byte(set, a as u8)
+            self.emit_bytes(set, a as u8)
         } else {
-            self.emit_opcode_byte(get, a as u8);
+            self.emit_bytes(get, a as u8);
         }
     }
 }
@@ -488,7 +444,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         if self.is_local() {
             self.mark_initialized();
         } else {
-            self.emit_opcode_byte(OpCode::DefineGlobal, global as u8);
+            self.emit_bytes(OpCode::DefineGlobal, global as u8);
         }
         Ok(())
     }
@@ -516,7 +472,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
     fn visit_class_stmt(&mut self, e: &ClassStmt) -> CompileResult<()> {
         let global = self.make_constant(Value::String(e.name.to_string()));
         self.declare_variable(&e.name)?;
-        self.emit_opcode_byte(OpCode::Class, global as u8);
+        self.emit_bytes(OpCode::Class, global as u8);
         self.define_variable(global);
 
         self.class = Some(ClassCompilerState::new(
@@ -548,7 +504,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
 
                     self.function(stmt, ty)?;
 
-                    self.emit_opcode_byte(OpCode::Method, name as u8);
+                    self.emit_bytes(OpCode::Method, name as u8);
                 }
                 _ => unimplemented!("invalid class member {:?}", m),
             }
@@ -682,18 +638,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
             i => {
                 e.value.accept(self)?;
                 self.state_mut().assign = true;
-                i.accept(self);
-                //unimplemented!("assign to {:?}", e)
-                //e.accept(self)?;
+                i.accept(self)?;
             }
         };
 
         self.state_mut().assign = false;
-
-        // println!("{:?}", e.destination);
-        // unimplemented!("assign");
-
-        //e.destination.accept(self)?;
 
         Ok(())
     }
@@ -712,7 +661,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                 for a in &e.arguments {
                     a.accept(self)?;
                 }
-                self.emit_opcode_byte(OpCode::from((OpCode::Invoke0 as u8) + c), name as u8);
+                self.emit_bytes(OpCode::from((OpCode::Invoke0 as u8) + c), name as u8);
             }
             _ => {
                 e.member.accept(self)?;
@@ -732,15 +681,13 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         //
         let val = match &e.value {
             Literal::Number(n) => Value::Number(n.clone()),
-            //Literal::Number(Number::Double(d)) => Value::Double(*d),
-            //Literal::Number(Number::Integer(i)) => Value::Integer(*i),
             Literal::Boolean(b) => Value::Boolean(*b),
             Literal::String(s) => Value::String(s.clone()),
             Literal::Array(arr) => {
                 for a in arr.iter() {
                     a.accept(self)?;
                 }
-                self.emit_opcode_byte(OpCode::Array, arr.len() as u8);
+                self.emit_bytes(OpCode::Array, arr.len() as u8);
                 return Ok(());
             }
             Literal::Object(obj) => {
@@ -749,7 +696,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                     kv.value.accept(self)?;
                 }
 
-                self.emit_opcode_byte(OpCode::Map, obj.entries().len() as u8);
+                self.emit_bytes(OpCode::Map, obj.entries().len() as u8);
                 return Ok(());
             }
             _ => unimplemented!("literal"),
@@ -850,9 +797,9 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         if self.state().member_depth > 0 {
             let global = self.make_constant(Value::String(e.value.to_string()));
             if self.state().assign {
-                self.emit_opcode_byte(OpCode::SetProperty, global as u8);
+                self.emit_bytes(OpCode::SetProperty, global as u8);
             } else {
-                self.emit_opcode_byte(OpCode::GetProperty, global as u8);
+                self.emit_bytes(OpCode::GetProperty, global as u8);
             }
         } else {
             self.variable(e.value.as_str());
@@ -888,8 +835,8 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
             let idx = self.state().chunk().get(idx);
 
             match local_code {
-                OpCode::GetGlobal => self.emit_opcode_byte(OpCode::SetGlobal, idx),
-                OpCode::GetLocal => self.emit_opcode_byte(OpCode::SetLocal, idx),
+                OpCode::GetGlobal => self.emit_bytes(OpCode::SetGlobal, idx),
+                OpCode::GetLocal => self.emit_bytes(OpCode::SetLocal, idx),
                 _ => {}
             };
         }

@@ -1,3 +1,4 @@
+
 class Test {
     fn greet(msg) {
         return this.fmt(this.name||"Hello", msg)

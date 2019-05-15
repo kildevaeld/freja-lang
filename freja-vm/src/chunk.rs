@@ -52,7 +52,6 @@ macro_rules! jump_instruction_neg {
         writeln!(
             $fmt,
             "{:24}{:4} -> {}",
-
             $name,
             $offset,
             ($offset as isize) + 3 + -1 * (jump as isize)
@@ -210,7 +209,7 @@ impl Chunk {
     fn do_dissamble(&self, nested: bool, indent: i32) -> String {
         let mut i = 0;
         let mut out = String::new();
-        
+
         while i < self.code.len() {
             i = self
                 .disamble_offset(i, &mut out, indent, nested)
@@ -229,8 +228,6 @@ impl Chunk {
         let indent = (0..oindent).map(|_| " ").collect::<Vec<_>>().join("");
         write!(f, "{}", indent)?;
         write!(f, "{:04}   | ", offset)?;
-        
-        
 
         let opcode = OpCode::from(self.code[offset]);
         let m = match opcode {
@@ -281,7 +278,7 @@ impl Chunk {
                         writeln!(
                             f,
                             "{:04}   | {:24} {}",
-                            
+
                             offset - 2,
                             if *local.unwrap() == 1 { "local" } else { "upvalue" },
                             index
@@ -294,7 +291,7 @@ impl Chunk {
                         };
                        write!(f, "{}", fu.chunk().do_dissamble(nested, oindent + 4))?;
                     }
-                   
+
                 };
 
                 offset
