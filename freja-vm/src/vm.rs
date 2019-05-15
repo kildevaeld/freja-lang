@@ -40,7 +40,8 @@ macro_rules! peek_mut {
     }};
 }
 
-/*macro_rules! dump_stack {
+#[allow(unused_macros)]
+macro_rules! dump_stack {
     ($stack: expr) => {
         println!(
             "stack [{}]",
@@ -52,7 +53,7 @@ macro_rules! peek_mut {
                 .join(", ")
         )
     };
-}*/
+}
 
 pub struct VM {
     stack: Stack,
@@ -194,7 +195,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::Return => {
                 let mut result = pop!(stack).unwrap();
 
-                // Move to heap, before popping the stack
+                // Move to heap, before popping the stack or we risc to hit a dangling pointer  ಠ益ಠ
                 match result.as_value() {
                     Value::ClassInstance(_) => {
                         result.into_heap();
@@ -253,14 +254,10 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let mut values = Vec::new();
 
                 for _i in 0..fu.up_value_count {
-                    //println!("has some");
                     let local = if frame.read_byte() == 0 { false } else { true };
                     let index = frame.read_byte();
                     if local {
-                        // FIXME: Local upvalue
-                        //values.push(value: T)
                         let value = stack.get(frame.idx + 1).unwrap();
-
                         values.push(capture_upvalue(value));
                     } else {
                         values.push(Val::Ref(
@@ -270,7 +267,6 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 }
 
                 let cl = Value::Closure(Rc::new(Closure::new(fu, values)));
-
                 push!(stack, Val::Stack(cl))?;
             }
             OpCode::Divide
@@ -436,14 +432,9 @@ fn call(stack: &Stack, frames: &Frames, closure: CloseurePtr, count: u8) -> Runt
         return Err("Invalid parameter count".into());
     }
 
-    let count = if stack.len() == 0 {
-        //stack.push(Val::Stack(Value::Null))?;
-        1
-    } else {
-        a + 1
-    };
+    let count = if stack.len() == 0 { 1 } else { a + 1 };
     let idx = stack.len() - (count as usize);
-    let frame = CallFrame::new(closure, idx); // { closure: closure.clone(), ip: RefCell::new(0), slots: slots };
+    let frame = CallFrame::new(closure, idx);
     frames.push(frame).expect("too many frames");
 
     Ok(())

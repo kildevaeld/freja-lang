@@ -13,7 +13,7 @@ class CommaFormatter {
 
 class Greeter extends CommaFormatter {
 
-    init(greeting) {
+    fn init(greeting) {
         this.greeting = greeting
     }
 
@@ -23,7 +23,7 @@ class Greeter extends CommaFormatter {
 
 }
 
-let greeter = Greeter("Buongiorno")
+let greeter = Greeter("Ciao")
 let greeting = greeter.greet("mondo")
 
 println(greeting)
