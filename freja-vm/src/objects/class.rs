@@ -1,6 +1,5 @@
 use super::super::error::RuntimeResult;
 use super::super::value::{Val, Value};
-use super::objects::Closure;
 use super::types::Instance;
 use std::cell::{RefCell, UnsafeCell};
 use std::collections::HashMap;

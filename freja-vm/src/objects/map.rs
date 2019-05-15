@@ -1,7 +1,5 @@
 use super::super::error::RuntimeResult;
 use super::super::value::{Val, Value};
-use super::objects::Closure;
-use super::objects::Native;
 use super::types::Instance;
 use freja_parser::ast::Number;
 use std::cell::RefCell;
@@ -45,7 +43,7 @@ impl fmt::Display for Map {
 }
 
 impl Instance for Map {
-    fn set_field(&self, name: &str, value: Val) -> RuntimeResult<()> {
+    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
         Ok(())
     }
 
@@ -54,11 +52,11 @@ impl Instance for Map {
         None
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
         None
     }
 
-    fn call_method(&self, name: &str, values: &[Val]) -> Option<RuntimeResult<Value>> {
+    fn call_method(&self, name: &str, _values: &[Val]) -> Option<RuntimeResult<Value>> {
         match name {
             "len" => Some(Ok(Value::Number(Number::Integer(self.inner.borrow().len() as i64)))),
             // "get" => {

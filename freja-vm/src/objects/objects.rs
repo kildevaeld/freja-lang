@@ -1,8 +1,6 @@
 use super::super::chunk::Chunk;
 use super::super::error::RuntimeResult;
 use super::super::value::{Val, Value};
-use std::cell::RefCell;
-use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 

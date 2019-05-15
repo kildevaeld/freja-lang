@@ -4,7 +4,6 @@ use super::value::*;
 use heapless::consts::U64;
 use heapless::Vec as HVec;
 use std::cell::Cell;
-use std::rc::Rc;
 
 pub struct Frames {
     inner: std::cell::UnsafeCell<HVec<CallFrame, U64>>,

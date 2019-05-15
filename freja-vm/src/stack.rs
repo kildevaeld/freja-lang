@@ -1,10 +1,7 @@
 use super::error::{RuntimeError, RuntimeResult};
-use super::objects::*;
 use super::value::*;
 use heapless::consts::U256;
 use heapless::Vec as HVec;
-use std::cell::Cell;
-use std::rc::Rc;
 use std::slice::IterMut;
 
 pub struct Stack {

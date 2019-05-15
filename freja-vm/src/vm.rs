@@ -1,13 +1,11 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
-use super::error::{CompileError, CompileResult, RuntimeError, RuntimeResult};
+use super::error::{RuntimeError, RuntimeResult};
 use super::frames::*;
 use super::objects::*;
 use super::stack::Stack;
 use super::value::*;
 use freja_parser::ast::*;
-use heapless::consts::U256;
-use heapless::Vec as HVec;
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -42,7 +40,7 @@ macro_rules! peek_mut {
     }};
 }
 
-macro_rules! dump_stack {
+/*macro_rules! dump_stack {
     ($stack: expr) => {
         println!(
             "stack [{}]",
@@ -54,7 +52,7 @@ macro_rules! dump_stack {
                 .join(", ")
         )
     };
-}
+}*/
 
 pub struct VM {
     stack: Stack,
@@ -99,7 +97,7 @@ impl VM {
     pub fn interpret_ast(&mut self, ast: &ProgramStmt) -> RuntimeResult<()> {
         let fu = Compiler::new().compile(ast)?;
         let cl = Rc::new(Closure::new(Rc::new(fu), Vec::new()));
-        push!(self.stack, Val::Stack(Value::Closure(cl.clone())));
+        push!(self.stack, Val::Stack(Value::Closure(cl.clone())))?;
         call(&self.stack, &self.frames, CloseurePtr::Stack(cl), 0)?;
 
         run(&self.frames, &mut self.stack, &mut self.globals)?;
@@ -121,8 +119,6 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
         match instruction {
             OpCode::Constant => {
                 let val = frame.read_constant().expect("constant").as_ref() as *const Value;
-                // push!(stack, Val::Heap(frame.read_constant().expect("constant").clone()))?
-
                 push!(stack, Val::Ref(val))?;
             }
             OpCode::Pop => {
@@ -135,7 +131,6 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             }
             OpCode::GetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
-
                 let m = match globals.get(name) {
                     Some(m) => m.as_ref() as *const Value,
                     None => panic!("undefined variable: {}", name),
@@ -145,12 +140,11 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::GetLocal => {
                 let b = frame.read_byte();
                 let idx = frame.idx + b as usize;
-
                 let val = stack
                     .get(idx)
                     .expect(format!("get local at idx {}", idx).as_str())
                     .as_ref() as *const Value;
-                push!(stack, Val::Ref(val));
+                push!(stack, Val::Ref(val))?;
             }
             OpCode::SetLocal => {
                 let b = frame.read_byte();
@@ -258,7 +252,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
 
                 let mut values = Vec::new();
 
-                for i in 0..fu.up_value_count {
+                for _i in 0..fu.up_value_count {
                     //println!("has some");
                     let local = if frame.read_byte() == 0 { false } else { true };
                     let index = frame.read_byte();
@@ -374,7 +368,7 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
             OpCode::GetUpValue => {
                 let idx = frame.read_byte();
                 let value = &frame.closure.as_ref().upvalues()[idx as usize];
-                push!(stack, Val::Ref(value.as_ref() as *const Value));
+                push!(stack, Val::Ref(value.as_ref() as *const Value))?;
             }
             _ => unimplemented!("instruction {:?}", instruction),
         };
@@ -474,7 +468,7 @@ fn invoke_from_class(stack: &Stack, frames: &Frames, instance: &Instance, name: 
 
 #[inline(always)]
 fn invoke(stack: &Stack, frames: &Frames, name: &str, count: u8) -> RuntimeResult<()> {
-    let mut receiver = peek_mut!(stack, count).unwrap();
+    let receiver = peek_mut!(stack, count).unwrap();
 
     let instance = match receiver.as_instance() {
         Some(s) => s,

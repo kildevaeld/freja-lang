@@ -1,7 +1,5 @@
 use super::super::error::RuntimeResult;
 use super::super::value::{Val, Value};
-use super::objects::Closure;
-use super::objects::Native;
 use super::types::Instance;
 use freja_parser::ast::Number;
 use std::fmt;
@@ -40,7 +38,7 @@ impl fmt::Display for Array {
 }
 
 impl Instance for Array {
-    fn set_field(&self, name: &str, value: Val) -> RuntimeResult<()> {
+    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
         Ok(())
     }
 
@@ -49,7 +47,7 @@ impl Instance for Array {
         None
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
         None
     }
 

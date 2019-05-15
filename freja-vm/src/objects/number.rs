@@ -1,20 +1,19 @@
 use super::super::error::RuntimeResult;
 use super::super::value::{Val, Value};
-use super::objects::Closure;
 use super::types::Instance;
 use freja_parser::ast::Number;
 use std::rc::Rc;
 
 impl Instance for Number {
-    fn set_field(&self, name: &str, value: Val) -> RuntimeResult<()> {
+    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
         Ok(())
     }
 
-    fn get_field(&self, name: &str) -> Option<&Val> {
+    fn get_field(&self, _name: &str) -> Option<&Val> {
         None
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
         None
     }
 }
