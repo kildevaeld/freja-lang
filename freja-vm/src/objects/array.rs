@@ -79,6 +79,7 @@ impl Instance for Array {
                     .or_else(|| Some(Value::Null))
                     .unwrap()))
             }
+
             _ => None,
         }
     }

@@ -386,13 +386,12 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
 #[inline(always)]
 fn call_value(stack: &Stack, frames: &Frames, callee: &Value, count: u8) -> RuntimeResult<()> {
     match callee {
-        // Value::Closure(cl) => {
-        //     call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure))?;
-        // }
         Value::Closure(cl) => {
-            call(stack, frames, CloseurePtr::Stack(cl.clone()), count)?;
+            call(stack, frames, CloseurePtr::Ref(cl.as_ref() as *const Closure), count)?;
         }
-
+        // Value::Closure(cl) => {
+        //     call(stack, frames, CloseurePtr::Stack(cl.clone()), count)?;
+        // }
         Value::Class(cl) => {
             let len = stack.len();
             let s = if count == 0 {
