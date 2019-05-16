@@ -39,15 +39,7 @@ impl Class {
         self.inner.borrow_mut().methods.insert(name, method);
     }
 
-    pub fn find_method(&self, name: &str) -> Option<Rc<Value>> {
-        match self.inner.borrow().methods.iter().find(|m| m.0 == name) {
-            Some(s) => Some(s.1.clone()),
-            None => match self.inner.borrow().super_class {
-                Some(ref s) => s.find_method(name),
-                None => None,
-            },
-        }
-    }
+    
 
     pub fn inherit(&self, class: &Rc<Class>) {
         // let mut b = self.methods.borrow_mut();
@@ -61,6 +53,28 @@ impl Class {
 impl fmt::Debug for Class {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Class")
+    }
+}
+
+impl Instance for Class {
+    
+    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
+        match self.inner.borrow().methods.iter().find(|m| m.0 == name) {
+            Some(s) => Some(s.1.clone()),
+            None => match self.inner.borrow().super_class {
+                Some(ref s) => s.find_method(name),
+                None => None,
+            },
+        }
+    }
+
+    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
+        Ok(())
+    }
+
+    fn get_field(&self, name: &str) -> Option<&Val> {
+        println!("name {}", name);
+        None
     }
 }
 
