@@ -248,6 +248,27 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 invoke(stack, frames, method.as_str(), count).unwrap();
                 frame = frames.last().unwrap();
             }
+            OpCode::Super0
+            | OpCode::Super1
+            | OpCode::Super2
+            | OpCode::Super3
+            | OpCode::Super4
+            | OpCode::Super5
+            | OpCode::Super6
+            | OpCode::Super7
+            | OpCode::Super8 => {
+                let count = (instruction as u8) - (OpCode::Super0 as u8);
+                let method = frame.read_constant().unwrap().as_string().unwrap();
+                let class = pop!(stack).expect("super class");
+                invoke_from_class(
+                    stack,
+                    frames,
+                    class.as_class().expect("super class").as_ref(),
+                    method,
+                    count,
+                )?;
+                frame = frames.last().unwrap();
+            }
             OpCode::Closure => {
                 let fu = frame.read_constant().unwrap().as_function().unwrap().clone();
 
@@ -365,6 +386,9 @@ fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> RuntimeResult<(
                 let idx = frame.read_byte();
                 let value = &frame.closure.as_ref().upvalues()[idx as usize];
                 push!(stack, Val::Ref(value.as_ref() as *const Value))?;
+            }
+            OpCode::CloseUpValue => {
+                //
             }
             _ => unimplemented!("instruction {:?}", instruction),
         };
