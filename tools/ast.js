@@ -11,6 +11,7 @@ exports.expressions = [
     ["Arguments", ["expressions: *Expr"]],
     ["Logical", ["left: Expr", "right: Expr", "operator: LogicalOperator"]],
     ["This", []],
+    ["Super", []],
     ["Var", ["name: Token"]],
     ["Identifier", ["value: String"]],
     ["Unary", ["value: Expr", "operator: UnaryOperator"]],

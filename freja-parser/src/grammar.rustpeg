@@ -181,8 +181,8 @@ member_expr -> Expr
 
 
 primary_expr -> Expr
-    //= "this" / identifier / literal / "(" expression ")"
-    = t:this { t } 
+    = t:this { t }
+      / s:super_expr { s }
       / i:identifier { i }
       / l:literal { l }
       / "(" e:expression ")" { e }
@@ -191,6 +191,8 @@ primary_expr -> Expr
 this -> Expr
     =  token_this { Expr::This(ThisExpr::new()) } 
 
+super_expr -> Expr
+    = token_super { Expr::Super(SuperExpr::new()) }
 
 postfix_expr -> Expr
     = v:left_hand_side _ o:POSTFIX_OPERATOR __ { Expr::Postfix(PostfixExpr::new(Box::new(v),o)) }
@@ -336,6 +338,8 @@ literal_object -> Literal
 // Tokens
 
 token_this = "this"
+
+token_super = "super"
 
 token_function = "fn"
 

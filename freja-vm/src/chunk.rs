@@ -130,11 +130,20 @@ pub enum OpCode {
     Invoke6,
     Invoke7,
     Invoke8,
+    Super0,
+    Super1,
+    Super2,
+    Super3,
+    Super4,
+    Super5,
+    Super6,
+    Super7,
+    Super8,
 }
 
 impl From<u8> for OpCode {
     fn from(i: u8) -> OpCode {
-        if i <= (OpCode::Invoke8 as u8) {
+        if i <= (OpCode::Super8 as u8) {
             return unsafe { std::mem::transmute::<_, OpCode>(i) };
         }
         panic!("invalid repo {}", i);
@@ -317,6 +326,17 @@ impl Chunk {
             | OpCode::Invoke7
             | OpCode::Invoke8 => {
                 constant_instruction_n!("OP_INVOKE", self, offset, ((opcode as u8) - (OpCode::Invoke0 as u8)), f)
+            }
+            OpCode::Super0
+            | OpCode::Super1
+            | OpCode::Super2
+            | OpCode::Super3
+            | OpCode::Super4
+            | OpCode::Super5
+            | OpCode::Super6
+            | OpCode::Super7
+            | OpCode::Super8 => {
+                constant_instruction_n!("OP_SUPER", self, offset, ((opcode as u8) - (OpCode::Super0 as u8)), f)
             }
             //_ => unimplemented!("unknown code {:?}", opcode),
         };

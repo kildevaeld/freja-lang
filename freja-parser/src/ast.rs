@@ -110,6 +110,7 @@ pub trait ExprVisitor<R> {
     fn visit_arguments_expr(&mut self, e: &ArgumentsExpr) -> R;
     fn visit_logical_expr(&mut self, e: &LogicalExpr) -> R;
     fn visit_this_expr(&mut self, e: &ThisExpr) -> R;
+    fn visit_super_expr(&mut self, e: &SuperExpr) -> R;
     fn visit_var_expr(&mut self, e: &VarExpr) -> R;
     fn visit_identifier_expr(&mut self, e: &IdentifierExpr) -> R;
     fn visit_unary_expr(&mut self, e: &UnaryExpr) -> R;
@@ -276,6 +277,7 @@ pub enum Expr {
     Arguments(ArgumentsExpr),
     Logical(LogicalExpr),
     This(ThisExpr),
+    Super(SuperExpr),
     Var(VarExpr),
     Identifier(IdentifierExpr),
     Unary(UnaryExpr),
@@ -295,6 +297,7 @@ impl Expr {
             Expr::Arguments(s) => visitor.visit_arguments_expr(&s),
             Expr::Logical(s) => visitor.visit_logical_expr(&s),
             Expr::This(s) => visitor.visit_this_expr(&s),
+            Expr::Super(s) => visitor.visit_super_expr(&s),
             Expr::Var(s) => visitor.visit_var_expr(&s),
             Expr::Identifier(s) => visitor.visit_identifier_expr(&s),
             Expr::Unary(s) => visitor.visit_unary_expr(&s),
@@ -608,6 +611,16 @@ pub struct ThisExpr {}
 impl ThisExpr {
     pub fn new() -> ThisExpr {
         ThisExpr {}
+    }
+}
+
+#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+pub struct SuperExpr {}
+
+impl SuperExpr {
+    pub fn new() -> SuperExpr {
+        SuperExpr {}
     }
 }
 
