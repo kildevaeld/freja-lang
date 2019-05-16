@@ -652,7 +652,20 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
         match e.member.as_ref() {
             Expr::Member(mem) => {
-                mem.object.accept(self)?;
+                //handle super
+                let code = match mem.object.as_ref() {
+                    Expr::Super(_) => {
+                        //
+                        //self.variable("this");
+
+                        OpCode::Super0
+                    }
+                    _ => {
+                        mem.object.accept(self)?;
+                        OpCode::Invoke0
+                    }
+                };
+
                 let name = match mem.property.as_ref() {
                     Expr::Identifier(i) => i.value.as_str(),
                     _ => unimplemented!("invalid call member"),
@@ -661,7 +674,11 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                 for a in &e.arguments {
                     a.accept(self)?;
                 }
-                self.emit_bytes(OpCode::from((OpCode::Invoke0 as u8) + c), name as u8);
+                if code == OpCode::Super0 {
+                    self.variable("super");
+                }
+
+                self.emit_bytes(OpCode::from((code as u8) + c), name as u8);
             }
             _ => {
                 e.member.accept(self)?;
@@ -786,6 +803,10 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
 
     fn visit_this_expr(&mut self, _e: &ThisExpr) -> CompileResult<()> {
         self.variable("this");
+        Ok(())
+    }
+
+    fn visit_super_expr(&mut self, e: &SuperExpr) -> CompileResult<()> {
         Ok(())
     }
 
