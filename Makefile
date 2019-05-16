@@ -11,7 +11,7 @@ freja-parser/src/ast.rs: tools/index.js tools/template.hbs
 	node $< | rustfmt > $@
 
 clean:
-	rm freja-ast/src/ast.rs
+	rm freja-parser/src/ast.rs
 
 release:
 	cargo build --release
