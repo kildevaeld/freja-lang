@@ -1,0 +1,22 @@
+
+
+class Array {
+    fn init(a) {
+        this.a = a
+    }
+
+    fn each(f) {
+        let a = this.a
+        
+        for let i = 0; i < a.len(); i++ {
+            f(a.get(i), i)
+        }
+    }
+}
+
+let a = Array(["test", "mig", "i", "øret"])
+
+a.each((m,i) => {
+    print(m)
+})
+//a.each(1)

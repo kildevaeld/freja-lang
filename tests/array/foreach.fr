@@ -1,0 +1,6 @@
+
+
+
+["test", "mig"].each((m,i) => {
+    print(m)
+})

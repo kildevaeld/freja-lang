@@ -5,6 +5,7 @@ use heapless::consts::U64;
 use heapless::Vec as HVec;
 use std::cell::Cell;
 
+#[derive(Debug)]
 pub struct Frames {
     inner: std::cell::UnsafeCell<HVec<CallFrame, U64>>,
 }

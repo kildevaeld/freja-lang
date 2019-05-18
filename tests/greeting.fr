@@ -21,4 +21,4 @@ class Greeter extends CommaFormatter {
 let greeter = Greeter("Ciao")
 let greeting = greeter.greet("mondo")
 
-println(greeting)
+print(greeting)
