@@ -18,14 +18,14 @@ fn fibonacci(n: u64) -> u64 {
 fn fib() {
     let mut vm = VM::new();
 
-    vm.interpret(
+    vm.eval_script(
         r#"fn fib(num) {
             if num <= 1 {
                 return 1
             }
             return fib(num - 1) + fib(num - 2)
         }
-        fib(30)"#,
+        fib(20)"#,
     )
     .unwrap();
 }
