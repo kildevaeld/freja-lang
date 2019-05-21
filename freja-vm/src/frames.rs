@@ -1,13 +1,14 @@
 use super::error::{RuntimeError, RuntimeResult};
 use super::objects::*;
 use super::value::*;
-use heapless::consts::U64;
+use heapless::consts::U256;
+use heapless::ArrayLength;
 use heapless::Vec as HVec;
 use std::cell::Cell;
 
 #[derive(Debug)]
-pub struct Frames {
-    inner: std::cell::UnsafeCell<HVec<CallFrame, U64>>,
+pub struct Frames<N: ArrayLength<CallFrame> = U256> {
+    inner: std::cell::UnsafeCell<HVec<CallFrame, N>>,
 }
 
 impl Frames {

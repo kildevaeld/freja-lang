@@ -1,5 +1,6 @@
 use super::chunk::OpCode;
 use super::compiler::Compiler;
+use super::context::Context;
 use super::error::RuntimeResult;
 use super::frames::{CallFrame, Frames};
 use super::objects::Native;
@@ -7,10 +8,9 @@ use super::objects::*;
 use super::runner::{call_value, run as run_frame, Globals};
 use super::stack::{RootStack, Stack};
 use super::value::*;
+use heapless::consts::U8;
 use std::cell::RefCell;
 use std::rc::Rc;
-use super::context::Context;
-
 
 #[derive(Debug)]
 pub struct VM {
