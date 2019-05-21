@@ -4,7 +4,7 @@ static ALLOCATOR: System = System;
 
 use freja_parser::*;
 use freja_vm::compiler::*;
-use freja_vm::context::VM;
+use freja_vm::vm::VM;
 use freja_vm::value::Value;
 
 use getopts::Options;

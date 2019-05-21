@@ -61,7 +61,6 @@ impl<S: Stack> Context<S> {
         self.stack.len()
     }
 
-    // pub fn get(&self, idx: Idx) -> RuntimeResult<&Value> {}
     pub fn eval_script<Str: AsRef<str>>(&self, source: Str) -> RuntimeResult<()> {
         let ast = freja_parser::parser::program(source.as_ref())?;
         let fu = Compiler::new().compile(&ast)?;
@@ -76,7 +75,7 @@ impl<S: Stack> Context<S> {
         }
 
         let val = self.stack.peek(args_count as i32).expect("function");
-        call_value(self, val, args_count as u8)?;       
+        call_value(self, val, args_count as u8)?;
         self.run()?;
         Ok(())
     }
@@ -95,44 +94,5 @@ impl<S: Stack> Context<S> {
 
     fn run(&self) -> RuntimeResult<()> {
         run_frame(self)
-    }
-}
-
-#[derive(Debug)]
-pub struct VM {
-    ctx: Context<RootStack>,
-}
-
-impl VM {
-    pub fn new() -> VM {
-        let vm = VM {
-            ctx: Context::new(
-                RootStack::new(),
-                Rc::new(RefCell::new(Globals::default())),
-                Frames::new(),
-            ),
-        };
-
-        vm.ctx.globals.borrow_mut().insert(
-            "print".to_string(),
-            Rc::new(Value::Native(Rc::new(Native {
-                arity: 1,
-                function: Box::new(|ctx| {
-                    let v = ctx.get(0).expect("zero");
-                    println!("{}", v);
-                    Ok(Value::Null)
-                }),
-            }))),
-        );
-
-        vm
-    }
-
-    pub fn eval_script<S: AsRef<str>>(&self, source: S) -> RuntimeResult<()> {
-        self.ctx.eval_script(source)
-    }
-
-    pub fn call(&self, args_count: u32) -> RuntimeResult<()> {
-        self.ctx.call(args_count)
     }
 }

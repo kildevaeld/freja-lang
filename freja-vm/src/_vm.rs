@@ -151,6 +151,7 @@ pub(crate) fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> Runt
                 let b = frame.read_byte();
                 let val = peek_mut!(stack, 0).unwrap();
                 let idx = frame.idx + b as usize;
+                
                 stack.set(idx, val.into_heap().clone());
             }
             OpCode::SetGlobal => {
@@ -228,6 +229,7 @@ pub(crate) fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> Runt
             | OpCode::Call6
             | OpCode::Call7
             | OpCode::Call8 => {
+                println("call");
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
                 let callee = peek!(stack, count as usize).expect("expect callee");
 
@@ -270,6 +272,7 @@ pub(crate) fn run(frames: &Frames, stack: &Stack, globals: &mut Globals) -> Runt
                 frame = frames.last().unwrap();
             }
             OpCode::Closure => {
+                println("closure");
                 let fu = frame.read_constant().unwrap().as_function().unwrap().clone();
 
                 let mut values = Vec::new();

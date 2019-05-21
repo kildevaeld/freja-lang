@@ -63,7 +63,7 @@ impl Instance for Array {
                     ctx.push(Value::Number(Number::Integer(i as i64)));
                     ctx.call(2);
                     ctx.pop();
-                   
+
                 }
                 Some(Ok(Value::Null))
             }
@@ -80,7 +80,7 @@ impl Instance for Array {
                 }
                 Some(Ok(Value::Array(Array::new(out))))
             }
-        
+
             "get" => {
                 let idx = if ctx.top() == 0 {
                     0

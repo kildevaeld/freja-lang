@@ -12,7 +12,7 @@ pub mod context;
 pub mod frames;
 mod runner;
 pub mod stack;
-// pub mod vm;
+pub mod vm;
 
 #[cfg(test)]
 mod tests {

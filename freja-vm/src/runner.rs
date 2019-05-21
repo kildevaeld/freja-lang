@@ -27,17 +27,13 @@ macro_rules! pop {
 
 macro_rules! peek {
     ($stack: expr, $distance: expr) => {{
-        let i = -1 - $distance as i32;
-        let idx = ($stack.len() as i32) + i;
-        $stack.get(idx as usize)
+        $stack.peek($distance)
     }};
 }
 
 macro_rules! peek_mut {
     ($stack: expr, $distance: expr) => {{
-        let i = -1 - $distance as i32;
-        let idx = ($stack.len() as i32) + i;
-        $stack.get_mut(idx as usize)
+        $stack.peek_mut($distance)
     }};
 }
 
@@ -60,7 +56,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
     let mut frame = ctx.frames.last().unwrap(); // frames.len() - 1;
     let stack = &ctx.stack;
 
-    'outer: while frame.ip.get() < frame.closure.as_ref().function.chunk.code.len() {
+    'outer: while frame.ip.get() < frame.closure.as_ref().chunk().code.len() {
         let instruction = frame.read_byte();
         let instruction = OpCode::from(instruction);
 
@@ -114,8 +110,6 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::SetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
 
-                // let value = pop!(stack).expect("property expected property");
-                // let receiver = peek!(stack, 0).expect("property expected receiver");
                 let value = peek_mut!(stack, 0).expect("property expected property");
                 let receiver = peek!(stack, 1).expect("property expected receiver");
 
@@ -178,7 +172,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             | OpCode::Call7
             | OpCode::Call8 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
-                let callee = peek!(ctx.stack, count as usize).expect("expect callee");
+                let callee = peek!(ctx.stack, count as i32).expect("expect callee");
                 call_value(ctx, callee.as_value(), count)?;
                 frame = ctx.frames.last().unwrap();
             }
@@ -255,7 +249,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                         let m = stack.get_mut(i).unwrap();
                         v.push(m.into_heap().clone());
                     }
-                   
+
                     stack.truncate(idx);
                     push!(stack, Val::Stack(Value::Array(Array::new(v))))?;
                 }
@@ -275,25 +269,24 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             //     }
             // }
             OpCode::JumpIfFalse => {
-                let current = &frame;
-                let offset = current.read_short();
+                let offset = frame.read_short();
                 let v = peek!(stack, 0).unwrap();
-
                 if !value_is_truthy!(v.as_ref()) {
-                    let ip = current.ip.get();
-                    current.ip.set(ip + offset as usize);
+                    let ip = frame.ip.get();
+                    frame.ip.set(ip + offset as usize);
                 }
             }
             OpCode::Jump => {
-                let current = &frame;
-                let offset = current.read_short();
-                let ip = current.ip.get();
-                current.ip.set(ip + offset as usize);
+                let offset = frame.read_short();
+                let ip = frame.ip.get();
+                frame.ip.set(ip + offset as usize);
             }
             OpCode::Not => {
-                let current = pop!(stack).unwrap();
+                //let current = pop!(stack).unwrap();
+                let current = peek!(stack, 0).unwrap();
                 let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
-                push!(stack, Val::Stack(v))?;
+                stack.set(stack.len() - 1, Val::Stack(v));
+                //push!(stack, Val::Stack(v))?;
             }
             OpCode::Loop => {
                 let offset = frame.read_short();
@@ -309,7 +302,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::Method => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
                 let method = pop!(stack).unwrap();
-                let class = pop!(stack).unwrap(); //.as_class().unwrap().clone();
+                let class = pop!(stack).unwrap();
                 class
                     .as_class()
                     .unwrap()
@@ -347,9 +340,6 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Value, count: u8) 
         Value::Closure(cl) => {
             call(ctx, CloseurePtr::Ref(cl.as_ref() as *const Closure), count)?;
         }
-        // Value::Closure(cl) => {
-        //     call(stack, frames, CloseurePtr::Stack(cl.clone()), count)?;
-        // }
         Value::Class(cl) => {
             let len = ctx.stack.len();
             let s = if count == 0 {
@@ -378,7 +368,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Value, count: u8) 
 
             let substack = ctx.stack.substack(idx);
             let subctx = Context::new(substack, ctx.globals.clone(), Frames::new());
-            
+
             match (native.function)(&subctx) {
                 Err(e) => {
                     return Err(e);
@@ -388,19 +378,6 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Value, count: u8) 
                     push!(ctx.stack, Val::Stack(s));
                 }
             }
-
-            
-
-            // match (native.function)(&ctx.stack.as_ref()[len - (count as usize)..len]) {
-            //     Err(e) => {
-            //         return Err(e);
-            //     }
-            //     Ok(s) => {
-            //         ctx.stack.truncate(idx - 1);
-            //         push!(ctx.stack, Val::Stack(s));
-            //     }
-            // }
-            //stack.truncate(idx);
         }
 
         _ => unimplemented!("call on {:?} not implemented", callee),
@@ -438,8 +415,8 @@ fn invoke_from_class<S: Stack>(ctx: &Context<S>, instance: &Instance, name: &str
 
 #[inline(always)]
 fn invoke<S: Stack>(ctx: &Context<S>, name: &str, count: u8) -> RuntimeResult<()> {
-    let receiver = peek_mut!(ctx.stack, count).unwrap();
-    
+    let receiver = peek_mut!(ctx.stack, count as i32).unwrap();
+
     let instance = match receiver.as_instance() {
         Some(s) => s,
         None => return Err(format!("receiver was {} expected instance for call: {}", receiver, name).into()),

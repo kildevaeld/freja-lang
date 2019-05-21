@@ -46,6 +46,28 @@ impl Function {
     }
 }
 
+
+pub enum FunctionPtr {
+    Stack(Rc<Function>),
+    Ref(*const Function),
+}
+
+impl AsRef<Function> for FunctionPtr {
+    fn as_ref(&self) -> &Function {
+        match self {
+            FunctionPtr::Ref(r) => unsafe { &**r },
+            FunctionPtr::Stack(r) => r.as_ref(),
+        }
+    }
+}
+
+impl fmt::Debug for FunctionPtr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        <Function as fmt::Debug>::fmt(self.as_ref(), f)
+    }
+}
+
+
 #[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug)]
 pub struct Closure {
@@ -54,7 +76,7 @@ pub struct Closure {
 }
 
 impl Closure {
-    pub fn new(function: Rc<Function>, upvalues: Vec<Val>) -> Closure {
+    pub fn new(function:Rc<Function>, upvalues: Vec<Val>) -> Closure {
         Closure { function, upvalues }
     }
 
