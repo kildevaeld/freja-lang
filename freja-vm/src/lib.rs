@@ -12,6 +12,7 @@ pub mod context;
 pub mod frames;
 mod runner;
 pub mod stack;
+pub mod utils;
 pub mod vm;
 
 #[cfg(test)]

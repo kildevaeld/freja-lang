@@ -4,8 +4,8 @@ static ALLOCATOR: System = System;
 
 use freja_parser::*;
 use freja_vm::compiler::*;
-use freja_vm::vm::VM;
 use freja_vm::value::Value;
+use freja_vm::vm::VM;
 
 use getopts::Options;
 #[cfg(feature = "serializing")]
@@ -27,22 +27,22 @@ fn print_ast(input: &str) {
 #[cfg(not(feature = "serializing"))]
 fn print_ast(_input: &str) {}
 
-#[cfg(feature = "serializing")]
-fn dump(input: &str, output: Option<String>) {
-    let data = fs::read_to_string(input).unwrap();
-    let ast = parser::program(&data).expect("could not parse");
-    let ret = Compiler::new().compile(&ast).expect("compile");
-    if output.is_some() {
-        let mut file = fs::File::create(output.unwrap()).expect("open file");
-        serde_cbor::to_writer(&mut file, ret.chunk()).unwrap();
-    } else {
-        let json = serde_json::to_string_pretty(ret.chunk()).unwrap();
-        println!("{}", json);
-    }
-}
+// #[cfg(feature = "serializing")]
+// fn dump(input: &str, output: Option<String>) {
+//     let data = fs::read_to_string(input).unwrap();
+//     let ast = parser::program(&data).expect("could not parse");
+//     let ret = Compiler::new().compile(&ast).expect("compile");
+//     if output.is_some() {
+//         let mut file = fs::File::create(output.unwrap()).expect("open file");
+//         serde_cbor::to_writer(&mut file, ret.chunk()).unwrap();
+//     } else {
+//         let json = serde_json::to_string_pretty(ret.chunk()).unwrap();
+//         println!("{}", json);
+//     }
+// }
 
-#[cfg(not(feature = "serializing"))]
-fn dump(_input: &str, _output: Option<String>) {}
+// #[cfg(not(feature = "serializing"))]
+// fn dump(_input: &str, _output: Option<String>) {}
 
 fn print_bytecode(input: &str) {
     let data = fs::read_to_string(input).unwrap();
@@ -98,7 +98,7 @@ fn main() {
 
     if cfg!(feature = "serializing") {
         opts.optflag("a", "ast", "print ast");
-        opts.optflag("d", "dump", "dump bytecode");
+        //opts.optflag("d", "dump", "dump bytecode");
     }
 
     let matches = match opts.parse(&args[1..]) {
@@ -120,8 +120,6 @@ fn main() {
 
     if cfg!(feature = "serializing") && matches.opt_present("a") {
         print_ast(&input);
-    } else if cfg!(feature = "serializing") && matches.opt_present("d") {
-        dump(&input, output);
     } else if matches.opt_present("b") {
         print_bytecode(&input);
     } else {

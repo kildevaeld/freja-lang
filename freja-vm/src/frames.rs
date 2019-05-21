@@ -5,6 +5,7 @@ use heapless::consts::U256;
 use heapless::ArrayLength;
 use heapless::Vec as HVec;
 use std::cell::Cell;
+use super::utils::Pointer;
 
 #[derive(Debug)]
 pub struct Frames<N: ArrayLength<CallFrame> = U256> {
@@ -41,13 +42,13 @@ impl Frames {
 
 #[derive(Debug)]
 pub struct CallFrame {
-    pub(crate) closure: CloseurePtr,
+    pub(crate) closure: Pointer<Closure>,
     pub(crate) ip: Cell<usize>,
     pub(crate) idx: usize,
 }
 
 impl CallFrame {
-    pub fn new(closure: CloseurePtr, idx: usize) -> CallFrame {
+    pub fn new(closure: Pointer<Closure>, idx: usize) -> CallFrame {
         CallFrame {
             closure,
             ip: Cell::new(0),

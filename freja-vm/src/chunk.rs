@@ -74,7 +74,6 @@ macro_rules! simple_instruction_n {
     }};
 }
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[repr(u8)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum OpCode {
@@ -156,12 +155,9 @@ impl From<OpCode> for u8 {
     }
 }
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq)]
 pub struct Chunk {
-    #[cfg_attr(feature = "serde_support", serde(rename = "b"))]
     pub(crate) code: Vec<u8>,
-    #[cfg_attr(feature = "serde_support", serde(rename = "c"))]
     constants: Vec<ValuePtr>,
 }
 

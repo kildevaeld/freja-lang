@@ -14,7 +14,6 @@ use std::rc::Rc;
 
 // }
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug, Clone, Default)]
 pub struct Map {
     inner: RefCell<HashMap<String, Val>>,

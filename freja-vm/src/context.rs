@@ -6,6 +6,7 @@ use super::objects::Native;
 use super::objects::*;
 use super::runner::{call_value, run as run_frame, Globals};
 use super::stack::{RootStack, Stack};
+use super::utils::Pointer;
 use super::value::*;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -28,7 +29,7 @@ impl<S: Stack> Context<S> {
         }
     }
     pub fn push(&self, val: Value) -> RuntimeResult<&Self> {
-        self.stack.push(Val::Stack(val))?;
+        self.stack.push(Pointer::Stack(val))?;
         Ok(self)
     }
     pub fn pop(&self) -> Option<Val> {
@@ -46,7 +47,7 @@ impl<S: Stack> Context<S> {
     pub fn dup(&self, idx: Idx) -> RuntimeResult<&Self> {
         match self.get_mut(idx) {
             Some(m) => {
-                self.stack.push(m.into_heap().clone())?;
+                self.stack.push(m.promote().clone())?;
                 ()
             }
             None => {
@@ -64,8 +65,8 @@ impl<S: Stack> Context<S> {
     pub fn eval_script<Str: AsRef<str>>(&self, source: Str) -> RuntimeResult<()> {
         let ast = freja_parser::parser::program(source.as_ref())?;
         let fu = Compiler::new().compile(&ast)?;
-        let cl = Rc::new(Closure::new(Rc::new(fu), Vec::new()));
-        self.stack.push(Val::Stack(Value::Closure(cl.clone())))?;
+        let cl = Closure::new(Pointer::Heap(Rc::new(fu)), Vec::new());
+        self.stack.push(Pointer::Stack(Value::Closure(Rc::new(cl))))?;
         self.call(0)
     }
 

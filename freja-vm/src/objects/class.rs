@@ -6,14 +6,12 @@ use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug, PartialEq)]
 pub struct ClassInner {
     pub(crate) methods: HashMap<String, Rc<Value>>,
     pub(crate) super_class: Option<Rc<Class>>,
 }
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq)]
 pub struct Class {
     pub(crate) name: String,
@@ -39,8 +37,6 @@ impl Class {
         self.inner.borrow_mut().methods.insert(name, method);
     }
 
-    
-
     pub fn inherit(&self, class: &Rc<Class>) {
         // let mut b = self.methods.borrow_mut();
         // for m in class.methods.borrow().iter() {
@@ -57,7 +53,6 @@ impl fmt::Debug for Class {
 }
 
 impl Instance for Class {
-    
     fn find_method(&self, name: &str) -> Option<Rc<Value>> {
         match self.inner.borrow().methods.iter().find(|m| m.0 == name) {
             Some(s) => Some(s.1.clone()),
@@ -78,11 +73,9 @@ impl Instance for Class {
     }
 }
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(Debug)]
 pub struct ClassInstance {
     pub(crate) class: Rc<Class>,
-    #[cfg_attr(feature = "serde_support", serde(skip))]
     fields: UnsafeCell<HashMap<String, Val>>,
 }
 

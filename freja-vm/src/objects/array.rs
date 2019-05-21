@@ -1,6 +1,6 @@
 use super::super::context::Context;
 use super::super::error::RuntimeResult;
-use super::super::stack::SubStack;
+use super::super::stack::{Stack, SubStack};
 use super::super::value::{Val, Value};
 use super::types::Instance;
 use freja_parser::ast::Number;
@@ -9,7 +9,6 @@ use std::rc::Rc;
 
 use std::cell::RefCell;
 
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
 #[derive(PartialEq, Debug, Clone, Default)]
 pub struct Array {
     inner: RefCell<Vec<Val>>,
@@ -57,26 +56,24 @@ impl Instance for Array {
         match name {
             "len" => Some(Ok(Value::Number(Number::Integer(self.inner.borrow().len() as i64)))),
             "each" => {
-                for (i, v) in self.inner.borrow_mut().iter().enumerate() {
+                for (i, v) in self.inner.borrow_mut().iter_mut().enumerate() {
                     ctx.dup(0);
-                    ctx.push(v.as_value().clone());
+                    ctx.stack.push(v.as_ptr());
                     ctx.push(Value::Number(Number::Integer(i as i64)));
                     ctx.call(2);
                     ctx.pop();
-
                 }
                 Some(Ok(Value::Null))
             }
             "map" => {
                 let mut out = Vec::new();
-                for (i, v) in self.inner.borrow_mut().iter().enumerate() {
+                for (i, v) in self.inner.borrow_mut().iter_mut().enumerate() {
                     ctx.dup(0);
-                    ctx.push(v.as_value().clone());
+                    ctx.stack.push(v.as_ptr());
                     ctx.push(Value::Number(Number::Integer(i as i64)));
                     ctx.call(2);
-                    let  item = ctx.pop().unwrap();
+                    let item = ctx.pop().unwrap();
                     out.push(item);
-
                 }
                 Some(Ok(Value::Array(Array::new(out))))
             }
