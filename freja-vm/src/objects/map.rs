@@ -53,7 +53,7 @@ impl Instance for Map {
         None
     }
 
-    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<&Value> {
         None
     }
 

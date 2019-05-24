@@ -29,14 +29,14 @@ impl VM {
 
         vm.ctx.globals.borrow_mut().insert(
             "print".to_string(),
-            Rc::new(Value::Native(Rc::new(Native {
+            Value::Native(Rc::new(Native {
                 arity: 1,
                 function: Box::new(|ctx| {
                     let v = ctx.get(0).expect("zero");
                     println!("{}", v);
                     Ok(Value::Null)
                 }),
-            }))),
+            })),
         );
 
         vm

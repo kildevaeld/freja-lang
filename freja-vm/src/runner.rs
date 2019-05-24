@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 // pub type Stack = HVec<Val, U256>;
-pub type Globals = HashMap<String, ValuePtr>;
+pub type Globals = HashMap<String, Value>;
 
 macro_rules! push {
     ($stack: expr, $val: expr) => {
@@ -63,7 +63,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
         match instruction {
             OpCode::Constant => {
-                let val = frame.read_constant().expect("constant") as *const Rc<Value>;
+                let val = frame.read_constant().expect("constant") as *const Value;
                 push!(stack, Pointer::Ref(val))?;
             }
             OpCode::Pop => {
@@ -74,12 +74,12 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let value = pop!(stack).unwrap();
                 ctx.globals
                     .borrow_mut()
-                    .insert(name.as_string().unwrap().to_string(), value.into_shared());
+                    .insert(name.as_string().unwrap().to_string(), value.into_inner());
             }
             OpCode::GetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
                 let m = match ctx.globals.borrow().get(name) {
-                    Some(m) => m as *const Rc<Value>,
+                    Some(m) => m as *const Value,
                     None => panic!("undefined variable: {}", name),
                 };
                 push!(stack, Pointer::Ref(m))?;
@@ -95,7 +95,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let b = frame.read_byte();
                 let val = peek_mut!(stack, 0).unwrap();
                 let idx = frame.idx + b as usize;
-                stack.set(idx, val.promote().clone());
+                stack.set(idx, val.clone());
             }
             OpCode::SetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -103,7 +103,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     return Err(RuntimeError::InvalidIndex);
                 }
                 let val = peek!(stack, 0).unwrap();
-                ctx.globals.borrow_mut().insert(name.clone(), val.clone().into_shared());
+                ctx.globals.borrow_mut().insert(name.clone(), val.clone().into_inner());
             }
 
             OpCode::SetProperty => {
@@ -120,7 +120,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 pop!(stack);
                 pop!(stack);
 
-                instance.set_field(name, value.promote().clone())?;
+                instance.set_field(name, value.clone())?;
             }
             OpCode::GetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -138,15 +138,18 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::Return => {
                 let mut result = pop!(stack).unwrap();
                 // Move to heap, before popping the stack or we risc to hit a dangling pointer  ಠ益ಠ
-                match result.as_ref() {
-                    Value::ClassInstance(_) => {
-                        result.promote();
-                    }
-                    Value::Closure(_) => {
-                        result.promote();
-                    }
-                    _ => {}
-                };
+                // match result.as_ref() {
+                //     Value::ClassInstance(_) => {
+                //         result.promote();
+                //     }
+                //     Value::Closure(_) => {
+                //         result.promote();
+                //     }
+                //     _ => {}
+                // };
+                if result.is_ref() {
+                    result = result.clone()
+                }
 
                 stack.truncate(frame.idx);
 
@@ -201,7 +204,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let count = (instruction as u8) - (OpCode::Super0 as u8);
                 let method = frame.read_constant().unwrap().as_string().unwrap();
                 let class = pop!(ctx.stack).expect("super class");
-                invoke_from_class(ctx, class.as_class().expect("super class"), method, count)?;
+                invoke_from_class(ctx, class.as_class().expect("super class").as_ref(), method, count)?;
                 frame = ctx.frames.last().unwrap();
             }
             OpCode::Closure => {
@@ -223,7 +226,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     };
                 }
 
-                let cl = Value::Closure(Rc::new(Closure::new(Pointer::Heap(fu.clone()), values)));
+                let cl = Value::Closure(Rc::new(Closure::new(Pointer::Stack(fu.clone()), values)));
                 push!(stack, Pointer::Stack(cl))?;
             }
             OpCode::Divide
@@ -241,17 +244,17 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::Array => {
                 let o = frame.read_byte();
                 if o == 0 {
-                    push!(stack, Pointer::Stack(Value::Array(Array::default())))?;
+                    push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::default()))))?;
                 } else {
                     let mut v = Vec::new();
                     let idx = stack.len() - o as usize;
                     for i in idx..stack.len() {
                         let m = stack.get_mut(i).unwrap();
-                        v.push(m.promote().clone());
+                        v.push(m.clone());
                     }
 
                     stack.truncate(idx);
-                    push!(stack, Pointer::Stack(Value::Array(Array::new(v))))?;
+                    push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::new(v)))))?;
                 }
             }
             // OpCode::Map => {
@@ -282,11 +285,9 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 frame.ip.set(ip + offset as usize);
             }
             OpCode::Not => {
-                //let current = pop!(stack).unwrap();
                 let current = peek!(stack, 0).unwrap();
                 let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
                 stack.set(stack.len() - 1, Pointer::Stack(v));
-                //push!(stack, Val::Stack(v))?;
             }
             OpCode::Loop => {
                 let offset = frame.read_short();
@@ -306,7 +307,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 class
                     .as_class()
                     .unwrap()
-                    .add_method(name.to_owned(), method.into_shared());
+                    .add_method(name.to_owned(), method.into_inner());
             }
             OpCode::Inherit => {
                 let super_c = peek!(stack, 1).unwrap();
@@ -315,7 +316,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     None => panic!("super"),
                 };
                 let subclass = peek!(stack, 0).unwrap().as_class().unwrap();
-                //subclass.inherit(super_c);
+                subclass.inherit(super_c);
                 pop!(stack);
             }
             OpCode::Nil => push!(stack, Pointer::Stack(Value::Null))?,
@@ -350,14 +351,15 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
 
             ctx.stack.set(
                 s as usize,
-                Pointer::Stack(Value::ClassInstance(ClassInstance::new(cl.clone()))),
+                Pointer::Stack(Value::ClassInstance(Rc::new(ClassInstance::new(cl.clone())))),
             );
+
             if let Some(initializer) = cl.find_method("init") {
                 let closure = initializer.as_closure().unwrap().clone();
                 if closure.function.arity != count as i32 {
                     return Err("invalid numbers of parameters".into());
                 }
-                call(ctx, Pointer::Heap(closure), count)?;
+                call(ctx, Pointer::Stack(closure), count)?;
             } else if count != 0 {
                 return Err("invalid numbers of parameters".into());
             }
@@ -386,7 +388,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
 }
 
 #[inline(always)]
-fn call<S: Stack>(ctx: &Context<S>, closure: Pointer<Closure>, count: u8) -> RuntimeResult<()> {
+fn call<S: Stack>(ctx: &Context<S>, closure: Pointer<Rc<Closure>>, count: u8) -> RuntimeResult<()> {
     // TODO check aritity
     let a = closure.as_ref().function.arity;
     if a != count as i32 {
@@ -408,7 +410,7 @@ fn invoke_from_class<S: Stack>(ctx: &Context<S>, instance: &Instance, name: &str
         None => return Err(format!("could not find method: '{}', on receiver: {:?}", name, instance).into()),
     };
 
-    call(ctx, Pointer::Heap(method.as_closure().unwrap().clone()), count)?;
+    call(ctx, Pointer::Stack(method.as_closure().unwrap().clone()), count)?;
 
     Ok(())
 }

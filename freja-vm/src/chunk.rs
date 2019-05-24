@@ -158,7 +158,7 @@ impl From<OpCode> for u8 {
 #[derive(PartialEq)]
 pub struct Chunk {
     pub(crate) code: Vec<u8>,
-    constants: Vec<ValuePtr>,
+    constants: Vec<Value>,
 }
 
 impl Chunk {
@@ -177,7 +177,7 @@ impl Chunk {
         OpCode::from(self.code[offset])
     }
 
-    pub fn get_constant(&self, constant: usize) -> Option<&ValuePtr> {
+    pub fn get_constant(&self, constant: usize) -> Option<&Value> {
         self.constants.get(constant)
     }
 
@@ -199,11 +199,11 @@ impl Chunk {
 
     pub fn add_constant(&mut self, value: Value) -> usize {
         for kv in self.constants.iter().enumerate() {
-            if kv.1.as_ref() == &value {
+            if kv.1 == &value {
                 return kv.0;
             }
         }
-        self.constants.push(Rc::new(value));
+        self.constants.push(value);
         self.constants.len() - 1
     }
 

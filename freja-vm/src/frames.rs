@@ -1,11 +1,12 @@
 use super::error::{RuntimeError, RuntimeResult};
 use super::objects::*;
+use super::utils::Pointer;
 use super::value::*;
 use heapless::consts::U256;
 use heapless::ArrayLength;
 use heapless::Vec as HVec;
 use std::cell::Cell;
-use super::utils::Pointer;
+use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Frames<N: ArrayLength<CallFrame> = U256> {
@@ -42,13 +43,13 @@ impl Frames {
 
 #[derive(Debug)]
 pub struct CallFrame {
-    pub(crate) closure: Pointer<Closure>,
+    pub(crate) closure: Pointer<Rc<Closure>>,
     pub(crate) ip: Cell<usize>,
     pub(crate) idx: usize,
 }
 
 impl CallFrame {
-    pub fn new(closure: Pointer<Closure>, idx: usize) -> CallFrame {
+    pub fn new(closure: Pointer<Rc<Closure>>, idx: usize) -> CallFrame {
         CallFrame {
             closure,
             ip: Cell::new(0),
@@ -71,7 +72,7 @@ impl CallFrame {
         jump
     }
 
-    pub fn read_constant(&self) -> Option<&ValuePtr> {
+    pub fn read_constant(&self) -> Option<&Value> {
         let b = self.read_byte();
         self.closure.as_ref().function.chunk.get_constant(b as usize)
     }

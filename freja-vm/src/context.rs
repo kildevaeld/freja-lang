@@ -47,7 +47,7 @@ impl<S: Stack> Context<S> {
     pub fn dup(&self, idx: Idx) -> RuntimeResult<&Self> {
         match self.get_mut(idx) {
             Some(m) => {
-                self.stack.push(m.promote().clone())?;
+                self.stack.push(m.clone())?;
                 ()
             }
             None => {
@@ -65,7 +65,7 @@ impl<S: Stack> Context<S> {
     pub fn eval_script<Str: AsRef<str>>(&self, source: Str) -> RuntimeResult<()> {
         let ast = freja_parser::parser::program(source.as_ref())?;
         let fu = Compiler::new().compile(&ast)?;
-        let cl = Closure::new(Pointer::Heap(Rc::new(fu)), Vec::new());
+        let cl = Closure::new(Pointer::Stack(Rc::new(fu)), Vec::new());
         self.stack.push(Pointer::Stack(Value::Closure(Rc::new(cl))))?;
         self.call(0)
     }

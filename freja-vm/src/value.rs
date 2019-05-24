@@ -10,12 +10,11 @@ pub type ValuePtr = Rc<Value>;
 #[derive(PartialEq, Debug, Clone)]
 pub enum Value {
     Number(Number),
+    Boolean(bool),
 
     String(String),
 
-    Boolean(bool),
-
-    Array(Array),
+    Array(Rc<Array>),
 
     Map(Map),
 
@@ -27,7 +26,7 @@ pub enum Value {
 
     Class(Rc<Class>),
 
-    ClassInstance(ClassInstance),
+    ClassInstance(Rc<ClassInstance>),
 
     Null,
 }
@@ -60,7 +59,7 @@ impl Value {
         }
     }
 
-    pub fn as_class(&self) -> Option<&Class> {
+    pub fn as_class(&self) -> Option<&Rc<Class>> {
         match self {
             Value::Class(f) => Some(f),
             _ => None,
@@ -69,23 +68,23 @@ impl Value {
 
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
-            Value::ClassInstance(i) => Some(i),
-            Value::Number(n) => Some(n),
-            Value::String(s) => Some(s),
-            Value::Array(a) => Some(a),
+            Value::ClassInstance(i) => Some(i.as_ref()),
+            // Value::Number(n) => Some(n),
+            // Value::String(s) => Some(s),
+            // Value::Array(a) => Some(a),
             _ => None,
         }
     }
 
-    pub fn as_instance_mut(&mut self) -> Option<&mut Instance> {
-        match self {
-            Value::ClassInstance(i) => Some(i),
-            Value::Number(n) => Some(n),
-            Value::String(s) => Some(s),
-            Value::Array(a) => Some(a),
-            _ => None,
-        }
-    }
+    // pub fn as_instance_mut(&mut self) -> Option<&mut Instance> {
+    //     match self {
+    //         Value::ClassInstance(i) => Some(i),
+    //         Value::Number(n) => Some(n),
+    //         Value::String(s) => Some(s),
+    //         Value::Array(a) => Some(a),
+    //         _ => None,
+    //     }
+    // }
 }
 
 impl fmt::Display for Value {

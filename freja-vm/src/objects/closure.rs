@@ -10,12 +10,12 @@ use std::rc::Rc;
 
 #[derive(PartialEq, Debug)]
 pub struct Closure {
-    pub(crate) function: Pointer<Function>,
+    pub(crate) function: Pointer<Rc<Function>>,
     upvalues: Vec<Val>,
 }
 
 impl Closure {
-    pub fn new(function: Pointer<Function>, upvalues: Vec<Val>) -> Closure {
+    pub fn new(function: Pointer<Rc<Function>>, upvalues: Vec<Val>) -> Closure {
         Closure { function, upvalues }
     }
 

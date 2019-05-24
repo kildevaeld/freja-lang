@@ -13,7 +13,7 @@ impl Instance for Number {
         None
     }
 
-    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<&Value> {
         None
     }
 }

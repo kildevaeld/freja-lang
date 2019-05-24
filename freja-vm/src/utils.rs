@@ -3,45 +3,56 @@ use std::rc::Rc;
 
 #[derive(Debug)]
 pub enum Pointer<T> {
-    Heap(Rc<T>),
+    //Heap(Rc<T>),
     Stack(T),
-    Ref(*const Rc<T>),
+    Ref(*const T),
 }
 
-impl<T> Pointer<T> {
-    pub fn into_shared(self) -> Rc<T> {
-        match self {
-            Pointer::Heap(h) => h,
-            Pointer::Stack(s) => Rc::new(s),
-            Pointer::Ref(r) => unsafe { (&*r).clone() },
-        }
-    }
-}
+// impl<T> Pointer<T> {
+//     pub fn into_shared(self) -> Rc<T> {
+//         match self {
+//             Pointer::Stack(s) => Rc::new(s),
+//             Pointer::Ref(r) => unsafe { (&*r).clone() },
+//         }
+//     }
+// }
 
 impl<T: Default + fmt::Debug> Pointer<T> {
-    pub fn promote(&mut self) -> &mut Pointer<T> {
-        println!("PROMOTE {:?}", self);
-        let this = std::mem::replace(self, Pointer::Stack(T::default()));
-        match this {
-            Pointer::Heap(h) => {
-                *self = Pointer::Heap(h);
-            }
-            Pointer::Stack(s) => {
-                *self = Pointer::Heap(Rc::new(s));
-            }
-            Pointer::Ref(r) => *self = unsafe { Pointer::Heap((&*r).clone()) },
-        }
-        self
-    }
+    // pub fn promote(&mut self) -> &mut Pointer<T> {
+    //     println!("PROMOTE {:?}", self);
+    //     let this = std::mem::replace(self, Pointer::Stack(T::default()));
+    //     match this {
+    //         // Pointer::Heap(h) => {
+    //         //     *self = Pointer::Heap(h);
+    //         // }
+    //         Pointer::Stack(s) => {
+    //             *self = Pointer::Heap(Rc::new(s));
+    //         }
+    //         Pointer::Ref(r) => *self = unsafe { Pointer::Heap((&*r).clone()) },
+    //     }
+    //     self
+    // }
 
     pub fn as_ptr(&mut self) -> Pointer<T> {
         match self {
-            Pointer::Heap(h) => Pointer::Ref(h as *const Rc<T>),
-            Pointer::Stack(s) => {
-                self.promote();
-                self.as_ptr()
-            }
-            Pointer::Ref(r) => unsafe { Pointer::Ref(*r) },
+            Pointer::Stack(s) => Pointer::Ref(s as *const T),
+            Pointer::Ref(r) => Pointer::Ref(*r),
+        }
+    }
+
+    pub fn is_ref(&self) -> bool {
+        match self {
+            Pointer::Ref(_) => true,
+            _ => false,
+        }
+    }
+}
+
+impl<T: Clone> Pointer<T> {
+    pub fn into_inner(self) -> T {
+        match self {
+            Pointer::Ref(r) => unsafe { (&*r).clone() },
+            Pointer::Stack(s) => s,
         }
     }
 }
@@ -62,7 +73,6 @@ impl<T> std::ops::Deref for Pointer<T> {
 impl<T> AsRef<T> for Pointer<T> {
     fn as_ref(&self) -> &T {
         match self {
-            Pointer::Heap(h) => h.as_ref(),
             Pointer::Ref(r) => unsafe { &**r },
             Pointer::Stack(s) => &s,
         }
@@ -72,9 +82,8 @@ impl<T> AsRef<T> for Pointer<T> {
 impl<T: Clone> Clone for Pointer<T> {
     fn clone(&self) -> Self {
         match self {
-            Pointer::Heap(h) => Pointer::Heap(h.clone()),
             Pointer::Stack(s) => Pointer::Stack(s.clone()),
-            Pointer::Ref(r) => unsafe { Pointer::Ref(*r) },
+            Pointer::Ref(r) => unsafe { Pointer::Stack((&**r).clone()) },
         }
     }
 }

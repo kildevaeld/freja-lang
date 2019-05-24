@@ -8,7 +8,7 @@ use std::rc::Rc;
 pub trait Instance: fmt::Debug {
     fn set_field(&self, name: &str, value: Val) -> RuntimeResult<()>;
     fn get_field(&self, name: &str) -> Option<&Val>;
-    fn find_method(&self, name: &str) -> Option<Rc<Value>>;
+    fn find_method(&self, name: &str) -> Option<&Value>;
     fn call_method(&self, _name: &str, _ctx: &Context<SubStack>) -> Option<RuntimeResult<Value>> {
         None
     }

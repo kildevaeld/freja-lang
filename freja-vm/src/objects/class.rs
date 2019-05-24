@@ -8,21 +8,20 @@ use std::rc::Rc;
 
 #[derive(Debug, PartialEq)]
 pub struct ClassInner {
-    pub(crate) methods: HashMap<String, Rc<Value>>,
+    pub(crate) methods: HashMap<String, Value>,
     pub(crate) super_class: Option<Rc<Class>>,
 }
 
-#[derive(PartialEq)]
 pub struct Class {
     pub(crate) name: String,
-    inner: RefCell<ClassInner>,
+    inner: UnsafeCell<ClassInner>,
 }
 
 impl Class {
     pub fn new(name: String) -> Class {
         Class {
             name,
-            inner: RefCell::new(ClassInner {
+            inner: UnsafeCell::new(ClassInner {
                 methods: HashMap::new(),
                 super_class: None,
             }),
@@ -33,8 +32,8 @@ impl Class {
         &self.name
     }
 
-    pub fn add_method(&self, name: String, method: Rc<Value>) {
-        self.inner.borrow_mut().methods.insert(name, method);
+    pub fn add_method(&self, name: String, method: Value) {
+        unsafe { (&mut *self.inner.get()).methods.insert(name, method) };
     }
 
     pub fn inherit(&self, class: &Rc<Class>) {
@@ -42,7 +41,7 @@ impl Class {
         // for m in class.methods.borrow().iter() {
         //     b.insert(m.0.clone(), m.1.clone());
         // }
-        self.inner.borrow_mut().super_class = Some(class.clone())
+        unsafe { (&mut *self.inner.get()).super_class = Some(class.clone()) }
     }
 }
 
@@ -52,14 +51,23 @@ impl fmt::Debug for Class {
     }
 }
 
+impl PartialEq for Class {
+    fn eq(&self, other: &Class) -> bool {
+        self.inner.get() == other.inner.get()
+    }
+}
+
 impl Instance for Class {
-    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
-        match self.inner.borrow().methods.iter().find(|m| m.0 == name) {
-            Some(s) => Some(s.1.clone()),
-            None => match self.inner.borrow().super_class {
-                Some(ref s) => s.find_method(name),
-                None => None,
-            },
+    fn find_method(&self, name: &str) -> Option<&Value> {
+        unsafe {
+            let borrow = &*self.inner.get();
+            match borrow.methods.iter().find(|m| m.0 == name) {
+                Some(s) => Some(s.1),
+                None => match borrow.super_class {
+                    Some(ref s) => s.find_method(name),
+                    None => None,
+                },
+            }
         }
     }
 
@@ -120,7 +128,7 @@ impl Instance for ClassInstance {
         self.fields().get(name)
     }
 
-    fn find_method(&self, name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, name: &str) -> Option<&Value> {
         self.class.find_method(name)
     }
 }

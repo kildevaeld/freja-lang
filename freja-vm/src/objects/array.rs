@@ -48,7 +48,7 @@ impl Instance for Array {
         None
     }
 
-    fn find_method(&self, _name: &str) -> Option<Rc<Value>> {
+    fn find_method(&self, _name: &str) -> Option<&Value> {
         None
     }
 
@@ -75,7 +75,7 @@ impl Instance for Array {
                     let item = ctx.pop().unwrap();
                     out.push(item);
                 }
-                Some(Ok(Value::Array(Array::new(out))))
+                Some(Ok(Value::Array(Rc::new(Array::new(out)))))
             }
 
             "get" => {
