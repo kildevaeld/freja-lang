@@ -54,12 +54,12 @@ impl Instance for Array {
 
     fn call_method(&self, name: &str, ctx: &Context<SubStack>) -> Option<RuntimeResult<Value>> {
         match name {
-            "len" => Some(Ok(Value::Number(Number::Integer(self.inner.borrow().len() as i64)))),
+            "len" => Some(Ok(Value::Integer(self.inner.borrow().len() as i64))),
             "each" => {
                 for (i, v) in self.inner.borrow_mut().iter_mut().enumerate() {
                     ctx.dup(0);
                     ctx.stack.push(v.as_ptr());
-                    ctx.push(Value::Number(Number::Integer(i as i64)));
+                    ctx.push(Value::Integer(i as i64));
                     ctx.call(2);
                     ctx.pop();
                 }
@@ -70,7 +70,7 @@ impl Instance for Array {
                 for (i, v) in self.inner.borrow_mut().iter_mut().enumerate() {
                     ctx.dup(0);
                     ctx.stack.push(v.as_ptr());
-                    ctx.push(Value::Number(Number::Integer(i as i64)));
+                    ctx.push(Value::Integer(i as i64));
                     ctx.call(2);
                     let item = ctx.pop().unwrap();
                     out.push(item);
@@ -83,8 +83,8 @@ impl Instance for Array {
                     0
                 } else {
                     match ctx.get(0).unwrap().as_ref() {
-                        Value::Number(Number::Double(d)) => *d as usize,
-                        Value::Number(Number::Integer(i)) => *i as usize,
+                        Value::Double(d) => *d as usize,
+                        Value::Integer(i) => *i as usize,
                         _ => return Some(Err("invalid index".into())),
                     }
                 };

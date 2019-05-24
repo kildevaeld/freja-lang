@@ -21,7 +21,7 @@ impl Instance for String {
 
     fn call_method(&self, name: &str, _ctx: &Context<SubStack>) -> Option<RuntimeResult<Value>> {
         match name {
-            "len" => Some(Ok(Value::Number(Number::Integer(self.len() as i64)))),
+            "len" => Some(Ok(Value::Integer(self.len() as i64))),
             _ => None,
         }
     }

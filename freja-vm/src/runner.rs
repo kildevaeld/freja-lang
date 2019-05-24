@@ -274,7 +274,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::JumpIfFalse => {
                 let offset = frame.read_short();
                 let v = peek!(stack, 0).unwrap();
-                if !value_is_truthy!(v.as_ref()) {
+                if !v.is_truthy() {
                     let ip = frame.ip.get();
                     frame.ip.set(ip + offset as usize);
                 }
@@ -286,7 +286,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             }
             OpCode::Not => {
                 let current = peek!(stack, 0).unwrap();
-                let v = Value::Boolean(!value_is_truthy!(current.as_ref()));
+                let v = Value::Boolean(!current.is_truthy());
                 stack.set(stack.len() - 1, Pointer::Stack(v));
             }
             OpCode::Loop => {

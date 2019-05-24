@@ -697,7 +697,8 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     fn visit_literal_expr(&mut self, e: &LiteralExpr) -> CompileResult<()> {
         //
         let val = match &e.value {
-            Literal::Number(n) => Value::Number(n.clone()),
+            Literal::Number(Number::Double(d)) => Value::Double(*d),
+            Literal::Number(Number::Integer(i)) => Value::Integer(*i),
             Literal::Boolean(b) => Value::Boolean(*b),
             Literal::String(s) => Value::String(s.clone()),
             Literal::Array(arr) => {
@@ -847,7 +848,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         };
         e.value.accept(self)?;
 
-        self.emit_constant(Value::Number(Number::Integer(1)));
+        self.emit_constant(Value::Integer(1));
         self.emit(OpCode::Add);
         if is_local {
             let op = self.state().chunk().len() - 5;

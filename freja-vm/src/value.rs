@@ -9,7 +9,8 @@ pub type ValuePtr = Rc<Value>;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Value {
-    Number(Number),
+    Integer(i64),
+    Double(f64),
     Boolean(bool),
 
     String(String),
@@ -90,7 +91,8 @@ impl Value {
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Value::Number(n) => <Number as fmt::Display>::fmt(n, f),
+            Value::Integer(i) => <i64 as fmt::Display>::fmt(i, f),
+            Value::Double(d) => <f64 as fmt::Display>::fmt(d, f),
             Value::String(s) => write!(f, "{}", s),
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
@@ -114,8 +116,8 @@ impl Value {
     pub fn is_truthy(&self) -> bool {
         match self {
             Value::String(s) => !s.is_empty(),
-            Value::Number(Number::Double(d)) => *d > 0.0,
-            Value::Number(Number::Integer(d)) => *d > 0,
+            Value::Integer(i) => *i > 0,
+            Value::Double(d) => *d > 0.0,
             Value::Boolean(b) => *b,
             Value::Class(_) => true,
             Value::ClassInstance(_) => true,
@@ -204,14 +206,22 @@ impl AsRef<Value> for Val {
 macro_rules! value_add {
     ($lhs: expr, $rhs: expr) => {
         match $lhs {
-            Value::Number(n) => match $rhs {
-                Value::Number(nn) => Ok(Value::Number(n + nn)),
+            Value::Integer(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Integer(n + nn)),
+                Value::Double(nn) => Ok(Value::Double(*n as f64 + *nn)),
+                Value::String(s) => Ok(Value::String(format!("{}{}", n, s))),
+                _ => Err("nan".into()),
+            },
+            Value::Double(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Double(*n + (*nn as f64))),
+                Value::Double(nn) => Ok(Value::Double(*n as f64 + *nn)),
                 Value::String(s) => Ok(Value::String(format!("{}{}", n, s))),
                 _ => Err("nan".into()),
             },
             Value::String(s) => match $rhs {
                 Value::String(ss) => Ok(Value::String([s.as_str(), ss.as_str()].concat())),
-                Value::Number(n) => Ok(Value::String(format!("{}{}", s, n))),
+                Value::Integer(n) => Ok(Value::String(format!("{}{}", s, n))),
+                Value::Double(n) => Ok(Value::String(format!("{}{}", s, n))),
                 _ => Err("nan".into()),
             },
             _ => {
@@ -225,8 +235,14 @@ macro_rules! value_add {
 macro_rules! value_arithmetic {
     ($lhs: expr, $rhs: expr, $op: tt) => {
         match $lhs {
-            Value::Number(n) => match $rhs {
-                Value::Number(nn) => Ok(Value::Number(n $op nn)),
+            Value::Integer(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Integer(n $op nn)),
+                Value::Double(nn) => Ok(Value::Double(*n as f64 $op *nn)),
+                _ => Err("nan".into()),
+            },
+            Value::Double(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Double(*n $op (*nn as f64))),
+                Value::Double(nn) => Ok(Value::Double(*n as f64 $op *nn)),
                 _ => Err("nan".into()),
             },
             _ => Err(format!("could not sub {:?}", $lhs).into()),
@@ -237,8 +253,17 @@ macro_rules! value_arithmetic {
 macro_rules! value_comparison {
     ($lhs: expr, $rhs: expr, $op: tt) => {
         match $lhs {
-            Value::Number(n) => match $rhs {
-                Value::Number(nn) => Ok(Value::Boolean(n $op nn)),
+            Value::Integer(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Boolean(n $op nn)),
+                Value::Double(nn) => {
+                    let n = *n as f64;
+                    Ok(Value::Boolean(&n $op nn))
+                },
+                _ => Err("nan".into()),
+            },
+            Value::Double(n) => match $rhs {
+                Value::Integer(nn) => Ok(Value::Boolean(*n $op (*nn as f64))),
+                Value::Double(nn) => Ok(Value::Boolean(n $op nn)),
                 _ => Err("nan".into()),
             },
             _ => Err(format!("could not equal {:?} {} {:?}", $lhs,stringify!($op), $rhs).into()),
@@ -276,28 +301,28 @@ macro_rules! value_binary {
     };
 }
 
-#[macro_export]
-macro_rules! value_is_truthy {
-    ($value: expr) => {
-        match $value {
-                                                    Value::String(s) => !s.is_empty(),
-                                                    Value::Number(Number::Double(d)) => *d > 0.0,
-                                                    Value::Number(Number::Integer(d)) => *d > 0,
-                                                    Value::Boolean(b) => *b,
-                                                    Value::Class(_) => true,
-                                                    Value::ClassInstance(_) => true,
-                                                    Value::Array(a) => !a.is_empty(),
-                                                    Value::Map(a) => !a.is_empty(),
-                                                    Value::Null => false,
-                                                    Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-                                                    //ValueClass::Instance(_) => true,
-                                                }
-    };
-}
+// #[macro_export]
+// macro_rules! value_is_truthy {
+//     ($value: expr) => {
+//         match $value {
+//                                                     Value::String(s) => !s.is_empty(),
+//                                                     Value::Number(Number::Double(d)) => *d > 0.0,
+//                                                     Value::Number(Number::Integer(d)) => *d > 0,
+//                                                     Value::Boolean(b) => *b,
+//                                                     Value::Class(_) => true,
+//                                                     Value::ClassInstance(_) => true,
+//                                                     Value::Array(a) => !a.is_empty(),
+//                                                     Value::Map(a) => !a.is_empty(),
+//                                                     Value::Null => false,
+//                                                     Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
+//                                                     //ValueClass::Instance(_) => true,
+//                                                 }
+//     };
+// }
 
-#[macro_export]
-macro_rules! is_falsey {
-    ($value: expr) => {
-        !value_is_truthy!($value)
-    };
-}
+// #[macro_export]
+// macro_rules! is_falsey {
+//     ($value: expr) => {
+//         !value_is_truthy!($value)
+//     };
+// }
