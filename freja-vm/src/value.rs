@@ -23,7 +23,7 @@ pub enum Value {
 
     Closure(Rc<Closure>),
 
-    Native(Rc<Native>),
+    Native(Rc<Box<Native>>),
 
     Class(Rc<Class>),
 
@@ -53,7 +53,7 @@ impl Value {
         }
     }
 
-    pub fn as_native(&self) -> Option<&Rc<Native>> {
+    pub fn as_native(&self) -> Option<&Rc<Box<Native>>> {
         match self {
             Value::Native(f) => Some(f),
             _ => None,

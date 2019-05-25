@@ -6,11 +6,17 @@ use super::frames::{CallFrame, Frames};
 use super::objects::Native;
 use super::objects::*;
 use super::runner::{call_value, run as run_frame, Globals};
-use super::stack::{RootStack, Stack};
+use super::stack::{RootStack, Stack, SubStack};
 use super::value::*;
 use heapless::consts::U8;
 use std::cell::RefCell;
 use std::rc::Rc;
+
+fn freja_print(ctx: &Context<SubStack>) -> RuntimeResult<Value> {
+    let v = ctx.get(0).expect("zero");
+    println!("{}", v);
+    Ok(Value::Null)
+}
 
 #[derive(Debug)]
 pub struct VM {
@@ -27,18 +33,10 @@ impl VM {
             ),
         };
 
-        vm.ctx.globals.borrow_mut().insert(
-            "print".to_string(),
-            Value::Native(Rc::new(Native {
-                arity: 1,
-                function: Box::new(|ctx| {
-                    let v = ctx.get(0).expect("zero");
-                    println!("{}", v);
-                    Ok(Value::Null)
-                }),
-            })),
-        );
-
+        vm.ctx
+            .globals
+            .borrow_mut()
+            .insert("print".to_string(), NativeFn::value(&freja_print, 1));
         vm
     }
 

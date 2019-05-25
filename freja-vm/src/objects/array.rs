@@ -1,8 +1,7 @@
-use super::super::context::Context;
 use super::super::error::RuntimeResult;
-use super::super::stack::{Stack, SubStack};
+use super::super::stack::Stack;
 use super::super::value::{Val, Value};
-use super::native::Native;
+use super::native::NativeFn;
 use super::types::Instance;
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
@@ -29,14 +28,14 @@ pub struct Array {
 impl Array {
     pub fn new(inner: Vec<Val>) -> Array {
         let methods = map! {
-            "len" => Native::value(
+            "len" => NativeFn::value(
                 |ctx| {
                     let array = ctx.get(0).unwrap().as_array().unwrap();
                     Ok(Value::Integer(array.len() as i64))
                 },
                 0,
             ),
-            "get" => Native::value(
+            "get" => NativeFn::value(
                 |ctx| {
                     let array = ctx.get(0).unwrap().as_array().unwrap();
                     let idx = match ctx.get(1).unwrap().as_ref() {
@@ -51,13 +50,13 @@ impl Array {
                 },
                 1,
             ),
-            "push" => Native::value(|ctx| {
+            "push" => NativeFn::value(|ctx| {
                 let array = ctx.get_mut(0).unwrap().as_array().unwrap();
                 let val = ctx.get(1).unwrap();
                 array.push(val.clone());
                 Ok(ctx.get(0).unwrap().as_ref().clone())
             }, 1),
-            "each" => Native::value(|ctx| {
+            "each" => NativeFn::value(|ctx| {
                 let array = ctx.get_mut(0).unwrap().as_array().unwrap();
                 let inner = unsafe { (&mut *array.inner.get()) };
                 for (i, v) in inner.iter_mut().enumerate() {
@@ -69,7 +68,7 @@ impl Array {
                 }
                 Ok(ctx.get(0).unwrap().as_ref().clone())
             }, 1),
-            "map" => Native::value(|ctx| {
+            "map" => NativeFn::value(|ctx| {
                 let array = ctx.get_mut(0).unwrap().as_array().unwrap();
                 let inner = unsafe { (&mut *array.inner.get()) };
                 let mut out = Vec::new();

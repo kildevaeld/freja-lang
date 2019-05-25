@@ -370,7 +370,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
             let substack = ctx.stack.substack(idx);
             let subctx = Context::new(substack, ctx.globals.clone(), Frames::new());
 
-            match (native.function)(&subctx) {
+            match native.call(&subctx) {
                 Err(e) => {
                     return Err(e);
                 }
@@ -413,7 +413,7 @@ fn invoke_from_class<S: Stack>(ctx: &Context<S>, instance: &Instance, name: &str
         let native = method.as_native().unwrap();
         let idx = ctx.stack.len() - 1 - count as usize;
         let subctx = ctx.child(idx);
-        let ret = (native.function)(&subctx)?;
+        let ret = native.call(&subctx)?; // (native.function)(&subctx)?;
         ctx.stack.truncate(idx);
         push!(ctx.stack, Pointer::Stack(ret))?;
     } else {
