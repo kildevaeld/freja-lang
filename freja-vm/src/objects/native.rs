@@ -1,8 +1,7 @@
-use super::super::chunk::Chunk;
 use super::super::context::Context;
 use super::super::error::RuntimeResult;
 use super::super::stack::SubStack;
-use super::super::value::{Val, Value};
+use super::super::value::Value;
 use std::fmt;
 use std::rc::Rc;
 

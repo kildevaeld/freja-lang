@@ -3,7 +3,6 @@ use super::super::error::RuntimeResult;
 use super::super::stack::SubStack;
 use super::super::value::{Val, Value};
 use std::fmt;
-use std::rc::Rc;
 
 pub trait Instance: fmt::Debug {
     fn set_field(&self, name: &str, value: Val) -> RuntimeResult<()>;

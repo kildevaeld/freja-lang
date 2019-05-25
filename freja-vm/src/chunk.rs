@@ -1,6 +1,5 @@
-use super::value::{Value, ValuePtr};
+use super::value::Value;
 use std::fmt;
-use std::rc::Rc;
 
 macro_rules! byte_instruction {
     ($name:expr, $chunk:expr, $offset: expr, $fmt:expr) => {{

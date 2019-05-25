@@ -355,7 +355,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
 
             if let Some(initializer) = cl.find_method("init") {
                 let closure = initializer.as_closure().unwrap().clone();
-                if closure.function.arity != count as i32 {
+                if closure.arity() != count as i32 {
                     return Err("invalid numbers of parameters".into());
                 }
                 call(ctx, Pointer::Stack(closure), count)?;
@@ -389,7 +389,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
 #[inline(always)]
 fn call<S: Stack>(ctx: &Context<S>, closure: Pointer<Rc<Closure>>, count: u8) -> RuntimeResult<()> {
     // TODO check aritity
-    let a = closure.as_ref().function.arity;
+    let a = closure.arity();
     if a != count as i32 {
         return Err("Invalid parameter count".into());
     }

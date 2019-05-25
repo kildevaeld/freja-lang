@@ -1,4 +1,5 @@
 mod array;
+mod array2;
 mod class;
 mod closure;
 mod function;

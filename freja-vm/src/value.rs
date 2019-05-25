@@ -104,16 +104,6 @@ impl Value {
             _ => false,
         }
     }
-
-    // pub fn as_instance_mut(&mut self) -> Option<&mut Instance> {
-    //     match self {
-    //         Value::ClassInstance(i) => Some(i),
-    //         Value::Number(n) => Some(n),
-    //         Value::String(s) => Some(s),
-    //         Value::Array(a) => Some(a),
-    //         _ => None,
-    //     }
-    // }
 }
 
 impl fmt::Display for Value {
@@ -130,11 +120,7 @@ impl fmt::Display for Value {
             Value::Class(c) => write!(f, "<class {}>", c.name),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class.name),
             Value::Native(_) => write!(f, "<fn native>"),
-            Value::Closure(cl) => write!(
-                f,
-                "<closure {}>",
-                cl.function.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")
-            ),
+            Value::Closure(cl) => write!(f, "<closure {}>", cl.name().unwrap_or("no-name")),
             //_ => write!(f, "Unknown"),
         }
     }
