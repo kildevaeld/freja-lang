@@ -1,0 +1,3 @@
+
+let v = ["Hello", "World"]
+print(v.len())

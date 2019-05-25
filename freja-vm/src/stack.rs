@@ -140,9 +140,10 @@ impl<'a> Stack for SubStack<'a> {
     }
 
     fn peek(&self, distance: i32) -> Option<&Val> {
-        let i = -1 - distance as i32;
-        let idx = (self.len() as i32) + i;
-        self.inner.peek(self.idx as i32 + idx)
+        // let i = -1 - distance as i32;
+        // let idx = (self.len() as i32) + i;
+        // self.inner.peek(self.idx as i32 + idx)
+        self.inner.peek(distance)
     }
 
     fn peek_mut(&self, distance: i32) -> Option<&mut Val> {
@@ -181,26 +182,25 @@ impl<'a> Stack for SubStack<'a> {
 impl<'a> AsRef<[Val]> for SubStack<'a> {
     fn as_ref(&self) -> &[Val] {
         let r = self.inner.as_ref();
-
         &r[self.idx..]
     }
 }
 
 #[cfg(test)]
 mod test {
+    use super::super::utils::*;
     use super::super::value::*;
     use super::*;
     use freja_parser::ast::Number;
-
     #[test]
     fn substack_test() {
         let stack = RootStack::new();
-        stack.push(Val::Stack(Value::Number(Number::Integer(1))));
-        stack.push(Val::Stack(Value::Number(Number::Integer(2))));
-        stack.push(Val::Stack(Value::Number(Number::Integer(3))));
+        stack.push(Pointer::Stack(Value::Integer(1)));
+        stack.push(Pointer::Stack(Value::Integer(2)));
+        stack.push(Pointer::Stack(Value::Integer(3)));
 
         let sub = stack.substack(1);
-        assert_eq!(sub.get(0).unwrap(), &Val::Stack(Value::Number(Number::Integer(2))));
+        assert_eq!(sub.get(0).unwrap(), &Pointer::Stack(Value::Integer(2)));
 
         //let n = stack.pop().unwrap();
     }

@@ -87,7 +87,7 @@ type ClassCompilerStatePtr = Rc<RefCell<ClassCompilerState>>;
 
 pub struct ClassCompilerState {
     enclosing: Option<ClassCompilerStatePtr>,
-    name: String,
+    _name: String,
     has_super_class: bool,
 }
 
@@ -95,7 +95,7 @@ impl ClassCompilerState {
     pub fn new(enclosing: Option<ClassCompilerStatePtr>, name: String, has_super_class: bool) -> ClassCompilerStatePtr {
         Rc::new(RefCell::new(ClassCompilerState {
             enclosing,
-            name,
+            _name: name,
             has_super_class,
         }))
     }
@@ -285,12 +285,12 @@ impl Compiler {
         constant
     }
 
-    fn parse_var(&mut self, name: &str) -> usize {
-        self.declare_variable(name);
+    fn parse_var(&mut self, name: &str) -> CompileResult<usize> {
+        self.declare_variable(name)?;
         if self.state().scope_depth > 0 {
-            0
+            Ok(0)
         } else {
-            self.make_constant(Value::String(name.to_string()))
+            Ok(self.make_constant(Value::String(name.to_string())))
         }
     }
 
@@ -374,7 +374,7 @@ impl Compiler {
         for p in params {
             match p {
                 Argument::Regular(m) => {
-                    let global = self.parse_var(m.as_str());
+                    let global = self.parse_var(m.as_str())?;
                     self.define_variable(global);
                 }
                 Argument::Rest(_) => unimplemented!("rest not implemented"),
@@ -435,7 +435,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_var_stmt(&mut self, e: &VarStmt) -> CompileResult<()> {
-        let global = self.parse_var(e.name.as_str());
+        let global = self.parse_var(e.name.as_str())?;
 
         match &e.initializer {
             Some(init) => init.accept(self)?,
@@ -460,7 +460,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
     fn visit_func_stmt(&mut self, e: &FuncStmt) -> CompileResult<()> {
-        let global = self.parse_var(e.name.as_str());
+        let global = self.parse_var(e.name.as_str())?;
         self.mark_initialized();
 
         self.function(e, FunctionType::Function)?;
@@ -724,8 +724,6 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     }
 
     fn visit_binary_expr(&mut self, e: &BinaryExpr) -> CompileResult<()> {
-        //
-
         e.left.accept(self)?;
         e.right.accept(self)?;
 
@@ -758,8 +756,6 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
     }
 
     fn visit_member_expr(&mut self, e: &MemberExpr) -> CompileResult<()> {
-        //
-
         e.object.accept(self)?;
 
         self.state_mut().member_depth += 1;
@@ -807,7 +803,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
         Ok(())
     }
 
-    fn visit_super_expr(&mut self, e: &SuperExpr) -> CompileResult<()> {
+    fn visit_super_expr(&mut self, _e: &SuperExpr) -> CompileResult<()> {
         Ok(())
     }
 

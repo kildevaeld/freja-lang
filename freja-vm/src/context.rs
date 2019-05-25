@@ -5,7 +5,7 @@ use super::frames::{CallFrame, Frames};
 use super::objects::Native;
 use super::objects::*;
 use super::runner::{call_value, run as run_frame, Globals};
-use super::stack::{RootStack, Stack};
+use super::stack::{RootStack, Stack, SubStack};
 use super::utils::Pointer;
 use super::value::*;
 use std::cell::RefCell;
@@ -28,6 +28,11 @@ impl<S: Stack> Context<S> {
             globals,
         }
     }
+
+    pub fn child(&self, idx: usize) -> Context<SubStack> {
+        Context::new(self.stack.substack(idx), self.globals.clone(), Frames::new())
+    }
+
     pub fn push(&self, val: Value) -> RuntimeResult<&Self> {
         self.stack.push(Pointer::Stack(val))?;
         Ok(self)
@@ -42,6 +47,10 @@ impl<S: Stack> Context<S> {
 
     pub fn get_mut(&self, idx: Idx) -> Option<&mut Val> {
         self.stack.get_mut(idx)
+    }
+
+    pub fn peek(&self, idx: Idx) -> Option<&Val> {
+        self.stack.peek(idx as i32)
     }
 
     pub fn dup(&self, idx: Idx) -> RuntimeResult<&Self> {
@@ -76,6 +85,7 @@ impl<S: Stack> Context<S> {
         }
 
         let val = self.stack.peek(args_count as i32).expect("function");
+
         call_value(self, val, args_count as u8)?;
         self.run()?;
         Ok(())

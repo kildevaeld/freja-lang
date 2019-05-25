@@ -3,8 +3,6 @@ use super::super::error::RuntimeResult;
 use super::super::stack::SubStack;
 use super::super::value::{Val, Value};
 use super::types::Instance;
-use freja_parser::ast::Number;
-use std::rc::Rc;
 
 impl Instance for String {
     fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {

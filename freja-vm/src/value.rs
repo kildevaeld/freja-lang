@@ -53,6 +53,13 @@ impl Value {
         }
     }
 
+    pub fn as_native(&self) -> Option<&Rc<Native>> {
+        match self {
+            Value::Native(f) => Some(f),
+            _ => None,
+        }
+    }
+
     pub fn as_string(&self) -> Option<&String> {
         match self {
             Value::String(f) => Some(f),
@@ -67,13 +74,34 @@ impl Value {
         }
     }
 
+    pub fn as_array(&self) -> Option<&Rc<Array>> {
+        match self {
+            Value::Array(f) => Some(f),
+            _ => None,
+        }
+    }
+
+    pub fn as_array_mut(&mut self) -> Option<&mut Rc<Array>> {
+        match self {
+            Value::Array(f) => Some(f),
+            _ => None,
+        }
+    }
+
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
             Value::ClassInstance(i) => Some(i.as_ref()),
             // Value::Number(n) => Some(n),
             // Value::String(s) => Some(s),
-            // Value::Array(a) => Some(a),
+            Value::Array(a) => Some(a.as_ref()),
             _ => None,
+        }
+    }
+
+    pub fn is_native(&self) -> bool {
+        match self {
+            Value::Native(_) => true,
+            _ => false,
         }
     }
 

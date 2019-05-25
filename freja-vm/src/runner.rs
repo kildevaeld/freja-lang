@@ -1,17 +1,14 @@
 use super::chunk::OpCode;
-use super::compiler::Compiler;
 use super::context::Context;
 use super::error::{RuntimeError, RuntimeResult};
 use super::frames::*;
 use super::objects::*;
-use super::stack::{RootStack, Stack};
+use super::stack::Stack;
 use super::utils::Pointer;
 use super::value::*;
-use freja_parser::ast::*;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-// pub type Stack = HVec<Val, U256>;
 pub type Globals = HashMap<String, Value>;
 
 macro_rules! push {
@@ -78,6 +75,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             }
             OpCode::GetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
+
                 let m = match ctx.globals.borrow().get(name) {
                     Some(m) => m as *const Value,
                     None => panic!("undefined variable: {}", name),
@@ -174,7 +172,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             | OpCode::Call7
             | OpCode::Call8 => {
                 let count = (instruction as u8) - (OpCode::Call0 as u8);
-                let callee = peek!(ctx.stack, count as i32).expect("expect callee");
+                let callee = ctx.peek(count as usize).expect("expect callee");
                 call_value(ctx, callee, count)?;
                 frame = ctx.frames.last().unwrap();
             }
@@ -189,6 +187,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             | OpCode::Invoke8 => {
                 let count = (instruction as u8) - (OpCode::Invoke0 as u8);
                 let method = frame.read_constant().unwrap().as_string().unwrap();
+
                 invoke(ctx, method.as_str(), count).unwrap();
                 frame = ctx.frames.last().unwrap();
             }
@@ -377,7 +376,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
                 }
                 Ok(s) => {
                     ctx.stack.truncate(idx - 1);
-                    push!(ctx.stack, Pointer::Stack(s));
+                    push!(ctx.stack, Pointer::Stack(s))?;
                 }
             }
         }
@@ -410,7 +409,16 @@ fn invoke_from_class<S: Stack>(ctx: &Context<S>, instance: &Instance, name: &str
         None => return Err(format!("could not find method: '{}', on receiver: {:?}", name, instance).into()),
     };
 
-    call(ctx, Pointer::Stack(method.as_closure().unwrap().clone()), count)?;
+    if method.is_native() {
+        let native = method.as_native().unwrap();
+        let idx = ctx.stack.len() - 1 - count as usize;
+        let subctx = ctx.child(idx);
+        let ret = (native.function)(&subctx)?;
+        ctx.stack.truncate(idx);
+        push!(ctx.stack, Pointer::Stack(ret))?;
+    } else {
+        call(ctx, Pointer::Stack(method.as_closure().unwrap().clone()), count)?;
+    }
 
     Ok(())
 }
@@ -424,21 +432,21 @@ fn invoke<S: Stack>(ctx: &Context<S>, name: &str, count: u8) -> RuntimeResult<()
         None => return Err(format!("receiver was {} expected instance for call: {}", receiver, name).into()),
     };
 
-    let len = ctx.stack.len();
-    let idx = len - (count as usize);
-    let subctx = Context::new(ctx.stack.substack(idx), ctx.globals.clone(), Frames::new());
+    // let len = ctx.stack.len();
+    // let idx = len - (count as usize);
+    // let subctx = Context::new(ctx.stack.substack(idx), ctx.globals.clone(), Frames::new());
 
-    if let Some(ret) = instance.call_method(name, &subctx) {
-        match ret {
-            Ok(m) => {
-                ctx.stack.truncate(len - 1 - count as usize);
-                push!(ctx.stack, Pointer::Stack(m));
+    // if let Some(ret) = instance.call_method(name, &subctx) {
+    //     match ret {
+    //         Ok(m) => {
+    //             ctx.stack.truncate(len - 1 - count as usize);
+    //             push!(ctx.stack, Pointer::Stack(m))?;
 
-                return Ok(());
-            }
-            Err(e) => return Err(e),
-        }
-    }
+    //             return Ok(());
+    //         }
+    //         Err(e) => return Err(e),
+    //     }
+    // }
 
     invoke_from_class(ctx, instance, name, count)
 }

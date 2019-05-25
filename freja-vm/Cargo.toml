@@ -8,6 +8,7 @@ edition = "2018"
 freja-parser = { path = "../freja-parser" }
 heapless = "0.4"
 serde = { version = "1.0", features = ["derive", "rc"], optional = true }
+lazy_static = "1.3.0"
 
 [dev-dependencies]
 criterion = "0.2"

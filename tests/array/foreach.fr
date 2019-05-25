@@ -2,5 +2,5 @@
 
 
 ["test", "mig"].each((m,i) => {
-    print(m)
+  print(m + i)
 })

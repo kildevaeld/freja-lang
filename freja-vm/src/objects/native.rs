@@ -18,6 +18,10 @@ impl Native {
             arity,
         }
     }
+
+    pub fn value<F: 'static + Fn(&Context<SubStack>) -> RuntimeResult<Value>>(inner: F, arity: u32) -> Value {
+        Value::Native(Rc::new(Native::new(inner, arity)))
+    }
 }
 
 impl PartialEq for Native {
