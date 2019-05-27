@@ -41,6 +41,10 @@ impl<S: Stack> Context<S> {
         self.stack.pop()
     }
 
+    pub fn set(&self, idx: usize, val: Value) {
+        self.stack.set(idx, Pointer::Stack(val))
+    }
+
     pub fn get(&self, idx: Idx) -> Option<&Val> {
         self.stack.get(idx)
     }

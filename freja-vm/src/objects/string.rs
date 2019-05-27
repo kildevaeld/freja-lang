@@ -3,13 +3,14 @@ use super::super::error::RuntimeResult;
 use super::super::stack::SubStack;
 use super::super::value::{Val, Value};
 use super::types::Instance;
+use std::any::Any;
 
 impl Instance for String {
-    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
+    fn set_field(&self, _name: &str, _value: Value) -> RuntimeResult<()> {
         Ok(())
     }
 
-    fn get_field(&self, _name: &str) -> Option<&Val> {
+    fn get_field(&self, _name: &str) -> Option<&Value> {
         None
     }
 
@@ -22,5 +23,9 @@ impl Instance for String {
             "len" => Some(Ok(Value::Integer(self.len() as i64))),
             _ => None,
         }
+    }
+
+    fn as_any(&self) -> &Any {
+        self
     }
 }

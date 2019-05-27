@@ -10,10 +10,12 @@ pub trait Stack: AsRef<[Val]> + std::fmt::Debug {
     fn last(&self) -> Option<&Val>;
     fn peek(&self, distance: i32) -> Option<&Val>;
     fn peek_mut(&self, distance: i32) -> Option<&mut Val>;
+
     fn len(&self) -> usize;
     fn is_empty(&self) -> bool;
     fn truncate(&self, idx: usize);
     fn set(&self, idx: usize, value: Val);
+    // fn insert(&self, idx: usize, value: Val);
     fn get(&self, idx: usize) -> Option<&Val>;
     fn get_mut(&self, idx: usize) -> Option<&mut Val>;
     fn substack<'a>(&'a self, from: usize) -> SubStack<'a>;
@@ -78,6 +80,12 @@ impl Stack for RootStack {
             (&mut *self.inner.get())[idx] = value;
         }
     }
+
+    // fn insert(&self, idx: usize, value: Val) {
+    //     unsafe {
+    //         (&mut *self.inner.get()).insert(idx, value);
+    //     }
+    // }
 
     fn get(&self, idx: usize) -> Option<&Val> {
         unsafe { (&*self.inner.get()).get(idx) }

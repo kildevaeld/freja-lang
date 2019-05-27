@@ -3,6 +3,7 @@ use super::super::stack::Stack;
 use super::super::value::{Val, Value};
 use super::native::NativeFn;
 use super::types::Instance;
+use std::any::Any;
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -146,16 +147,20 @@ impl PartialEq for Array {
 }
 
 impl Instance for Array {
-    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
+    fn set_field(&self, _name: &str, _value: Value) -> RuntimeResult<()> {
         Ok(())
     }
 
-    fn get_field(&self, name: &str) -> Option<&Val> {
+    fn get_field(&self, name: &str) -> Option<&Value> {
         println!("name {}", name);
         None
     }
 
     fn find_method(&self, name: &str) -> Option<&Value> {
         self.methods.get(name)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
     }
 }

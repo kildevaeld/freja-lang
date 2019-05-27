@@ -1,0 +1,5 @@
+[target.unix]
+rustflags = ["-C target-cpu=native"]
+
+[target.windows]
+rustflags = ["-C target-cpu=native"]

@@ -4,6 +4,7 @@ members = [
     "freja-parser",
     "freja-vm",
     "freja",
+    "freja-compiler"
 ]
 
 [profile.release]

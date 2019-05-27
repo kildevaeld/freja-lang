@@ -4,11 +4,11 @@ use super::super::stack::SubStack;
 use super::super::value::{Val, Value};
 use super::types::Instance;
 use freja_parser::ast::Number;
+use std::any::Any;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
-
 // pub enum MapKey {
 //     String(String),
 
@@ -44,11 +44,14 @@ impl fmt::Display for Map {
 }
 
 impl Instance for Map {
-    fn set_field(&self, _name: &str, _value: Val) -> RuntimeResult<()> {
+    fn as_any(&self) -> &Any {
+        self
+    }
+    fn set_field(&self, _name: &str, _value: Value) -> RuntimeResult<()> {
         Ok(())
     }
 
-    fn get_field(&self, name: &str) -> Option<&Val> {
+    fn get_field(&self, name: &str) -> Option<&Value> {
         println!("name {}", name);
         None
     }

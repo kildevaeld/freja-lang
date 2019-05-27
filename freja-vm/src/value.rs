@@ -25,9 +25,9 @@ pub enum Value {
 
     Native(Rc<Box<Native>>),
 
-    Class(Rc<Class>),
+    Class(Rc<Box<Class>>),
 
-    ClassInstance(Rc<ClassInstance>),
+    ClassInstance(Rc<Box<ClassInstance>>),
 
     Null,
 }
@@ -67,7 +67,7 @@ impl Value {
         }
     }
 
-    pub fn as_class(&self) -> Option<&Rc<Class>> {
+    pub fn as_class(&self) -> Option<&Rc<Box<Class>>> {
         match self {
             Value::Class(f) => Some(f),
             _ => None,
@@ -90,10 +90,11 @@ impl Value {
 
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
-            Value::ClassInstance(i) => Some(i.as_ref()),
+            Value::ClassInstance(i) => Some(i.as_instance()),
+            Value::Class(c) => Some(c.as_instance()),
             // Value::Number(n) => Some(n),
             // Value::String(s) => Some(s),
-            Value::Array(a) => Some(a.as_ref()),
+            //Value::Array(a) => Some(a),
             _ => None,
         }
     }
@@ -117,8 +118,8 @@ impl fmt::Display for Value {
             Value::Null => write!(f, "nil"),
             Value::Array(a) => write!(f, "{}", a),
             Value::Map(a) => write!(f, "{}", a),
-            Value::Class(c) => write!(f, "<class {}>", c.name),
-            Value::ClassInstance(i) => write!(f, "<instance {}>", i.class.name),
+            Value::Class(c) => write!(f, "<class {}>", c.name()),
+            Value::ClassInstance(i) => write!(f, "<instance {}>", i.class().name()),
             Value::Native(_) => write!(f, "<fn native>"),
             Value::Closure(cl) => write!(f, "<closure {}>", cl.name().unwrap_or("no-name")),
             //_ => write!(f, "Unknown"),

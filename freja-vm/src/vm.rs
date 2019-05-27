@@ -1,5 +1,3 @@
-use super::chunk::OpCode;
-use super::compiler::Compiler;
 use super::context::Context;
 use super::error::RuntimeResult;
 use super::frames::{CallFrame, Frames};

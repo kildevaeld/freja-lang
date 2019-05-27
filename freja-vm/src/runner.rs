@@ -9,6 +9,7 @@ use super::value::*;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+
 pub type Globals = HashMap<String, Value>;
 
 macro_rules! push {
@@ -118,7 +119,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 pop!(stack);
                 pop!(stack);
 
-                instance.set_field(name, value.clone())?;
+                instance.set_field(name, value.clone().into_inner())?;
             }
             OpCode::GetProperty => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -129,7 +130,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     None => return Err("canget property on an instance".into()),
                 };
                 match instance.get_field(name) {
-                    Some(s) => push!(stack, s.clone()),
+                    Some(s) => push!(stack, Pointer::Stack(s.clone())),
                     None => push!(stack, Pointer::Stack(Value::Null)),
                 }?;
             }
@@ -203,7 +204,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let count = (instruction as u8) - (OpCode::Super0 as u8);
                 let method = frame.read_constant().unwrap().as_string().unwrap();
                 let class = pop!(ctx.stack).expect("super class");
-                invoke_from_class(ctx, class.as_class().expect("super class").as_ref(), method, count)?;
+                invoke_from_class(ctx, class.as_instance().expect("super class"), method, count)?;
                 frame = ctx.frames.last().unwrap();
             }
             OpCode::Closure => {
@@ -243,17 +244,26 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::Array => {
                 let o = frame.read_byte();
                 if o == 0 {
-                    push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::default()))))?;
+                    // push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::default()))))?;
+                    ctx.stack
+                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
+                    let calle = ctx.peek(0).unwrap();
+                    call_value(ctx, calle, 0)?;
                 } else {
-                    let mut v = Vec::new();
+                    //  let mut v = Vec::new();
                     let idx = stack.len() - o as usize;
-                    for i in idx..stack.len() {
-                        let m = stack.get_mut(i).unwrap();
-                        v.push(m.clone());
-                    }
+                    // for i in idx..stack.len() {
+                    //     let m = stack.get_mut(i).unwrap();
+                    //     v.push(m.clone());
+                    // }
 
-                    stack.truncate(idx);
-                    push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::new(v)))))?;
+                    //stack.truncate(idx);
+                    // push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::new(v)))))?;
+                    ctx.stack
+                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
+                    let calle = ctx.peek(0).unwrap();
+                    call_value(ctx, calle, 0)?;
+
                 }
             }
             // OpCode::Map => {
@@ -296,8 +306,8 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
             OpCode::Class => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
-                let class = Class::new(name.to_owned());
-                push!(stack, Pointer::Stack(Value::Class(Rc::new(class))))?;
+                let class = SourceClass::new(name.to_owned());
+                push!(stack, Pointer::Stack(Value::Class(Rc::new(Box::new(class)))))?;
             }
             OpCode::Method => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
@@ -305,7 +315,10 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let class = pop!(stack).unwrap();
                 class
                     .as_class()
-                    .unwrap()
+                    .expect("instance")
+                    .as_any()
+                    .downcast_ref::<SourceClass>()
+                    .expect("source class")
                     .add_method(name.to_owned(), method.into_inner());
             }
             OpCode::Inherit => {
@@ -314,8 +327,12 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     Some(c) => c,
                     None => panic!("super"),
                 };
-                let subclass = peek!(stack, 0).unwrap().as_class().unwrap();
-                subclass.inherit(super_c);
+                let subclass = peek!(stack, 0).unwrap().as_instance().unwrap();
+                subclass
+                    .as_any()
+                    .downcast_ref::<SourceClass>()
+                    .expect("expected superclass")
+                    .inherit(super_c);
                 pop!(stack);
             }
             OpCode::Nil => push!(stack, Pointer::Stack(Value::Null))?,
@@ -348,19 +365,25 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
                 len - (count as usize) - 1
             };
 
-            ctx.stack.set(
-                s as usize,
-                Pointer::Stack(Value::ClassInstance(Rc::new(ClassInstance::new(cl.clone())))),
-            );
+            if let Some(_) = cl.as_instance().as_any().downcast_ref::<SourceClass>() {
+                ctx.stack.set(
+                    s as usize,
+                    Pointer::Stack(Value::ClassInstance(Rc::new(Box::new(SourceClassInstance::new(
+                        cl.clone(),
+                    ))))),
+                );
 
-            if let Some(initializer) = cl.find_method("init") {
-                let closure = initializer.as_closure().unwrap().clone();
-                if closure.arity() != count as i32 {
+                if let Some(initializer) = cl.find_method("init") {
+                    let closure = initializer.as_closure().unwrap().clone();
+                    if closure.arity() != count as i32 {
+                        return Err("invalid numbers of parameters".into());
+                    }
+                    call(ctx, Pointer::Stack(closure), count)?;
+                } else if count != 0 {
                     return Err("invalid numbers of parameters".into());
                 }
-                call(ctx, Pointer::Stack(closure), count)?;
-            } else if count != 0 {
-                return Err("invalid numbers of parameters".into());
+            } else {
+                cl.construct(&ctx.child(ctx.stack.len() - 1 - (count as usize)))?;
             }
         }
         Value::Native(native) => {
@@ -387,7 +410,7 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
 }
 
 #[inline(always)]
-fn call<S: Stack>(ctx: &Context<S>, closure: Pointer<Rc<Closure>>, count: u8) -> RuntimeResult<()> {
+pub fn call<S: Stack>(ctx: &Context<S>, closure: Pointer<Rc<Closure>>, count: u8) -> RuntimeResult<()> {
     // TODO check aritity
     let a = closure.arity();
     if a != count as i32 {

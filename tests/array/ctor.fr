@@ -1,0 +1,8 @@
+
+
+let a = []
+a.each((m,i) => {
+    print(m)
+})
+
+print(a)
