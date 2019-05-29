@@ -19,6 +19,7 @@ pub trait Stack: AsRef<[Val]> + std::fmt::Debug {
     fn get(&self, idx: usize) -> Option<&Val>;
     fn get_mut(&self, idx: usize) -> Option<&mut Val>;
     fn substack<'a>(&'a self, from: usize) -> SubStack<'a>;
+
 }
 
 #[derive(Debug)]
@@ -35,6 +36,7 @@ impl RootStack {
 }
 
 impl Stack for RootStack {
+    #[inline(always)]
     fn push(&self, frame: Val) -> RuntimeResult<()> {
         unsafe {
             (&mut *self.inner.get())
@@ -42,7 +44,7 @@ impl Stack for RootStack {
                 .map_err(|_| RuntimeError::StackOverflow)
         }
     }
-
+    #[inline(always)]
     fn pop(&self) -> Option<Val> {
         unsafe { (&mut *self.inner.get()).pop() }
     }
@@ -51,12 +53,14 @@ impl Stack for RootStack {
         unsafe { (&mut *self.inner.get()).last() }
     }
 
+    #[inline(always)]
     fn peek(&self, distance: i32) -> Option<&Val> {
         let i = -1 - distance as i32;
         let idx = (self.len() as i32) + i;
         unsafe { (&*self.inner.get()).get(idx as usize) }
     }
 
+    #[inline(always)]
     fn peek_mut(&self, distance: i32) -> Option<&mut Val> {
         let i = -1 - distance as i32;
         let idx = (self.len() as i32) + i;
@@ -128,10 +132,12 @@ impl<'a> SubStack<'a> {
 }
 
 impl<'a> Stack for SubStack<'a> {
+    #[inline(always)]
     fn push(&self, frame: Val) -> RuntimeResult<()> {
         self.inner.push(frame)
     }
 
+    #[inline(always)]
     fn pop(&self) -> Option<Val> {
         if self.inner.len() == self.idx {
             return None;
@@ -147,6 +153,7 @@ impl<'a> Stack for SubStack<'a> {
         return self.inner.last();
     }
 
+    #[inline(always)]
     fn peek(&self, distance: i32) -> Option<&Val> {
         // let i = -1 - distance as i32;
         // let idx = (self.len() as i32) + i;
@@ -154,6 +161,7 @@ impl<'a> Stack for SubStack<'a> {
         self.inner.peek(distance)
     }
 
+    #[inline(always)]
     fn peek_mut(&self, distance: i32) -> Option<&mut Val> {
         self.inner.peek_mut(distance)
     }

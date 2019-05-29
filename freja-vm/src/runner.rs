@@ -55,7 +55,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
     let mut frame = ctx.frames.last().unwrap(); // frames.len() - 1;
     let stack = &ctx.stack;
 
-    'outer: while frame.ip.get() < frame.closure.as_ref().chunk().code.len() {
+    'outer: while frame.ip.get() < frame.closure.chunk().len() {
         let instruction = frame.read_byte();
         let instruction = OpCode::from(instruction);
 
@@ -229,15 +229,21 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let cl = Value::Closure(Rc::new(Closure::new(Pointer::Stack(fu.clone()), values)));
                 push!(stack, Pointer::Stack(cl))?;
             }
-            OpCode::Divide
-            | OpCode::Multiply
-            | OpCode::Add
-            | OpCode::Substract
-            | OpCode::Equal
-            | OpCode::Less
-            | OpCode::Greater => {
-                let right = pop!(stack).unwrap();
-                let left = pop!(stack).unwrap();
+            OpCode::Add => {
+                let right = stack.pop().unwrap();
+                let left = stack.pop().unwrap();
+                let ret = value_add!(left.as_ref(), right.as_ref())?;
+                push!(stack, Pointer::Stack(ret))?;
+            }
+            OpCode::Substract => {
+                let right = stack.pop().unwrap();
+                let left = stack.pop().unwrap();
+                let ret = value_arithmetic!(left.as_ref(), right.as_ref(), -)?;
+                push!(stack, Pointer::Stack(ret))?;
+            }
+            OpCode::Divide | OpCode::Multiply | OpCode::Equal | OpCode::Less | OpCode::Greater => {
+                let right = stack.pop().unwrap();
+                let left = stack.pop().unwrap();
                 let ret = value_binary!(left.as_ref(), right.as_ref(), instruction)?;
                 push!(stack, Pointer::Stack(ret))?;
             }
@@ -256,13 +262,31 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                     //     let m = stack.get_mut(i).unwrap();
                     //     v.push(m.clone());
                     // }
+                    let v = Vec::from(&stack.as_ref()[idx..]);
+                    stack.truncate(idx);
+                    let array_class = ctx
+                        .globals
+                        .borrow()
+                        .get("Array")
+                        .map(|a| Pointer::Ref(a as *const Value))
+                        .unwrap();
+                    // .as_instance()
+                    // .unwrap()
+                    // .as_any()
+                    // .downcast_ref::<Array2>()
+                    // .expect("ArrayClass");
 
-                    //stack.truncate(idx);
+                    ctx.stack.push(array_class)?;
+                    for b in v.into_iter() {
+                        ctx.stack.push(b)?;
+                    }
+                    //
                     // push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::new(v)))))?;
-                    ctx.stack
-                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
-                    let calle = ctx.peek(0).unwrap();
-                    call_value(ctx, calle, 0)?;
+                    // ctx.stack
+                    //     .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
+                    let calle = ctx.peek(o as usize).unwrap();
+                    //println!("callee {}", ctx.dump());
+                    call_value(ctx, calle, o)?;
 
                 }
             }
@@ -383,7 +407,10 @@ pub(crate) fn call_value<S: Stack>(ctx: &Context<S>, callee: &Val, count: u8) ->
                     return Err("invalid numbers of parameters".into());
                 }
             } else {
+                let idx = ctx.stack.len() - count as usize;
                 cl.construct(&ctx.child(ctx.stack.len() - 1 - (count as usize)))?;
+                ctx.stack.truncate(idx);
+
             }
         }
         Value::Native(native) => {

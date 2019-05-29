@@ -72,11 +72,12 @@ impl Array2 {
             ),
             "push" => NativeFn::value(|ctx| {
                 let array = ctx.get(0).unwrap().as_instance().unwrap().as_any().downcast_ref::<ArrayInstance>().unwrap();
-                let val = ctx.get(1).unwrap();
-                array.push(val.clone());
+                let val = ctx.pop().unwrap();
+                array.push(val);
                 Ok(ctx.get(0).unwrap().as_ref().clone())
             }, 1),
             "each" => NativeFn::value(|ctx| {
+
                 let array = ctx.get(0).unwrap().as_instance().unwrap().as_any().downcast_ref::<ArrayInstance>().unwrap();
                 let inner = unsafe { (&mut *array.inner.get()) };
                 for (i, v) in inner.iter_mut().enumerate() {
@@ -100,15 +101,9 @@ impl Class for Array2 {
     }
 
     fn construct(&self, ctx: &Context<SubStack>) -> RuntimeResult<()> {
-        println!("ctx {}", ctx.dump());
 
-        // let class = match ctx
-        //     .get(0)
-        //     .unwrap()
-        //     .as_instance()
-        //     .unwrap()
-        //     .as_any()
-        //     .downcast_ref::<Array2>()
+        let v = Vec::from(&ctx.stack.as_ref()[1..]);
+
         let class = match ctx.get(0).unwrap().as_class() {
             None => return Err("invalid instance".into()),
             Some(c) => c,
@@ -116,7 +111,7 @@ impl Class for Array2 {
 
         ctx.set(
             0,
-            Value::ClassInstance(Rc::new(Box::new(ArrayInstance::new(class.clone())))),
+            Value::ClassInstance(Rc::new(Box::new(ArrayInstance::new(class.clone(), v)))),
         );
 
         Ok(())
@@ -154,9 +149,9 @@ pub struct ArrayInstance {
 }
 
 impl ArrayInstance {
-    pub fn new(class: Rc<Box<Class>>) -> ArrayInstance {
+    pub fn new(class: Rc<Box<Class>>, data: Vec<Val>) -> ArrayInstance {
         ArrayInstance {
-            inner: UnsafeCell::new(Vec::new()),
+            inner: UnsafeCell::new(data),
             class,
         }
     }

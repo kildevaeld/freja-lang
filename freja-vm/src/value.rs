@@ -1,7 +1,6 @@
 use super::objects::Instance;
 use super::objects::*;
 use super::utils::Pointer;
-use freja_parser::ast::Number;
 use std::fmt;
 use std::rc::Rc;
 
@@ -15,7 +14,7 @@ pub enum Value {
 
     String(String),
 
-    Array(Rc<Array>),
+    //Array(Rc<Array>),
 
     Map(Map),
 
@@ -39,6 +38,7 @@ impl Default for Value {
 }
 
 impl Value {
+    #[inline(always)]
     pub fn as_function(&self) -> Option<&Rc<Function>> {
         match self {
             Value::Function(f) => Some(f),
@@ -46,6 +46,7 @@ impl Value {
         }
     }
 
+    #[inline(always)]
     pub fn as_closure(&self) -> Option<&Rc<Closure>> {
         match self {
             Value::Closure(f) => Some(f),
@@ -53,6 +54,7 @@ impl Value {
         }
     }
 
+    #[inline(always)]
     pub fn as_native(&self) -> Option<&Rc<Box<Native>>> {
         match self {
             Value::Native(f) => Some(f),
@@ -60,6 +62,7 @@ impl Value {
         }
     }
 
+    #[inline(always)]
     pub fn as_string(&self) -> Option<&String> {
         match self {
             Value::String(f) => Some(f),
@@ -67,6 +70,7 @@ impl Value {
         }
     }
 
+    #[inline(always)]
     pub fn as_class(&self) -> Option<&Rc<Box<Class>>> {
         match self {
             Value::Class(f) => Some(f),
@@ -74,7 +78,8 @@ impl Value {
         }
     }
 
-    pub fn as_array(&self) -> Option<&Rc<Array>> {
+
+    /*pub fn as_array(&self) -> Option<&Rc<Array>> {
         match self {
             Value::Array(f) => Some(f),
             _ => None,
@@ -86,8 +91,9 @@ impl Value {
             Value::Array(f) => Some(f),
             _ => None,
         }
-    }
+    }*/
 
+    #[inline(always)]
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
             Value::ClassInstance(i) => Some(i.as_instance()),
@@ -99,6 +105,7 @@ impl Value {
         }
     }
 
+    #[inline(always)]
     pub fn is_native(&self) -> bool {
         match self {
             Value::Native(_) => true,
@@ -116,7 +123,7 @@ impl fmt::Display for Value {
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
-            Value::Array(a) => write!(f, "{}", a),
+            //Value::Array(a) => write!(f, "{}", a),
             Value::Map(a) => write!(f, "{}", a),
             Value::Class(c) => write!(f, "<class {}>", c.name()),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class().name()),
@@ -128,6 +135,7 @@ impl fmt::Display for Value {
 }
 
 impl Value {
+    #[inline(always)]
     pub fn is_truthy(&self) -> bool {
         match self {
             Value::String(s) => !s.is_empty(),
@@ -136,7 +144,7 @@ impl Value {
             Value::Boolean(b) => *b,
             Value::Class(_) => true,
             Value::ClassInstance(_) => true,
-            Value::Array(a) => !a.is_empty(),
+            //Value::Array(a) => !a.is_empty(),
             Value::Map(a) => !a.is_empty(),
             Value::Null => false,
             Value::Function(_) | Value::Closure(_) | Value::Native(_) => true,
@@ -217,7 +225,7 @@ impl AsRef<Value> for Val {
         self.as_value()
     }
 }*/
-
+#[macro_export]
 macro_rules! value_add {
     ($lhs: expr, $rhs: expr) => {
         match $lhs {
@@ -241,12 +249,12 @@ macro_rules! value_add {
             },
             _ => {
                 println!("n {}", $lhs);
-                Err("could not add".into())
+                Err(RuntimeError::Error(format!("could not add token {:?}", $lhs)))
             }
         }
     };
 }
-
+#[macro_export]
 macro_rules! value_arithmetic {
     ($lhs: expr, $rhs: expr, $op: tt) => {
         match $lhs {
@@ -260,11 +268,11 @@ macro_rules! value_arithmetic {
                 Value::Double(nn) => Ok(Value::Double(*n as f64 $op *nn)),
                 _ => Err("nan".into()),
             },
-            _ => Err(format!("could not sub {:?}", $lhs).into()),
+            _ => Err(RuntimeError::Error(format!("could not token {:?}", stringify!($op)))),
         }
     };
 }
-
+#[macro_export]
 macro_rules! value_comparison {
     ($lhs: expr, $rhs: expr, $op: tt) => {
         match $lhs {
@@ -315,29 +323,3 @@ macro_rules! value_binary {
         }
     };
 }
-
-// #[macro_export]
-// macro_rules! value_is_truthy {
-//     ($value: expr) => {
-//         match $value {
-//                                                     Value::String(s) => !s.is_empty(),
-//                                                     Value::Number(Number::Double(d)) => *d > 0.0,
-//                                                     Value::Number(Number::Integer(d)) => *d > 0,
-//                                                     Value::Boolean(b) => *b,
-//                                                     Value::Class(_) => true,
-//                                                     Value::ClassInstance(_) => true,
-//                                                     Value::Array(a) => !a.is_empty(),
-//                                                     Value::Map(a) => !a.is_empty(),
-//                                                     Value::Null => false,
-//                                                     Value::Function(_) | Value::Closure(_) | Value::Native(_) => true
-//                                                     //ValueClass::Instance(_) => true,
-//                                                 }
-//     };
-// }
-
-// #[macro_export]
-// macro_rules! is_falsey {
-//     ($value: expr) => {
-//         !value_is_truthy!($value)
-//     };
-// }

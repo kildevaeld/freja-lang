@@ -168,18 +168,22 @@ impl Chunk {
         }
     }
 
+    #[inline(always)]
     pub fn len(&self) -> usize {
         self.code.len()
     }
 
+    #[inline(always)]
     pub fn get_code(&self, offset: usize) -> OpCode {
         OpCode::from(self.code[offset])
     }
 
+    #[inline(always)]
     pub fn get_constant(&self, constant: usize) -> Option<&Value> {
         self.constants.get(constant)
     }
 
+    #[inline(always)]
     pub fn get(&self, offset: usize) -> u8 {
         self.code[offset]
     }

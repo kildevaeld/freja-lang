@@ -1,12 +1,10 @@
 use super::context::Context;
 use super::error::RuntimeResult;
-use super::frames::{CallFrame, Frames};
-use super::objects::Native;
+use super::frames::Frames;
 use super::objects::*;
-use super::runner::{call_value, run as run_frame, Globals};
-use super::stack::{RootStack, Stack, SubStack};
+use super::runner::Globals;
+use super::stack::{RootStack, SubStack};
 use super::value::*;
-use heapless::consts::U8;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -35,6 +33,12 @@ impl VM {
             .globals
             .borrow_mut()
             .insert("print".to_string(), NativeFn::value(&freja_print, 1));
+
+        vm.ctx
+            .globals
+            .borrow_mut()
+            .insert("Array".to_string(), Value::Class(Rc::new(Box::new(Array2::new()))));
+
         vm
     }
 

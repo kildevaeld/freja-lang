@@ -57,6 +57,7 @@ impl CallFrame {
         }
     }
 
+    #[inline(always)]
     pub fn read_byte(&self) -> u8 {
         let ip = self.ip.get();
         let b = self.closure.chunk().code[ip];
@@ -64,6 +65,7 @@ impl CallFrame {
         b
     }
 
+    #[inline(always)]
     pub fn read_short(&self) -> u16 {
         let ip = self.ip.get();
         let mut jump = (self.closure.chunk().code[ip] as u16) << 8;
@@ -72,6 +74,7 @@ impl CallFrame {
         jump
     }
 
+    #[inline(always)]
     pub fn read_constant(&self) -> Option<&Value> {
         let b = self.read_byte();
         self.closure.chunk().get_constant(b as usize)
