@@ -13,10 +13,12 @@ pub mod objects;
 pub mod value;
 pub mod context;
 pub mod frames;
-mod runner;
+pub mod globals;
 pub mod stack;
 pub mod utils;
 pub mod vm;
+pub mod runner;
+
 
 #[cfg(test)]
 mod tests {

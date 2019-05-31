@@ -2,7 +2,7 @@ use super::context::Context;
 use super::error::RuntimeResult;
 use super::frames::Frames;
 use super::objects::*;
-use super::runner::Globals;
+use super::globals::Global;
 use super::stack::{RootStack, SubStack};
 use super::value::*;
 use std::cell::RefCell;
@@ -24,19 +24,17 @@ impl VM {
         let vm = VM {
             ctx: Context::new(
                 RootStack::new(),
-                Rc::new(RefCell::new(Globals::default())),
+                Rc::new(Global::default()),
                 Frames::new(),
             ),
         };
 
         vm.ctx
             .globals
-            .borrow_mut()
             .insert("print".to_string(), NativeFn::value(&freja_print, 1));
 
         vm.ctx
             .globals
-            .borrow_mut()
             .insert("Array".to_string(), Value::Class(Rc::new(Box::new(Array2::new()))));
 
         vm

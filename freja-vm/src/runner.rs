@@ -10,8 +10,6 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 
-pub type Globals = HashMap<String, Value>;
-
 macro_rules! push {
     ($stack: expr, $val: expr) => {
         $stack.push($val).map_err(|_| RuntimeError::StackOverflow)
@@ -72,13 +70,12 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let name = frame.read_constant().unwrap();
                 let value = pop!(stack).unwrap();
                 ctx.globals
-                    .borrow_mut()
                     .insert(name.as_string().unwrap().to_string(), value.into_inner());
             }
             OpCode::GetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
 
-                let m = match ctx.globals.borrow().get(name) {
+                let m = match ctx.globals.get(name) {
                     Some(m) => m as *const Value,
                     None => panic!("undefined variable: {}", name),
                 };
@@ -99,11 +96,11 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             }
             OpCode::SetGlobal => {
                 let name = frame.read_constant().unwrap().as_string().unwrap();
-                if !ctx.globals.borrow().contains_key(name.as_str()) {
+                if !ctx.globals.contains_key(name.as_str()) {
                     return Err(RuntimeError::InvalidIndex);
                 }
                 let val = peek!(stack, 0).unwrap();
-                ctx.globals.borrow_mut().insert(name.clone(), val.clone().into_inner());
+                ctx.globals.insert(name.clone(), val.clone().into_inner());
             }
 
             OpCode::SetProperty => {
@@ -248,42 +245,26 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             OpCode::Array => {
                 let o = frame.read_byte();
                 if o == 0 {
-                    // push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::default()))))?;
                     ctx.stack
                         .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
                     let calle = ctx.peek(0).unwrap();
                     call_value(ctx, calle, 0)?;
                 } else {
-                    //  let mut v = Vec::new();
                     let idx = stack.len() - o as usize;
-                    // for i in idx..stack.len() {
-                    //     let m = stack.get_mut(i).unwrap();
-                    //     v.push(m.clone());
-                    // }
                     let v = Vec::from(&stack.as_ref()[idx..]);
                     stack.truncate(idx);
                     let array_class = ctx
                         .globals
-                        .borrow()
                         .get("Array")
                         .map(|a| Pointer::Ref(a as *const Value))
                         .unwrap();
-                    // .as_instance()
-                    // .unwrap()
-                    // .as_any()
-                    // .downcast_ref::<Array2>()
-                    // .expect("ArrayClass");
 
                     ctx.stack.push(array_class)?;
                     for b in v.into_iter() {
                         ctx.stack.push(b)?;
                     }
-                    //
-                    // push!(stack, Pointer::Stack(Value::Array(Rc::new(Array::new(v)))))?;
-                    // ctx.stack
-                    //     .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
+
                     let calle = ctx.peek(o as usize).unwrap();
-                    //println!("callee {}", ctx.dump());
                     call_value(ctx, calle, o)?;
 
                 }
@@ -480,21 +461,6 @@ fn invoke<S: Stack>(ctx: &Context<S>, name: &str, count: u8) -> RuntimeResult<()
         None => return Err(format!("receiver was {} expected instance for call: {}", receiver, name).into()),
     };
 
-    // let len = ctx.stack.len();
-    // let idx = len - (count as usize);
-    // let subctx = Context::new(ctx.stack.substack(idx), ctx.globals.clone(), Frames::new());
-
-    // if let Some(ret) = instance.call_method(name, &subctx) {
-    //     match ret {
-    //         Ok(m) => {
-    //             ctx.stack.truncate(len - 1 - count as usize);
-    //             push!(ctx.stack, Pointer::Stack(m))?;
-
-    //             return Ok(());
-    //         }
-    //         Err(e) => return Err(e),
-    //     }
-    // }
 
     invoke_from_class(ctx, instance, name, count)
 }

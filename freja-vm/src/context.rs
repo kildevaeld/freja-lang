@@ -3,8 +3,9 @@ use super::compiler::Compiler;
 use super::error::RuntimeResult;
 use super::frames::Frames;
 use super::objects::*;
-use super::runner::{call_value, run as run_frame, Globals};
+use super::runner::{call_value, run as run_frame};
 use super::stack::{RootStack, Stack, SubStack};
+use super::globals::Global;
 use super::utils::Pointer;
 use super::value::*;
 use std::cell::RefCell;
@@ -16,11 +17,11 @@ pub type Idx = usize;
 pub struct Context<S: Stack> {
     pub(crate) stack: S,
     pub(crate) frames: Frames,
-    pub(crate) globals: Rc<RefCell<Globals>>,
+    pub(crate) globals: Rc<Global>,
 }
 
 impl<S: Stack> Context<S> {
-    pub fn new(stack: S, globals: Rc<RefCell<Globals>>, frames: Frames) -> Context<S> {
+    pub fn new(stack: S, globals: Rc<Global>, frames: Frames) -> Context<S> {
         Context {
             stack: stack,
             frames,

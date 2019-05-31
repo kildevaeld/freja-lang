@@ -15,10 +15,12 @@ impl Closure {
         Closure { function, upvalues }
     }
 
+    #[inline(always)]
     pub fn chunk(&self) -> &Chunk {
         &self.function.chunk
     }
 
+    #[inline(always)]
     pub fn arity(&self) -> i32 {
         self.function.arity
     }
@@ -27,6 +29,7 @@ impl Closure {
         self.function.name.as_ref().map(|s| s.as_str())
     }
 
+    #[inline(always)]
     pub fn upvalues(&self) -> &[Val] {
         &self.upvalues
     }

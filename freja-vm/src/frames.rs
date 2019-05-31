@@ -61,6 +61,7 @@ impl CallFrame {
     pub fn read_byte(&self) -> u8 {
         let ip = self.ip.get();
         let b = self.closure.chunk().code[ip];
+
         self.ip.set(ip + 1);
         b
     }
