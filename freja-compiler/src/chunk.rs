@@ -1,4 +1,4 @@
-use super::constants::Constant;
+use super::constant::Constant;
 use std::fmt;
 
 macro_rules! byte_instruction {

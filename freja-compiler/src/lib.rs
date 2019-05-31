@@ -2,13 +2,14 @@
 mod chunk;
 mod compiler_state;
 mod compiler;
-mod constants;
+mod constant;
 mod error;
 mod objects;
+mod utils;
 
 pub use self::error::*;
 pub use self::chunk::*;
-pub use self::constants::*;
+pub use self::constant::*;
 pub use self::objects::*;
 pub use self::compiler::Compiler;
 

@@ -2,7 +2,7 @@ use super::chunk::OpCode;
 use super::compiler_state::{
     ClassCompilerState, ClassCompilerStatePtr, CompilerState, CompilerStatePtr, FunctionType, Local, UpValue,
 };
-use super::constants::Constant;
+use super::constant::Constant;
 use super::error::{CompileError, CompileResult};
 use super::objects::Function;
 

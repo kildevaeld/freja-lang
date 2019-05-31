@@ -1,2 +1,4 @@
+
 mod function;
-pub use function::*;
+
+pub use self::function::*;

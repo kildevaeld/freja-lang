@@ -13,7 +13,6 @@ pub enum Value {
     Double(f64),
     Boolean(bool),
     String(String),
-    //Function(Rc<Function>),
     Closure(Rc<Closure>),
     Native(Rc<Box<Native>>),
     Class(Rc<Box<Class>>),
@@ -28,13 +27,6 @@ impl Default for Value {
 }
 
 impl Value {
-    // #[inline(always)]
-    // pub fn as_function(&self) -> Option<&Rc<Function>> {
-    //     match self {
-    //         Value::Function(f) => Some(f),
-    //         _ => None,
-    //     }
-    // }
 
     #[inline(always)]
     pub fn as_closure(&self) -> Option<&Rc<Closure>> {
