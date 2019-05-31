@@ -123,7 +123,6 @@ impl fmt::Display for Value {
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
-            //Value::Array(a) => write!(f, "{}", a),
             Value::Map(a) => write!(f, "{}", a),
             Value::Class(c) => write!(f, "<class {}>", c.name()),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class().name()),
@@ -154,77 +153,7 @@ impl Value {
 
 pub type Val = Pointer<Value>;
 
-/*
-#[cfg_attr(feature = "serde_support", derive(Serialize, Deserialize))]
-#[derive(PartialEq, Debug, Clone)]
-pub enum Val {
-    Heap(ValuePtr),
-    Stack(Value),
-    #[cfg_attr(feature = "serde_support", serde(skip))]
-    Ref(*const Value),
-}
 
-impl Val {
-    pub fn into_value(self) -> ValuePtr {
-        match self {
-            Val::Heap(h) => h,
-            Val::Stack(s) => Rc::new(s),
-            Val::Ref(r) => unsafe { Rc::new((&*r).clone()) },
-        }
-    }
-
-    pub fn into_heap(&mut self) -> &mut Self {
-        let this = std::mem::replace(self, Val::Stack(Value::Null));
-        match this {
-            Val::Heap(h) => {
-                *self = Val::Heap(h);
-            }
-            Val::Stack(s) => {
-                *self = Val::Heap(Rc::new(s));
-            }
-            Val::Ref(r) => *self = unsafe { Val::Heap(Rc::new((&*r).clone())) },
-        }
-        self
-    }
-
-    pub fn as_value(&self) -> &Value {
-        match &self {
-            Val::Heap(h) => h,
-            Val::Stack(s) => s,
-            Val::Ref(r) => unsafe { &**r },
-        }
-    }
-
-    pub fn is_truthy(&self) -> bool {
-        self.as_value().is_truthy()
-    }
-
-    pub fn is_ref(&self) -> bool {
-        match &self {
-            Val::Ref(_) => true,
-            _ => false,
-        }
-    }
-}
-
-impl fmt::Display for Val {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        <Value as fmt::Display>::fmt(self.as_value(), f)
-    }
-}
-
-impl std::ops::Deref for Val {
-    type Target = Value;
-    fn deref(&self) -> &Self::Target {
-        self.as_value()
-    }
-}
-
-impl AsRef<Value> for Val {
-    fn as_ref(&self) -> &Value {
-        self.as_value()
-    }
-}*/
 #[macro_export]
 macro_rules! value_add {
     ($lhs: expr, $rhs: expr) => {
@@ -289,7 +218,7 @@ macro_rules! value_comparison {
                 Value::Double(nn) => Ok(Value::Boolean(n $op nn)),
                 _ => Err("nan".into()),
             },
-            _ => Err(format!("could not equal {:?} {} {:?}", $lhs,stringify!($op), $rhs).into()),
+            _ => Err(RuntimeError::Error(format!("could not equal {:?} {} {:?}", $lhs,stringify!($op), $rhs))),
         }
     };
 }

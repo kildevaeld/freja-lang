@@ -1,3 +1,4 @@
 let ret = 2 + 10*20 - 2*10/20
 print("result " + ret)
 print(ret)
+print(2 - 1)

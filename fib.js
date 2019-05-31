@@ -15,4 +15,4 @@ var looping = function (n) {
     return f;
 };
 
-console.log(looping(30 + 1));
+console.log(looping(85 + 1));

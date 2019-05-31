@@ -51,6 +51,7 @@ macro_rules! dump_stack {
     };
 }
 
+
 pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
     let mut frame = ctx.frames.last().unwrap(); // frames.len() - 1;
     let stack = &ctx.stack;
@@ -135,17 +136,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 }?;
             }
             OpCode::Return => {
-                let mut result = pop!(stack).unwrap();
-                // Move to heap, before popping the stack or we risc to hit a dangling pointer  ಠ益ಠ
-                // match result.as_ref() {
-                //     Value::ClassInstance(_) => {
-                //         result.promote();
-                //     }
-                //     Value::Closure(_) => {
-                //         result.promote();
-                //     }
-                //     _ => {}
-                // };
+                let mut result = stack.pop().unwrap();
                 if result.is_ref() {
                     result = result.clone()
                 }
@@ -154,7 +145,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
                 ctx.frames.pop();
 
-                push!(ctx.stack, result)?;
+                stack.push(result)?;
 
                 if ctx.frames.is_empty() {
                     break 'outer;
@@ -233,7 +224,8 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
                 let ret = value_add!(left.as_ref(), right.as_ref())?;
-                push!(stack, Pointer::Stack(ret))?;
+                ctx.push(ret)?;
+                //push!(stack, Pointer::Stack(ret))?;
             }
             OpCode::Substract => {
                 let right = stack.pop().unwrap();
@@ -241,7 +233,13 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let ret = value_arithmetic!(left.as_ref(), right.as_ref(), -)?;
                 push!(stack, Pointer::Stack(ret))?;
             }
-            OpCode::Divide | OpCode::Multiply | OpCode::Equal | OpCode::Less | OpCode::Greater => {
+            OpCode::Greater => {
+                let right = stack.pop().unwrap();
+                let left = stack.pop().unwrap();
+                let ret = value_comparison!(left.as_ref(), right.as_ref(), >)?;
+                push!(stack, Pointer::Stack(ret))?;
+            }
+            OpCode::Divide | OpCode::Multiply | OpCode::Equal | OpCode::Less => {
                 let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
                 let ret = value_binary!(left.as_ref(), right.as_ref(), instruction)?;

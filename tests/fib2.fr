@@ -11,4 +11,4 @@ fn fib(n) {
 }
 
 
-print(fib(30 + 1))
+print(fib(85 + 1))
