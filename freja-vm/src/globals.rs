@@ -4,7 +4,6 @@ use super::value::Value;
 
 #[derive(Default, Debug)]
 pub struct Global {
-    //builtins: HashMap<&'static str, 
     inner: UnsafeCell<HashMap<String, Value>>
 }
 

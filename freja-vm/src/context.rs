@@ -1,5 +1,4 @@
-use super::chunk::OpCode;
-use super::compiler::Compiler;
+use freja_compiler::{Chunk, OpCode, Compiler};
 use super::error::RuntimeResult;
 use super::frames::Frames;
 use super::objects::*;

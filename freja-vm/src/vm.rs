@@ -5,7 +5,6 @@ use super::objects::*;
 use super::globals::Global;
 use super::stack::{RootStack, SubStack};
 use super::value::*;
-use std::cell::RefCell;
 use std::rc::Rc;
 
 fn freja_print(ctx: &Context<SubStack>) -> RuntimeResult<Value> {
@@ -35,7 +34,7 @@ impl VM {
 
         vm.ctx
             .globals
-            .insert("Array".to_string(), Value::Class(Rc::new(Box::new(Array2::new()))));
+            .insert("Array".to_string(), Value::Class(Rc::new(Box::new(Array::new()))));
 
         vm
     }

@@ -11,6 +11,8 @@ rustflags = ["-C", "target-cpu=native"]
 [dependencies]
 freja-vm = { path = "../freja-vm"}
 freja-parser = { path = "../freja-parser" }
+freja-compiler = { path = "../freja-compiler" }
+
 #freja-ast = { path = "../freja-ast" }
 #freja-evaluator = { path = "../freja-evaluator" }
 getopts = "0.2"

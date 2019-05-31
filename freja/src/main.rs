@@ -3,7 +3,7 @@ use std::alloc::System;
 static ALLOCATOR: System = System;
 
 use freja_parser::*;
-use freja_vm::compiler::*;
+use freja_compiler::*;
 use freja_vm::vm::VM;
 
 use getopts::Options;

@@ -1,4 +1,4 @@
-use super::chunk::OpCode;
+
 use super::context::Context;
 use super::error::{RuntimeError, RuntimeResult};
 use super::frames::*;
@@ -6,9 +6,8 @@ use super::objects::*;
 use super::stack::Stack;
 use super::utils::Pointer;
 use super::value::*;
-use std::collections::HashMap;
+use freja_compiler::{Constant, OpCode};
 use std::rc::Rc;
-
 
 macro_rules! push {
     ($stack: expr, $val: expr) => {
@@ -51,7 +50,7 @@ macro_rules! dump_stack {
 
 
 pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
-    let mut frame = ctx.frames.last().unwrap(); // frames.len() - 1;
+    let mut frame = ctx.frames.last().unwrap();
     let stack = &ctx.stack;
 
     'outer: while frame.ip.get() < frame.closure.chunk().len() {
@@ -60,8 +59,16 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
         match instruction {
             OpCode::Constant => {
-                let val = frame.read_constant().expect("constant") as *const Value;
-                push!(stack, Pointer::Ref(val))?;
+                let val = frame.read_constant().expect("constant");
+                let val = match val {
+                    Constant::Boolean(b) => Value::Boolean(*b),
+                    Constant::Double(d) => Value::Double(*d),
+                    Constant::Integer(i) => Value::Integer(*i),
+                    Constant::String(s) => Value::String(s.clone()),
+                    _ => unimplemented!("constant function"),
+                };
+                ctx.push(val)?;
+                // push!(stack, Pointer::Stack(val))?;
             }
             OpCode::Pop => {
                 pop!(stack);
@@ -200,7 +207,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
                 let mut values = Vec::new();
 
-                for _i in 0..fu.up_value_count {
+                for _i in 0..fu.up_value_count() {
                     let local = if frame.read_byte() == 0 { false } else { true };
                     let index = frame.read_byte();
                     if local {
@@ -246,7 +253,7 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let o = frame.read_byte();
                 if o == 0 {
                     ctx.stack
-                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array2::new())))))?;
+                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array::new())))))?;
                     let calle = ctx.peek(0).unwrap();
                     call_value(ctx, calle, 0)?;
                 } else {

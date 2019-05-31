@@ -6,28 +6,18 @@ use std::rc::Rc;
 
 pub type ValuePtr = Rc<Value>;
 
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum Value {
     Integer(i64),
     Double(f64),
     Boolean(bool),
-
     String(String),
-
-    //Array(Rc<Array>),
-
-    Map(Map),
-
-    Function(Rc<Function>),
-
+    //Function(Rc<Function>),
     Closure(Rc<Closure>),
-
     Native(Rc<Box<Native>>),
-
     Class(Rc<Box<Class>>),
-
     ClassInstance(Rc<Box<ClassInstance>>),
-
     Null,
 }
 
@@ -38,13 +28,13 @@ impl Default for Value {
 }
 
 impl Value {
-    #[inline(always)]
-    pub fn as_function(&self) -> Option<&Rc<Function>> {
-        match self {
-            Value::Function(f) => Some(f),
-            _ => None,
-        }
-    }
+    // #[inline(always)]
+    // pub fn as_function(&self) -> Option<&Rc<Function>> {
+    //     match self {
+    //         Value::Function(f) => Some(f),
+    //         _ => None,
+    //     }
+    // }
 
     #[inline(always)]
     pub fn as_closure(&self) -> Option<&Rc<Closure>> {
@@ -79,20 +69,6 @@ impl Value {
     }
 
 
-    /*pub fn as_array(&self) -> Option<&Rc<Array>> {
-        match self {
-            Value::Array(f) => Some(f),
-            _ => None,
-        }
-    }
-
-    pub fn as_array_mut(&mut self) -> Option<&mut Rc<Array>> {
-        match self {
-            Value::Array(f) => Some(f),
-            _ => None,
-        }
-    }*/
-
     #[inline(always)]
     pub fn as_instance(&self) -> Option<&Instance> {
         match self {
@@ -121,9 +97,8 @@ impl fmt::Display for Value {
             Value::Double(d) => <f64 as fmt::Display>::fmt(d, f),
             Value::String(s) => write!(f, "{}", s),
             Value::Boolean(b) => write!(f, "{}", b),
-            Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
+            //Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
-            Value::Map(a) => write!(f, "{}", a),
             Value::Class(c) => write!(f, "<class {}>", c.name()),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class().name()),
             Value::Native(_) => write!(f, "<fn native>"),
@@ -143,10 +118,8 @@ impl Value {
             Value::Boolean(b) => *b,
             Value::Class(_) => true,
             Value::ClassInstance(_) => true,
-            //Value::Array(a) => !a.is_empty(),
-            Value::Map(a) => !a.is_empty(),
             Value::Null => false,
-            Value::Function(_) | Value::Closure(_) | Value::Native(_) => true,
+            /*Value::Function(_) |*/ Value::Closure(_) | Value::Native(_) => true,
         }
     }
 }

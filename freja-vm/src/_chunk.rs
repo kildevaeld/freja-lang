@@ -179,6 +179,11 @@ impl Chunk {
     }
 
     #[inline(always)]
+    pub fn get_byte(&self, offset: usize) -> u8 {
+        self.code[offset]
+    }
+
+    #[inline(always)]
     pub fn get_constant(&self, constant: usize) -> Option<&Value> {
         self.constants.get(constant)
     }

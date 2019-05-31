@@ -5,8 +5,8 @@ extern crate serde;
 #[macro_use]
 extern crate lazy_static;
 
-pub mod chunk;
-pub mod compiler;
+// pub mod chunk;
+// pub mod compiler;
 pub mod error;
 pub mod objects;
 #[macro_use]
@@ -14,10 +14,10 @@ pub mod value;
 pub mod context;
 pub mod frames;
 pub mod globals;
-pub mod stack;
+pub mod runner;
 pub mod utils;
 pub mod vm;
-pub mod runner;
+pub mod stack;
 
 
 #[cfg(test)]

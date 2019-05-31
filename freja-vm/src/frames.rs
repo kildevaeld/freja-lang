@@ -1,12 +1,12 @@
 use super::error::{RuntimeError, RuntimeResult};
 use super::objects::*;
 use super::utils::Pointer;
-use super::value::*;
 use heapless::consts::U256;
 use heapless::ArrayLength;
 use heapless::Vec as HVec;
 use std::cell::Cell;
 use std::rc::Rc;
+use freja_compiler::Constant;
 
 #[derive(Debug)]
 pub struct Frames<N: ArrayLength<CallFrame> = U256> {
@@ -60,7 +60,8 @@ impl CallFrame {
     #[inline(always)]
     pub fn read_byte(&self) -> u8 {
         let ip = self.ip.get();
-        let b = self.closure.chunk().code[ip];
+        // let b = self.closure.chunk().code[ip];
+        let b = self.closure.chunk().get(ip);
 
         self.ip.set(ip + 1);
         b
@@ -69,14 +70,14 @@ impl CallFrame {
     #[inline(always)]
     pub fn read_short(&self) -> u16 {
         let ip = self.ip.get();
-        let mut jump = (self.closure.chunk().code[ip] as u16) << 8;
-        jump |= self.closure.chunk().code[ip + 1] as u16;
+        let mut jump = (self.closure.chunk().get(ip) as u16) << 8;
+        jump |= self.closure.chunk().get(ip + 1) as u16;
         self.ip.set(ip + 2);
         jump
     }
 
     #[inline(always)]
-    pub fn read_constant(&self) -> Option<&Value> {
+    pub fn read_constant(&self) -> Option<&Constant> {
         let b = self.read_byte();
         self.closure.chunk().get_constant(b as usize)
     }

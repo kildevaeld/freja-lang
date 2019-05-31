@@ -1,7 +1,6 @@
-use super::super::chunk::Chunk;
+use freja_compiler::{Chunk, Function};
 use super::super::utils::Pointer;
 use super::super::value::Val;
-use super::function::*;
 use std::rc::Rc;
 
 #[derive(PartialEq, Debug)]
@@ -17,16 +16,16 @@ impl Closure {
 
     #[inline(always)]
     pub fn chunk(&self) -> &Chunk {
-        &self.function.chunk
+        self.function.chunk()
     }
 
     #[inline(always)]
     pub fn arity(&self) -> i32 {
-        self.function.arity
+        self.function.arity()
     }
 
     pub fn name(&self) -> Option<&str> {
-        self.function.name.as_ref().map(|s| s.as_str())
+        self.function.name()
     }
 
     #[inline(always)]
