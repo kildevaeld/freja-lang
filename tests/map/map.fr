@@ -1,5 +1,15 @@
-{
+let o = {
     prop: "string",
     prop_two: 200,
-    "literal_String": true
+    "literal_String": true,
+    ["expression" + 2]: () => {
+        return 200
+    }
 }
+
+print(o.prop)
+let e = o.expression2
+print(o.expression2())
+
+o.test = "træls"
+print(o.test)

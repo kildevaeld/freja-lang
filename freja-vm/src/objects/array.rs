@@ -2,29 +2,14 @@ use super::super::context::Context;
 use super::super::error::RuntimeResult;
 use super::super::stack::{Stack, SubStack};
 use super::super::utils::Pointer;
-use super::super::value::{Val, Value};
-use super::class::{Class, ClassInstance};
-use super::native::{Native, NativeFn};
+use super::super::value::Value;
+use super::native::NativeFn;
 use super::types::Instance;
+use super::types::{Class, ClassInstance};
 use std::any::Any;
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-
-// "map" => NativeFn::value(|ctx| {
-//     let array = ctx.get(0).unwrap().as_instance().unwrap().as_any().downcast_ref::<ArrayInstance>().unwrap();
-//     let inner = unsafe { (&mut *array.inner.get()) };
-//     let mut out = Vec::new();
-//     for (i, v) in inner.iter_mut().enumerate() {
-//         ctx.dup(1)?;
-//         ctx.stack.push(v.as_ptr())?;
-//         ctx.push(Value::Integer(i as i64))?;
-//         ctx.call(2)?;
-//         let item = ctx.pop().unwrap();
-//         out.push(item);
-//     }
-//     Ok(Value::Array(Rc::new(Array::new(out))))
-// }, 1)
 
 
 macro_rules! map(
@@ -65,7 +50,7 @@ impl Array {
                     };
                     match array.get(idx as usize) {
                         None => Ok(Value::Null),
-                        Some(s) => Ok(s.as_ref().clone()),
+                        Some(s) => Ok(s.clone()),
                     }
                 },
                 1,
@@ -73,16 +58,15 @@ impl Array {
             "push" => NativeFn::value(|ctx| {
                 let array = ctx.get(0).unwrap().as_instance().unwrap().as_any().downcast_ref::<ArrayInstance>().unwrap();
                 let val = ctx.pop().unwrap();
-                array.push(val);
+                array.push(val.into_inner());
                 Ok(ctx.get(0).unwrap().as_ref().clone())
             }, 1),
             "each" => NativeFn::value(|ctx| {
-
                 let array = ctx.get(0).unwrap().as_instance().unwrap().as_any().downcast_ref::<ArrayInstance>().unwrap();
                 let inner = unsafe { (&mut *array.inner.get()) };
                 for (i, v) in inner.iter_mut().enumerate() {
                      ctx.dup(1)?;
-                     ctx.stack.push(v.as_ptr())?;
+                     ctx.stack.push(Pointer::Ref(v as *const Value))?;
                      ctx.push(Value::Integer(i as i64))?;
                      ctx.call(2)?;
                      ctx.pop();
@@ -102,8 +86,10 @@ impl Class for Array {
 
     fn construct(&self, ctx: &Context<SubStack>) -> RuntimeResult<()> {
 
-        let v = Vec::from(&ctx.stack.as_ref()[1..]);
-
+        let v = (&ctx.stack.as_ref()[1..])
+            .iter()
+            .map(|m| m.clone().into_inner())
+            .collect();
         let class = match ctx.get(0).unwrap().as_class() {
             None => return Err("invalid instance".into()),
             Some(c) => c,
@@ -127,8 +113,7 @@ impl Instance for Array {
         Ok(())
     }
 
-    fn get_field(&self, name: &str) -> Option<&Value> {
-        println!("name {}", name);
+    fn get_field(&self, _name: &str) -> Option<&Value> {
         None
     }
 
@@ -144,12 +129,12 @@ impl Instance for Array {
 
 #[derive(Debug)]
 pub struct ArrayInstance {
-    inner: UnsafeCell<Vec<Val>>,
+    inner: UnsafeCell<Vec<Value>>,
     class: Rc<Box<Class>>,
 }
 
 impl ArrayInstance {
-    pub fn new(class: Rc<Box<Class>>, data: Vec<Val>) -> ArrayInstance {
+    pub fn new(class: Rc<Box<Class>>, data: Vec<Value>) -> ArrayInstance {
         ArrayInstance {
             inner: UnsafeCell::new(data),
             class,
@@ -160,11 +145,11 @@ impl ArrayInstance {
         unsafe { (&*self.inner.get()).len() }
     }
 
-    pub fn get(&self, idx: usize) -> Option<&Val> {
+    pub fn get(&self, idx: usize) -> Option<&Value> {
         unsafe { (&*self.inner.get()).get(idx) }
     }
 
-    pub fn push(&self, val: Val) {
+    pub fn push(&self, val: Value) {
         unsafe { (&mut *self.inner.get()).push(val) }
     }
 
@@ -195,7 +180,6 @@ impl Instance for ArrayInstance {
     }
 
     fn find_method(&self, name: &str) -> Option<&Value> {
-        //self.methods.get(name)
         self.class.find_method(name)
     }
 

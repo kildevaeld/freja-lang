@@ -122,7 +122,6 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 };
 
                 pop!(stack);
-                pop!(stack);
 
                 instance.set_field(name, value.clone().into_inner())?;
             }
@@ -183,7 +182,6 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             | OpCode::Invoke8 => {
                 let count = (instruction as u8) - (OpCode::Invoke0 as u8);
                 let method = frame.read_constant().unwrap().as_string().unwrap();
-
                 invoke(ctx, method.as_str(), count).unwrap();
                 frame = ctx.frames.last().unwrap();
             }
@@ -251,20 +249,20 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
             }
             OpCode::Array => {
                 let o = frame.read_byte();
+                let array_class = ctx
+                    .globals
+                    .get("Array")
+                    .map(|a| Pointer::Ref(a as *const Value))
+                    .unwrap();
+
                 if o == 0 {
-                    ctx.stack
-                        .push(Pointer::Stack(Value::Class(Rc::new(Box::new(Array::new())))))?;
+                    ctx.stack.push(array_class)?;
                     let calle = ctx.peek(0).unwrap();
                     call_value(ctx, calle, 0)?;
                 } else {
                     let idx = stack.len() - o as usize;
                     let v = Vec::from(&stack.as_ref()[idx..]);
                     stack.truncate(idx);
-                    let array_class = ctx
-                        .globals
-                        .get("Array")
-                        .map(|a| Pointer::Ref(a as *const Value))
-                        .unwrap();
 
                     ctx.stack.push(array_class)?;
                     for b in v.into_iter() {
@@ -276,20 +274,29 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
 
                 }
             }
-            // OpCode::Map => {
-            //     let o = frame.read_byte();
-            //     if o == 0 {
-            //         push!(stack, Val::Stack(Value::Array(Array::default())))?;
-            //     } else {
-            //         let mut v = HashMap::new();
-            //         let idx = stack.len() - o as usize;
-            //         for i in stack.iter_mut().skip(idx) {
-            //             v.push(i.into_heap().clone());
-            //         }
-            //         stack.truncate(idx);
-            //         push!(stack, Val::Stack(Value::Array(Array::new(v))))?;
-            //     }
-            // }
+            OpCode::Map => {
+                let o = frame.read_byte();
+                let array_class = ctx.globals.get("Map").map(|a| Pointer::Ref(a as *const Value)).unwrap();
+
+                if o == 0 {
+                    ctx.stack.push(array_class)?;
+                    let calle = ctx.peek(0).unwrap();
+                    call_value(ctx, calle, 0)?;
+                } else {
+                    let idx = stack.len() - o as usize;
+                    let v = Vec::from(&stack.as_ref()[idx..]);
+                    stack.truncate(idx);
+
+                    ctx.stack.push(array_class)?;
+                    for b in v.into_iter() {
+                        ctx.stack.push(b)?;
+                    }
+
+                    let calle = ctx.peek(o as usize).unwrap();
+                    call_value(ctx, calle, o)?;
+
+                }
+            }
             OpCode::JumpIfFalse => {
                 let offset = frame.read_short();
                 let v = peek!(stack, 0).unwrap();
@@ -467,6 +474,11 @@ fn invoke<S: Stack>(ctx: &Context<S>, name: &str, count: u8) -> RuntimeResult<()
         Some(s) => s,
         None => return Err(format!("receiver was {} expected instance for call: {}", receiver, name).into()),
     };
+
+    if let Some(field) = instance.get_field(name) {
+        let val = Pointer::Ref(field as *const Value);
+        return call_value(ctx, &val, count);
+    }
 
 
     invoke_from_class(ctx, instance, name, count)

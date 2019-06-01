@@ -719,7 +719,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                     kv.value.accept(self)?;
                 }
 
-                self.emit_bytes(OpCode::Map, obj.entries().len() as u8);
+                self.emit_bytes(OpCode::Map, (obj.entries().len() * 2) as u8);
                 return Ok(());
             }
             _ => unimplemented!("literal"),

@@ -1,7 +1,5 @@
-use super::super::context::Context;
 use super::super::error::RuntimeResult;
-use super::super::stack::SubStack;
-use super::super::value::{Val, Value};
+use super::super::value::Value;
 use super::types::Instance;
 use std::any::Any;
 
@@ -18,12 +16,12 @@ impl Instance for String {
         None
     }
 
-    fn call_method(&self, name: &str, _ctx: &Context<SubStack>) -> Option<RuntimeResult<Value>> {
-        match name {
-            "len" => Some(Ok(Value::Integer(self.len() as i64))),
-            _ => None,
-        }
-    }
+    // fn call_method(&self, name: &str, _ctx: &Context<SubStack>) -> Option<RuntimeResult<Value>> {
+    //     match name {
+    //         "len" => Some(Ok(Value::Integer(self.len() as i64))),
+    //         _ => None,
+    //     }
+    // }
 
     fn as_any(&self) -> &Any {
         self

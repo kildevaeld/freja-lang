@@ -89,13 +89,11 @@ impl fmt::Display for Value {
             Value::Double(d) => <f64 as fmt::Display>::fmt(d, f),
             Value::String(s) => write!(f, "{}", s),
             Value::Boolean(b) => write!(f, "{}", b),
-            //Value::Function(fu) => write!(f, "<fn {}>", fu.name.as_ref().map(|a| a.as_str()).unwrap_or("no-name")),
             Value::Null => write!(f, "nil"),
             Value::Class(c) => write!(f, "<class {}>", c.name()),
             Value::ClassInstance(i) => write!(f, "<instance {}>", i.class().name()),
             Value::Native(_) => write!(f, "<fn native>"),
             Value::Closure(cl) => write!(f, "<closure {}>", cl.name().unwrap_or("no-name")),
-            //_ => write!(f, "Unknown"),
         }
     }
 }
@@ -111,7 +109,7 @@ impl Value {
             Value::Class(_) => true,
             Value::ClassInstance(_) => true,
             Value::Null => false,
-            /*Value::Function(_) |*/ Value::Closure(_) | Value::Native(_) => true,
+            Value::Closure(_) | Value::Native(_) => true,
         }
     }
 }

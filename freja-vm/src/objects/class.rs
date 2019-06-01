@@ -1,46 +1,39 @@
 use super::super::context::Context;
 use super::super::error::RuntimeResult;
-use super::super::runner::call;
 use super::super::stack::*;
-use super::super::utils::Pointer;
-use super::super::value::{Val, Value};
-use super::types::Instance;
+use super::super::value::Value;
+use super::types::*;
 use std::any::Any;
-use std::cell::{RefCell, UnsafeCell};
+use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
-pub trait Class: Instance {
-    fn name(&self) -> &str;
-    fn construct(&self, ctx: &Context<SubStack>) -> RuntimeResult<()>;
-    fn as_instance(&self) -> &Instance;
-    //fn find_method(&self, name: &str) -> Option<&Value>;
-}
+// pub trait Class: Instance {
+//     fn name(&self) -> &str;
+//     fn construct(&self, ctx: &Context<SubStack>) -> RuntimeResult<()>;
+//     fn as_instance(&self) -> &Instance;
+//     //fn find_method(&self, name: &str) -> Option<&Value>;
+// }
 
-impl<'a> PartialEq for Class + 'a {
-    fn eq(&self, other: &Self) -> bool {
-        false
-    }
-}
-
-// impl<'a> fmt::Debug for Class + 'a {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(f, "class")
+// impl<'a> PartialEq for Class + 'a {
+//     fn eq(&self, other: &Self) -> bool {
+//         false
 //     }
 // }
 
-pub trait ClassInstance: Instance {
-    fn class(&self) -> &Class;
-    fn as_instance(&self) -> &Instance;
-    //fn find_method(&self, name: &str) -> Option<&Value>;
-}
 
-impl<'a> PartialEq for ClassInstance + 'a {
-    fn eq(&self, other: &Self) -> bool {
-        false
-    }
-}
+// pub trait ClassInstance: Instance {
+//     fn class(&self) -> &Class;
+//     fn as_instance(&self) -> &Instance;
+//     //fn find_method(&self, name: &str) -> Option<&Value>;
+// }
+
+// impl<'a> PartialEq for ClassInstance + 'a {
+//     fn eq(&self, other: &Self) -> bool {
+//         false
+//     }
+// }
 
 #[derive(Debug, PartialEq)]
 pub struct ClassInner {
@@ -69,10 +62,6 @@ impl SourceClass {
     }
 
     pub fn inherit(&self, class: &Rc<Box<Class>>) {
-        // let mut b = self.methods.borrow_mut();
-        // for m in class.methods.borrow().iter() {
-        //     b.insert(m.0.clone(), m.1.clone());
-        // }
         unsafe { (&mut *self.inner.get()).super_class = Some(class.clone()) }
     }
 }
@@ -81,32 +70,8 @@ impl Class for SourceClass {
     fn name(&self) -> &str {
         &self.name
     }
-    fn construct(&self, ctx: &Context<SubStack>) -> RuntimeResult<()> {
-        println!("ctx {}", ctx.dump());
-        let cl = ctx.get(0).expect("class 1").as_class().expect("class 2");
-        let count = ctx.stack.len() - 1;
-
-        let instance = SourceClassInstance::new(cl.clone());
-        ctx.stack
-            .set(0, Pointer::Stack(Value::ClassInstance(Rc::new(Box::new(instance)))));
-
-        if let Some(initializer) = cl.find_method("init") {
-            let closure = initializer.as_closure().unwrap().clone();
-            if closure.arity() != count as i32 {
-                return Err("invalid numbers of parameters".into());
-            }
-            let top = ctx.top();
-            ctx.push(Value::Closure(closure));
-            ctx.dup(top);
-            ctx.call(1)?;
-        //call(ctx, Pointer::Stack(closure), count as u8)?;
-        } else if count != 0 {
-            return Err("invalid numbers of parameters".into());
-        }
-
-        println!("{} {}", ctx.dump(), count);
-        //Err("construct".into())
-        Ok(())
+    fn construct(&self, _ctx: &Context<SubStack>) -> RuntimeResult<()> {
+        unreachable!("don't construct source class directly")
     }
 
     fn as_instance(&self) -> &Instance {
@@ -212,10 +177,7 @@ impl Clone for SourceClassInstance {
 
 impl Instance for SourceClassInstance {
     fn set_field(&self, name: &str, value: Value) -> RuntimeResult<()> {
-        unsafe {
-            self.fields().insert(name.to_string(), value);
-        }
-
+        self.fields().insert(name.to_string(), value);
         Ok(())
     }
 

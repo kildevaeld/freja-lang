@@ -1,5 +1,9 @@
+
 { test : 200, }
-{
+let rapper = "ø"
+let o = {
     "hello": 200 + rapper,
     [200 - 20]: "repsp"
 }
+
+print(o.len())

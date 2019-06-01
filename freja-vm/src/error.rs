@@ -4,24 +4,6 @@ use std::fmt;
 use std::result::Result;
 use freja_compiler::CompileError;
 
-// pub type CompileResult<T> = Result<T, CompileError>;
-
-// #[derive(Debug, PartialEq)]
-// pub enum CompileError {
-//     DuplicateVariable,
-//     ReturnTopLevel,
-//     InvalidReceiver,
-//     Parse(ParseError),
-// }
-
-// impl fmt::Display for CompileError {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(f, "CompileError")
-//     }
-// }
-
-// impl Error for CompileError {}
-
 pub type RuntimeResult<T> = Result<T, RuntimeError>;
 
 #[derive(Debug)]

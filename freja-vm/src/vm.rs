@@ -1,9 +1,9 @@
 use super::context::Context;
 use super::error::RuntimeResult;
 use super::frames::Frames;
-use super::objects::*;
+use super::stack::*;
 use super::globals::Global;
-use super::stack::{RootStack, SubStack};
+use super::objects::*;
 use super::value::*;
 use std::rc::Rc;
 
@@ -21,11 +21,7 @@ pub struct VM {
 impl VM {
     pub fn new() -> VM {
         let vm = VM {
-            ctx: Context::new(
-                RootStack::new(),
-                Rc::new(Global::default()),
-                Frames::new(),
-            ),
+            ctx: Context::new(RootStack::new(), Rc::new(Global::default()), Frames::new()),
         };
 
         vm.ctx
@@ -35,6 +31,10 @@ impl VM {
         vm.ctx
             .globals
             .insert("Array".to_string(), Value::Class(Rc::new(Box::new(Array::new()))));
+
+        vm.ctx
+            .globals
+            .insert("Map".to_string(), Value::Class(Rc::new(Box::new(Map::new()))));
 
         vm
     }

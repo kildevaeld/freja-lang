@@ -1,5 +1,5 @@
 use super::super::error::RuntimeResult;
-use super::super::value::{Val, Value};
+use super::super::value::Value;
 use super::types::Instance;
 use freja_parser::ast::Number;
 use std::any::Any;

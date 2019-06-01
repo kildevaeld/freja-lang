@@ -1,4 +1,3 @@
-//mod array;
 mod array;
 mod class;
 mod closure;

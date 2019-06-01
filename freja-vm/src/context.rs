@@ -1,14 +1,13 @@
-use freja_compiler::{Chunk, OpCode, Compiler};
 use super::error::RuntimeResult;
 use super::frames::Frames;
-use super::objects::*;
-use super::runner::{call_value, run as run_frame};
-use super::stack::{RootStack, Stack, SubStack};
 use super::globals::Global;
+use super::runner::{call_value, run as run_frame};
+use super::stack::{Stack, SubStack};
 use super::utils::Pointer;
 use super::value::*;
-use std::cell::RefCell;
+use freja_compiler::Compiler;
 use std::rc::Rc;
+use super::objects::Closure;
 
 pub type Idx = usize;
 

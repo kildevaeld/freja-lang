@@ -2,7 +2,6 @@ use super::error::{RuntimeError, RuntimeResult};
 use super::value::*;
 use heapless::consts::U256;
 use heapless::Vec as HVec;
-use std::iter::Iterator;
 
 pub trait Stack: AsRef<[Val]> + std::fmt::Debug {
     fn push(&self, frame: Val) -> RuntimeResult<()>;

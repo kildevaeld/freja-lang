@@ -4,7 +4,6 @@ extern crate criterion;
 use criterion::black_box;
 use criterion::Criterion;
 use freja_parser::*;
-use freja_vm::compiler::*;
 use freja_vm::vm::VM;
 
 fn fibonacci(n: u64) -> u64 {

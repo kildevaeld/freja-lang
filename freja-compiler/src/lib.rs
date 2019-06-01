@@ -5,7 +5,7 @@ mod compiler;
 mod constant;
 mod error;
 mod objects;
-mod utils;
+//mod utils;
 
 pub use self::error::*;
 pub use self::chunk::*;
