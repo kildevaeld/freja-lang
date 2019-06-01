@@ -752,6 +752,7 @@ impl ExprVisitor<CompileResult<()>> for Compiler {
                 self.emit(OpCode::Equal);
                 OpCode::Not
             }
+            BinaryOperator::Is => OpCode::InstanceOf,
             _ => unimplemented!("binary {:?}", e.operator),
         };
 
