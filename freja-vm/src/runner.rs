@@ -212,9 +212,6 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                         let value = stack.get(frame.idx + 1).unwrap();
                         values.push(capture_upvalue(value));
                     } else {
-                        // values.push(Val::Ref(
-                        //     frame.closure.as_ref().upvalues()[index as usize].as_value() as *const Value
-                        // ));
                         values.push(frame.closure.as_ref().upvalues()[index as usize].clone())
                     };
                 }
@@ -227,7 +224,6 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
                 let left = stack.pop().unwrap();
                 let ret = value_add!(left.as_ref(), right.as_ref())?;
                 ctx.push(ret)?;
-                //push!(stack, Pointer::Stack(ret))?;
             }
             OpCode::Substract => {
                 let right = stack.pop().unwrap();

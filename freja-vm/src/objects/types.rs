@@ -5,6 +5,13 @@ use super::super::value::Value;
 use std::any::Any;
 use std::fmt;
 
+
+pub trait Type: fmt::Debug {
+    fn name(&self) -> &str;
+    fn as_any(&self) -> &Any;
+    fn equal(&self, other: &Type) -> bool;
+}
+
 pub trait Instance: fmt::Debug {
     fn set_field(&self, name: &str, value: Value) -> RuntimeResult<()>;
     fn get_field(&self, name: &str) -> Option<&Value>;
