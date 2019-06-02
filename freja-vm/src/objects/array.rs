@@ -5,7 +5,7 @@ use super::super::utils::Pointer;
 use super::super::value::Value;
 use super::native::NativeFn;
 use super::types::Instance;
-use super::types::{Class, ClassInstance};
+use super::types::{Class, ClassInstance, Type};
 use std::any::Any;
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
@@ -123,6 +123,33 @@ impl Instance for Array {
 
     fn as_any(&self) -> &Any {
         self
+    }
+}
+
+impl Type for Array {
+    fn parent(&self) -> Option<&Type> {
+        None
+    }
+    fn name(&self) -> &str {
+        "Array"
+    }
+    fn as_any(&self) -> &Any {
+        self
+    }
+    fn equal(&self, other: &Type) -> bool {
+        match other.as_any().downcast_ref::<Self>() {
+            Some(_) => true,
+            None => false,
+        }
+    }
+    fn set_field(&self, _name: &str, value: Value) -> RuntimeResult<()> {
+        Err("cannot set property on array instance".into())
+    }
+    fn get_field(&self, _name: &str) -> Option<&Value> {
+        None
+    }
+    fn find_method(&self, _name: &str) -> Option<&Value> {
+        None
     }
 }
 

@@ -7,9 +7,13 @@ use std::fmt;
 
 
 pub trait Type: fmt::Debug {
+    fn parent(&self) -> Option<&Type>;
     fn name(&self) -> &str;
     fn as_any(&self) -> &Any;
     fn equal(&self, other: &Type) -> bool;
+    fn set_field(&self, name: &str, value: Value) -> RuntimeResult<()>;
+    fn get_field(&self, name: &str) -> Option<&Value>;
+    fn find_method(&self, name: &str) -> Option<&Value>;
 }
 
 pub trait Instance: fmt::Debug {
@@ -18,15 +22,6 @@ pub trait Instance: fmt::Debug {
     fn find_method(&self, name: &str) -> Option<&Value>;
     fn as_any(&self) -> &Any;
 }
-
-// pub trait Callable: fmt::Debug {
-//     fn arity(&self) -> i32;
-//     fn call(&self, args: &[&Val]) -> RuntimeResult<Val>;
-// }
-
-// pub trait IntoHeap {
-//     fn make_heap(&mut self);
-// }
 
 
 pub trait Class: Instance {
