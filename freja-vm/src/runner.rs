@@ -54,8 +54,8 @@ pub(crate) fn run<S: Stack>(ctx: &Context<S>) -> RuntimeResult<()> {
     let stack = &ctx.stack;
 
     'outer: while frame.ip.get() < frame.closure.chunk().len() {
-        let instruction = frame.read_byte();
-        let instruction = OpCode::from(instruction);
+            let instruction = frame.read_byte();
+            let instruction = OpCode::from(instruction);
 
         match instruction {
             OpCode::Constant => {

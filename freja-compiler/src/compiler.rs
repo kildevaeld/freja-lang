@@ -528,6 +528,7 @@ impl StmtVisitor<CompileResult<()>> for Compiler {
         //
         unimplemented!("interface");
     }
+
     fn visit_block_stmt(&mut self, e: &BlockStmt) -> CompileResult<()> {
         self.begin_scope();
         for b in &e.statements {

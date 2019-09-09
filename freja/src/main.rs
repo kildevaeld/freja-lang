@@ -2,9 +2,9 @@ use std::alloc::System;
 #[global_allocator]
 static ALLOCATOR: System = System;
 
-use freja_parser::*;
+
 use freja_compiler::*;
-use freja_vm::vm::VM;
+use freja_parser::*;
 
 use getopts::Options;
 #[cfg(feature = "serializing")]
@@ -39,6 +39,7 @@ fn run(input: &str) {
     let data = fs::read_to_string(input).unwrap();
 
     let vm = VM::new();
+
     vm.eval_script(data).expect("eval script");
 }
 
