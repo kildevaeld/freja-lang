@@ -5,7 +5,7 @@ static ALLOCATOR: System = System;
 
 use freja_compiler::*;
 use freja_parser::*;
-
+use freja_vm::*;
 use getopts::Options;
 #[cfg(feature = "serializing")]
 use serde_json;
@@ -38,7 +38,7 @@ fn print_usage(program: &str, opts: Options) {
 fn run(input: &str) {
     let data = fs::read_to_string(input).unwrap();
 
-    let vm = VM::new();
+    let vm = vm::VM::new();
 
     vm.eval_script(data).expect("eval script");
 }
